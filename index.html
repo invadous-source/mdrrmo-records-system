@@ -1374,22 +1374,16 @@ textarea::placeholder {
 
 
 <style id="recordDetailsModalStyles">
-#recordDetailsModal{position:fixed;inset:0;background:rgba(3,24,45,.62);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px;z-index:100000}
-#recordDetailsModal.show{display:flex}
-.rd-modal-card{width:min(820px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 28px 80px rgba(0,30,60,.32);animation:rdPop .22s ease-out}
-@keyframes rdPop{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+#recordDetailsModal{position:fixed!important;inset:0!important;background:rgba(3,24,45,.62)!important;backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px;z-index:2147483647!important}
+#recordDetailsModal.show{display:flex!important}
+.rd-modal-card{width:min(820px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 28px 80px rgba(0,30,60,.32)}
 .rd-modal-header{padding:22px 26px;background:linear-gradient(135deg,#062f59,#087ac1);color:#fff;display:flex;align-items:center;justify-content:space-between}
-.rd-modal-header h2{margin:0;color:#fff!important;font-size:1.22rem}
-.rd-modal-close{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
-.rd-modal-body{padding:24px;color:#183650}
-.rd-section-title{margin:0 0 12px;color:#06345f;font-size:.92rem;text-transform:uppercase;letter-spacing:.04em}
-.rd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.rd-field{background:#f5f9fc;border:1px solid #dbe8f2;border-radius:13px;padding:12px 14px}
-.rd-field b{display:block;color:#0a4f7f;font-size:.78rem;text-transform:uppercase;letter-spacing:.03em;margin-bottom:5px}
-.rd-value{word-break:break-word;line-height:1.45}
-.rd-wide{grid-column:1/-1}
+.rd-modal-header h2{margin:0;color:#fff!important}.rd-modal-close{border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
+.rd-modal-body{padding:24px;color:#183650}.rd-section-title{margin:0 0 12px;color:#06345f;font-size:.92rem;text-transform:uppercase;letter-spacing:.04em}
+.rd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.rd-field{background:#f5f9fc;border:1px solid #dbe8f2;border-radius:13px;padding:12px 14px}
+.rd-field b{display:block;color:#0a4f7f;font-size:.78rem;text-transform:uppercase;letter-spacing:.03em;margin-bottom:5px}.rd-value{word-break:break-word;line-height:1.45}.rd-wide{grid-column:1/-1}
 .rd-modal-footer{padding:16px 24px;background:#f4f8fb;border-top:1px solid #dce8f1;display:flex;justify-content:flex-end;gap:10px}
-@media(max-width:640px){.rd-grid{grid-template-columns:1fr}.rd-wide{grid-column:auto}.rd-modal-header{padding:18px}.rd-modal-body{padding:18px}}
+@media(max-width:640px){.rd-grid{grid-template-columns:1fr}.rd-wide{grid-column:auto}}
 </style>
 
 </head>
@@ -2867,7 +2861,7 @@ function renderTable() {
             <td>${record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-"}</td>
             <td>${escapeHTML(record.status || "")}</td>
             <td>
-                <button class="btn btn-secondary btn-small" onclick="viewRecord('${record.id}')">👁️ View</button>
+                <button type="button" class="btn btn-secondary btn-small" onclick="viewRecord('${record.id}')">👁️ View</button>
                 <button class="btn btn-primary btn-small" onclick="editRecord('${record.id}')">Edit</button>
                 <button class="btn btn-danger btn-small" onclick="deleteRecord('${record.id}')">Delete</button>
             </td>
@@ -3801,62 +3795,48 @@ function mdrrmoDeleteConfirm(){
 </script>
 
 
-<div id="recordDetailsModal" aria-hidden="true">
-  <div class="rd-modal-card" role="dialog" aria-modal="true" aria-labelledby="rdTitle">
-    <div class="rd-modal-header">
-      <h2 id="rdTitle">👁️ Record Details</h2>
-      <button type="button" class="rd-modal-close" onclick="closeRecordDetails()">✕ Close</button>
-    </div>
-    <div class="rd-modal-body" id="recordDetailsContent"></div>
-    <div class="rd-modal-footer" id="recordDetailsActions"></div>
-  </div>
+<div id="recordDetailsModal">
+ <div class="rd-modal-card">
+  <div class="rd-modal-header"><h2>👁️ Record Details</h2><button type="button" class="rd-modal-close" onclick="closeRecordDetails()">✕ Close</button></div>
+  <div class="rd-modal-body" id="recordDetailsContent"></div>
+  <div class="rd-modal-footer" id="recordDetailsActions"></div>
+ </div>
 </div>
 <script id="recordDetailsModalScript">
-function rdEsc(v){
-  const d=document.createElement('div'); d.textContent=String(v ?? '-');
-  return d.innerHTML.replace(/\n/g,'<br>');
-}
-function rdFmtDate(v){
-  if(!v) return '-';
-  try { return typeof formatDate==='function' ? formatDate(v) : new Date(v).toLocaleDateString(); }
-  catch(e){ return String(v); }
+function rdEsc(v){const d=document.createElement('div');d.textContent=String(v??'-');return d.innerHTML.replace(/\n/g,'<br>');}
+function rdFmtDate(v){if(!v)return '-';try{return typeof formatDate==='function'?formatDate(v):new Date(v).toLocaleDateString();}catch(e){return String(v);}}
+function rdFindRecord(id){
+  const list=window.records||[];
+  return list.find(x=>String(x.id)===String(id)) || list.find(x=>String(x.record_id)===String(id));
 }
 function viewRecord(id){
-  const list=window.records||[];
-  const r=list.find(x=>String(x.id)===String(id));
-  if(!r) return;
-  const fields=[
-    ['Record ID',r.id],
-    ['Incident Type',r.type||r.incident_type||r.record_type||'-'],
-    ['Date',rdFmtDate(r.date)],
-    ['Time',r.time||'-'],
-    ['Barangay',r.barangay||'-'],
-    ['Category',r.category||'-'],
-    ['Location',r.location||'-'],
-    ['Status',r.status||'-'],
-    ['Ambulance',r.ambulance||'-'],
-    ['Responders',r.responders||'-'],
-    ['Persons Involved',r.persons||r.person_involved||'-'],
-    ['Age',r.age??'-'],
-    ['Remarks',r.remarks||r.notes||'-']
-  ];
+  const r=rdFindRecord(id);
   const content=document.getElementById('recordDetailsContent');
-  content.innerHTML='<div class="rd-section-title">Record Information</div><div class="rd-grid">'+
-    fields.map(([k,v])=>`<div class="rd-field ${['Persons Involved','Remarks'].includes(k)?'rd-wide':''}"><b>${rdEsc(k)}</b><div class="rd-value">${rdEsc(v)}</div></div>`).join('')+
-    '</div>';
   const actions=document.getElementById('recordDetailsActions');
-  const isAdmin=window.currentUser && String(window.currentUser.role).toLowerCase()==='admin';
-  actions.innerHTML='<button class="btn btn-secondary" type="button" onclick="closeRecordDetails()">Close</button>'+
-    (isAdmin?`<button class="btn btn-primary" type="button" onclick="closeRecordDetails();editRecord('${String(r.id).replace(/'/g,"\\'")}')">✏️ Edit Record</button>`:'');
-  const m=document.getElementById('recordDetailsModal');
-  m.classList.add('show'); m.setAttribute('aria-hidden','false');
+  const modal=document.getElementById('recordDetailsModal');
+  if(!content||!actions||!modal)return;
+  if(!r){
+    content.innerHTML='<div class="rd-section-title">Record Details</div><div class="rd-field rd-wide"><b>Notice</b><div class="rd-value">Unable to find this record. Please refresh the records list and try again.</div></div>';
+    actions.innerHTML='<button class="btn btn-secondary" type="button" onclick="closeRecordDetails()">Close</button>';
+    modal.classList.add('show');return;
+  }
+  const fields=[
+   ['Record ID',r.id||r.record_id],['Incident Type',r.type||r.incident_type||r.record_type||'-'],
+   ['Date',rdFmtDate(r.date||r.incident_date)],['Time',r.time||r.incident_time||'-'],
+   ['Barangay',r.barangay||'-'],['Category',r.category||'-'],['Location',r.location||'-'],
+   ['Status',r.status||'-'],['Ambulance',r.ambulance||'-'],['Responders',r.responders||'-'],
+   ['Persons Involved',r.persons||r.person_involved||r.persons_involved||'-'],['Age',r.age??'-'],
+   ['Remarks',r.remarks||r.notes||'-']
+  ];
+  content.innerHTML='<div class="rd-section-title">Record Information</div><div class="rd-grid">'+fields.map(([k,v])=>`<div class="rd-field ${['Persons Involved','Remarks'].includes(k)?'rd-wide':''}"><b>${rdEsc(k)}</b><div class="rd-value">${rdEsc(v)}</div></div>`).join('')+'</div>';
+  const role=(window.currentUser&&window.currentUser.role)||window.userRole||'';
+  const admin=String(role).toLowerCase()==='admin';
+  const safeId=String(r.id||r.record_id||'').replace(/'/g,"\\'");
+  actions.innerHTML='<button class="btn btn-secondary" type="button" onclick="closeRecordDetails()">Close</button>'+(admin&&safeId?`<button class="btn btn-primary" type="button" onclick="closeRecordDetails();editRecord('${safeId}')">✏️ Edit Record</button>`:'');
+  modal.classList.add('show');
 }
-function closeRecordDetails(){
-  const m=document.getElementById('recordDetailsModal');
-  if(m){m.classList.remove('show');m.setAttribute('aria-hidden','true');}
-}
+function closeRecordDetails(){const m=document.getElementById('recordDetailsModal');if(m)m.classList.remove('show');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeRecordDetails();});
-document.addEventListener('click',e=>{const m=document.getElementById('recordDetailsModal');if(e.target===m)closeRecordDetails();});
 </script>
 
 </body>
