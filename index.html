@@ -1037,19 +1037,6 @@ tr:hover td {
 
 }
 
-
-/* ===== MODERN LOGIN EXPERIENCE ===== */
-.login-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);font-family:inherit}
-.login-overlay:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.08),transparent 32%),radial-gradient(circle at 80% 75%,rgba(255,255,255,.07),transparent 28%)}
-.login-glow{position:absolute;width:340px;height:340px;border-radius:50%;filter:blur(50px);opacity:.24}.glow-one{background:#27c4b8;top:-130px;left:-100px}.glow-two{background:#f0b44c;right:-120px;bottom:-140px}
-.login-card{position:relative;width:min(430px,100%);padding:42px 38px 30px;box-sizing:border-box;background:rgba(255,255,255,.97);border:1px solid rgba(255,255,255,.6);border-radius:28px;box-shadow:0 28px 80px rgba(0,0,0,.35);animation:loginEnter .55s ease both}
-@keyframes loginEnter{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
-.login-mark{width:68px;height:68px;margin:0 auto 16px;display:grid;place-items:center;border-radius:22px;background:linear-gradient(135deg,#0b6a68,#12486a);font-size:31px;box-shadow:0 10px 24px rgba(13,74,92,.25)}
-.login-eyebrow{text-align:center;font-size:10px;font-weight:800;letter-spacing:1.4px;color:#0b6a68}.login-card h1{text-align:center;margin:7px 0 3px;font-size:29px;color:#102b3b}.login-subtitle{text-align:center;margin:0;color:#60717b;font-size:14px}.login-divider{height:1px;background:#e7edf0;margin:25px 0 21px}
-.login-label{display:block;margin:14px 0 7px;font-size:11px;font-weight:800;letter-spacing:1px;color:#48616f}.login-input-wrap{display:flex;align-items:center;gap:9px;border:1px solid #d8e1e5;border-radius:13px;padding:0 13px;background:#fbfcfd;transition:.2s}.login-input-wrap:focus-within{border-color:#0b8a85;box-shadow:0 0 0 4px rgba(11,138,133,.1);background:#fff}.login-input-wrap span{font-size:16px}.login-input-wrap input{border:0!important;outline:0!important;background:transparent!important;width:100%;padding:14px 0!important;margin:0!important;font-size:15px;box-sizing:border-box}
-.login-error{min-height:22px;margin-top:11px;color:#b42318;font-size:13px;text-align:center}.login-button{width:100%;border:0;border-radius:13px;padding:15px;background:linear-gradient(135deg,#0b6a68,#12486a);color:white;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 22px rgba(18,72,106,.24);transition:.2s}.login-button:hover{transform:translateY(-1px)}.login-button:disabled{cursor:not-allowed;opacity:.85;transform:none}.btn-loader{display:none}.login-button.loading .btn-text{display:none}.login-button.loading .btn-loader{display:inline}.login-footer{text-align:center;color:#8a99a1;font-size:11px;margin-top:19px}
-.auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
-
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
@@ -1071,305 +1058,17 @@ tr:hover td {
 .report-table-wrap{padding:0 12px 12px}.report-table{width:100%;border-collapse:collapse;font-size:10px}.report-table th{background:#f4f8fc;color:#5c7189;text-align:left;font-size:8px;letter-spacing:.03em;padding:8px}.report-table td{padding:7px 8px;border-bottom:1px solid #dfe7ef;color:#27466a}.report-table th:last-child,.report-table td:last-child{text-align:left;width:38%}.report-table tbody tr:last-child td{border-bottom:none}.report-empty{text-align:left;color:#9aaabc!important}
 @media(max-width:1000px){.report-stat-grid{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto}.report-two-col{grid-template-columns:1fr}.report-barangay-panel{max-width:none}}
 @media(max-width:650px){.report-stat-grid{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto}.report-filter-bar label{min-width:calc(50% - 5px)}.report-barangay-panel{max-width:none}}
-
-/* ===== MODERN LOGIN EXPERIENCE ===== */
-.login-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);font-family:inherit}
-.login-overlay:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.08),transparent 32%),radial-gradient(circle at 80% 75%,rgba(255,255,255,.07),transparent 28%)}
-.login-glow{position:absolute;width:340px;height:340px;border-radius:50%;filter:blur(50px);opacity:.24}.glow-one{background:#27c4b8;top:-130px;left:-100px}.glow-two{background:#f0b44c;right:-120px;bottom:-140px}
-.login-card{position:relative;width:min(430px,100%);padding:42px 38px 30px;box-sizing:border-box;background:rgba(255,255,255,.97);border:1px solid rgba(255,255,255,.6);border-radius:28px;box-shadow:0 28px 80px rgba(0,0,0,.35);animation:loginEnter .55s ease both}
-@keyframes loginEnter{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
-.login-mark{width:68px;height:68px;margin:0 auto 16px;display:grid;place-items:center;border-radius:22px;background:linear-gradient(135deg,#0b6a68,#12486a);font-size:31px;box-shadow:0 10px 24px rgba(13,74,92,.25)}
-.login-eyebrow{text-align:center;font-size:10px;font-weight:800;letter-spacing:1.4px;color:#0b6a68}.login-card h1{text-align:center;margin:7px 0 3px;font-size:29px;color:#102b3b}.login-subtitle{text-align:center;margin:0;color:#60717b;font-size:14px}.login-divider{height:1px;background:#e7edf0;margin:25px 0 21px}
-.login-label{display:block;margin:14px 0 7px;font-size:11px;font-weight:800;letter-spacing:1px;color:#48616f}.login-input-wrap{display:flex;align-items:center;gap:9px;border:1px solid #d8e1e5;border-radius:13px;padding:0 13px;background:#fbfcfd;transition:.2s}.login-input-wrap:focus-within{border-color:#0b8a85;box-shadow:0 0 0 4px rgba(11,138,133,.1);background:#fff}.login-input-wrap span{font-size:16px}.login-input-wrap input{border:0!important;outline:0!important;background:transparent!important;width:100%;padding:14px 0!important;margin:0!important;font-size:15px;box-sizing:border-box}
-.login-error{min-height:22px;margin-top:11px;color:#b42318;font-size:13px;text-align:center}.login-button{width:100%;border:0;border-radius:13px;padding:15px;background:linear-gradient(135deg,#0b6a68,#12486a);color:white;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 22px rgba(18,72,106,.24);transition:.2s}.login-button:hover{transform:translateY(-1px)}.login-button:disabled{cursor:not-allowed;opacity:.85;transform:none}.btn-loader{display:none}.login-button.loading .btn-text{display:none}.login-button.loading .btn-loader{display:inline}.login-footer{text-align:center;color:#8a99a1;font-size:11px;margin-top:19px}
-.auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
-
 </style><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-<!-- MDRRMO BLUE DASHBOARD THEME: design-only overrides -->
-<style id="mdrrmoBlueTheme">
-:root{
-  --mdrrmo-navy:#06345f;
-  --mdrrmo-blue:#0b5fa5;
-  --mdrrmo-sky:#1784d1;
-  --mdrrmo-light:#eaf4fc;
-  --mdrrmo-pale:#f5f9fd;
-  --mdrrmo-border:#cfe1f1;
-  --mdrrmo-text:#17324d;
-  --mdrrmo-muted:#6f8396;
-}
-html,body{background:linear-gradient(180deg,#edf6fc 0%,#f7fbfe 42%,#eef6fc 100%)!important;color:var(--mdrrmo-text)!important}
-header,.header,.topbar,.top-bar,.navbar,.nav-bar{
-  background:linear-gradient(115deg,var(--mdrrmo-navy),var(--mdrrmo-blue))!important;
-  color:#fff!important;
-  border-bottom:3px solid var(--mdrrmo-sky)!important;
-  box-shadow:0 6px 20px rgba(6,52,95,.18)!important;
-}
-header *, .header *, .topbar *, .top-bar *, .navbar *, .nav-bar *{color:inherit}
-button,.btn,input[type="submit"],input[type="button"]{
-  border-radius:10px!important;
-}
-button:not(.danger):not(.delete),.btn:not(.danger):not(.delete),input[type="submit"],input[type="button"]{
-  background:linear-gradient(135deg,var(--mdrrmo-blue),var(--mdrrmo-sky))!important;
-  border-color:transparent!important;
-  color:#fff!important;
-  box-shadow:0 4px 12px rgba(11,95,165,.18)!important;
-}
-button:hover,.btn:hover,input[type="submit"]:hover,input[type="button"]:hover{
-  filter:brightness(1.05);
-  transform:translateY(-1px);
-}
-.card,.stat-card,.summary-card,.dashboard-card,.report-card,.chart-card,.analytics-card,
-.records-card,.filter-card,.content-card,.panel,.section-card{
-  background:#fff!important;
-  border:1px solid var(--mdrrmo-border)!important;
-  border-radius:16px!important;
-  box-shadow:0 8px 22px rgba(6,52,95,.07)!important;
-}
-.stat-card,.summary-card,.dashboard-card{
-  position:relative!important;
-  overflow:hidden!important;
-}
-.stat-card:before,.summary-card:before,.dashboard-card:before{
-  content:""!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:4px!important;
-  background:linear-gradient(90deg,var(--mdrrmo-navy),var(--mdrrmo-sky))!important;
-}
-.stat-card h1,.stat-card h2,.stat-card .count,.summary-card h1,.summary-card h2,.dashboard-card h1,.dashboard-card h2{
-  color:var(--mdrrmo-navy)!important;
-}
-h1,h2,h3{color:var(--mdrrmo-navy)!important}
-section>h2,section>h3,.section-title,.card-title,.report-title{
-  border-left:5px solid var(--mdrrmo-sky)!important;
-  padding-left:10px!important;
-}
-table{border-color:var(--mdrrmo-border)!important}
-thead th,table thead td{
-  background:linear-gradient(135deg,var(--mdrrmo-navy),var(--mdrrmo-blue))!important;
-  color:#fff!important;
-  border-color:#0d548f!important;
-}
-tbody tr:nth-child(even){background:#f3f8fc!important}
-tbody tr:hover{background:#e7f2fb!important}
-td,th{border-color:var(--mdrrmo-border)!important}
-input,select,textarea{
-  background:#fff!important;
-  border:1px solid #bcd3e6!important;
-  color:var(--mdrrmo-text)!important;
-  border-radius:9px!important;
-}
-input:focus,select:focus,textarea:focus{
-  outline:none!important;
-  border-color:var(--mdrrmo-sky)!important;
-  box-shadow:0 0 0 3px rgba(23,132,209,.14)!important;
-}
-label{color:var(--mdrrmo-navy)!important;font-weight:600!important}
-.sidebar,.side-nav,nav:not(.navbar):not(.nav-bar){
-  background:linear-gradient(180deg,#073b69,#0b5fa5)!important;
-}
-.sidebar a,.side-nav a,nav a{color:#eaf4fc!important}
-.sidebar a:hover,.side-nav a:hover,nav a:hover,.active,.active-tab{
-  background:rgba(255,255,255,.12)!important;
-  color:#fff!important;
-}
-.tabs,.tab-buttons,.filter-tabs{
-  background:#eaf4fc!important;
-  border:1px solid var(--mdrrmo-border)!important;
-  border-radius:12px!important;
-  padding:5px!important;
-}
-.tab,.tab-button,.filter-tab{
-  color:var(--mdrrmo-blue)!important;
-  background:transparent!important;
-}
-.tab.active,.tab-button.active,.filter-tab.active{
-  background:linear-gradient(135deg,var(--mdrrmo-navy),var(--mdrrmo-blue))!important;
-  color:#fff!important;
-  box-shadow:0 3px 10px rgba(6,52,95,.16)!important;
-}
-.badge,.status,.tag{
-  background:#e7f3fc!important;
-  color:var(--mdrrmo-blue)!important;
-  border:1px solid #c4dff2!important;
-}
-hr{border-color:var(--mdrrmo-border)!important}
-/* =========================================
-   MDRRMO BLUE THEME – TEXT VISIBILITY FIX
-========================================= */
-
-/* Lighter professional blue for dark areas */
-header,
-.header,
-.topbar,
-.top-bar,
-.navbar,
-.nav-bar {
-    background: linear-gradient(135deg, #0B5FA5, #1784D1) !important;
-}
-
-/* Make text visible inside blue header areas */
-header,
-.header,
-.topbar,
-.top-bar,
-.navbar,
-.nav-bar,
-header *,
-.header *,
-.topbar *,
-.top-bar *,
-.navbar *,
-.nav-bar * {
-    color: #FFFFFF !important;
-}
-
-/* Sidebar / navigation text */
-.sidebar,
-.side-nav {
-    background: linear-gradient(180deg, #0B5FA5, #146FAF) !important;
-}
-
-.sidebar *,
-.side-nav * {
-    color: #FFFFFF !important;
-}
-
-/* Keep main page text dark and readable */
-main,
-.content,
-.main-content,
-.dashboard,
-.dashboard-container {
-    color: #17324D !important;
-}
-
-/* Cards always use readable dark text */
-.card,
-.stat-card,
-.summary-card,
-.dashboard-card,
-.report-card,
-.chart-card,
-.analytics-card,
-.records-card,
-.filter-card,
-.content-card,
-.panel,
-.section-card {
-    color: #17324D !important;
-}
-
-/* Card headings */
-.card h1,
-.card h2,
-.card h3,
-.stat-card h1,
-.stat-card h2,
-.stat-card h3,
-.summary-card h1,
-.summary-card h2,
-.summary-card h3,
-.dashboard-card h1,
-.dashboard-card h2,
-.dashboard-card h3,
-.report-card h1,
-.report-card h2,
-.report-card h3 {
-    color: #06345F !important;
-}
-
-/* Regular text inside cards */
-.card p,
-.card span,
-.card div,
-.stat-card p,
-.stat-card span,
-.stat-card div,
-.summary-card p,
-.summary-card span,
-.summary-card div,
-.dashboard-card p,
-.dashboard-card span,
-.dashboard-card div {
-    color: inherit;
-}
-
-/* Table body stays readable */
-tbody td {
-    color: #17324D !important;
-}
-
-/* Table header stays white */
-thead th,
-table thead th {
-    color: #FFFFFF !important;
-}
-
-/* Buttons always readable */
-button,
-.btn {
-    color: #FFFFFF !important;
-}
-
-/* Inputs and dropdowns */
-input,
-select,
-textarea {
-    color: #17324D !important;
-    background: #FFFFFF !important;
-}
-
-/* Placeholder text */
-input::placeholder,
-textarea::placeholder {
-    color: #718096 !important;
-    opacity: 1;
-}
-</style>
-
-
-<style id="mdrrmoImportModalStyles">
-.mdrrmo-import-modal{position:fixed;inset:0;z-index:120000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,24,43,.58);backdrop-filter:blur(5px)}
-.mdrrmo-import-modal.show{display:flex;animation:mdrrmoFade .18s ease}
-.mdrrmo-import-box{width:min(470px,100%);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 70px rgba(3,30,55,.3);border:1px solid rgba(255,255,255,.7);animation:mdrrmoPop .22s ease}
-.mdrrmo-import-head{padding:22px 24px 17px;background:linear-gradient(135deg,#06345f,#0b5fa5);color:#fff}
-.mdrrmo-import-head h3{margin:0!important;color:#fff!important;font-size:1.18rem}
-.mdrrmo-import-head p{margin:6px 0 0;color:rgba(255,255,255,.8)!important;font-size:.87rem}
-.mdrrmo-import-body{padding:24px;color:#29445b}
-.mdrrmo-import-count{display:flex;align-items:center;gap:13px;background:#eef7ff;border:1px solid #cfe6f8;border-radius:14px;padding:14px 15px;margin-bottom:18px}
-.mdrrmo-import-count b{display:block;color:#06345f;font-size:1.3rem}
-.mdrrmo-import-count span{font-size:.84rem;color:#638095}
-.mdrrmo-import-notes{display:grid;gap:9px;font-size:.88rem;color:#526b7d}
-.mdrrmo-import-note{display:flex;gap:9px;align-items:flex-start}
-.mdrrmo-import-actions{display:flex;justify-content:flex-end;gap:10px;padding:17px 24px;background:#f6f9fc;border-top:1px solid #e4edf4}
-.mdrrmo-import-actions button{min-width:105px;padding:10px 16px;border-radius:10px;border:1px solid #cbd8e3;font-weight:700;cursor:pointer;font:inherit}
-.mdrrmo-cancel{background:#fff!important;color:#466075!important}
-.mdrrmo-primary{background:linear-gradient(135deg,#0b5fa5,#1784d1)!important;color:#fff!important;border-color:transparent!important}
-.mdrrmo-status{text-align:center;padding:38px 26px}
-.mdrrmo-spinner{width:48px;height:48px;margin:0 auto 18px;border:5px solid #dcebf7;border-top-color:#0b5fa5;border-radius:50%;animation:mdrrmoSpin .85s linear infinite}
-.mdrrmo-status-icon{width:58px;height:58px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;font-size:1.7rem;background:#e5f5eb;color:#17804b}
-.mdrrmo-status h3{margin:0 0 8px;color:#06345f!important}
-.mdrrmo-status p{margin:0;color:#667e91;line-height:1.55}
-.mdrrmo-progress{height:7px;border-radius:999px;background:#e4edf4;overflow:hidden;margin:21px auto 0;max-width:310px}
-.mdrrmo-progress>span{display:block;height:100%;width:30%;border-radius:inherit;background:linear-gradient(90deg,#0b5fa5,#1784d1);animation:mdrrmoProgress 1.15s ease-in-out infinite}
-@keyframes mdrrmoSpin{to{transform:rotate(360deg)}}@keyframes mdrrmoFade{from{opacity:0}to{opacity:1}}@keyframes mdrrmoPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}@keyframes mdrrmoProgress{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
-</style>
-
-
-<style id="mdrrmoDeleteConfirmStyles">
-#mdrrmoDeleteModal{position:fixed;inset:0;background:rgba(5,20,35,.55);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;z-index:99999}
-#mdrrmoDeleteModal.show{display:flex}
-.mdrrmo-delete-box{width:min(470px,100%);background:#fff;border-radius:20px;box-shadow:0 24px 70px rgba(3,30,55,.28);overflow:hidden;animation:mdrrmoDeletePop .22s ease-out}
-@keyframes mdrrmoDeletePop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.mdrrmo-delete-top{padding:22px 24px 12px;display:flex;align-items:center;gap:13px}
-.mdrrmo-delete-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:#fff1f1;font-size:1.45rem}
-.mdrrmo-delete-top h3{margin:0;color:#06345f;font-size:1.12rem}
-.mdrrmo-delete-body{padding:0 24px 22px;color:#496174;line-height:1.55}
-.mdrrmo-delete-warning{margin-top:13px;padding:11px 13px;background:#fff7f7;border:1px solid #f1d2d2;border-radius:11px;color:#8a3a3a;font-size:.88rem}
-.mdrrmo-delete-actions{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;background:#f5f9fd;border-top:1px solid #dce9f3}
-.mdrrmo-delete-actions button{border:0;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;font:inherit}
-#mdrrmoDeleteCancel{background:#e8f0f7;color:#244761}
-#mdrrmoDeleteConfirm{background:linear-gradient(135deg,#b42318,#dc2626);color:#fff;box-shadow:0 5px 13px rgba(180,35,24,.18)}
-#mdrrmoDeleteConfirm:disabled,#mdrrmoDeleteCancel:disabled{opacity:.65;cursor:not-allowed}
+<style id="archiveViewStyles">
+#recordDetailsModal,#archiveConfirmModal{position:fixed;inset:0;background:rgba(4,24,43,.58);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:18px;z-index:100000}
+#recordDetailsModal.show,#archiveConfirmModal.show{display:flex}
+.av-box{width:min(760px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;box-shadow:0 24px 70px rgba(3,30,55,.30)}
+.av-head{padding:22px 25px;background:linear-gradient(135deg,#06345f,#1784d1);color:#fff;display:flex;justify-content:space-between;align-items:center}
+.av-head h2{margin:0;color:#fff!important}.av-close{background:rgba(255,255,255,.16)!important;color:#fff!important;border:0;border-radius:9px;padding:7px 12px;cursor:pointer}
+.av-body{padding:24px;color:#17324d}.av-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.av-item{background:#f4f9fd;border:1px solid #d7e6f2;border-radius:12px;padding:12px}.av-item b{display:block;color:#06345f;margin-bottom:5px;font-size:.84rem}.av-wide{grid-column:1/-1}.av-actions{padding:16px 24px;background:#f5f9fd;border-top:1px solid #dce9f3;display:flex;justify-content:flex-end;gap:10px}
+.av-warning{width:min(440px,96vw);background:#fff;border-radius:18px;box-shadow:0 24px 70px rgba(3,30,55,.30);overflow:hidden}.av-warning .body{padding:24px;color:#496174}.av-warning .actions{padding:16px 24px;background:#f5f9fd;display:flex;justify-content:flex-end;gap:10px}
+.archived-row{opacity:.68}.archive-badge{display:inline-block;background:#fff3cd;color:#7a5a00;border:1px solid #f0d98a;border-radius:999px;padding:3px 8px;font-size:.75rem;font-weight:700}
 </style>
 
 </head>
@@ -1805,24 +1504,14 @@ textarea::placeholder {
 </div>
 
 <!-- Online login overlay -->
-<div id="loginOverlay" class="login-overlay">
-  <div class="login-glow glow-one"></div><div class="login-glow glow-two"></div>
-  <form id="loginForm" class="login-card">
-    <div class="login-mark">🛡️</div>
-    <div class="login-eyebrow">MUNICIPAL DISASTER RISK REDUCTION</div>
-    <h1>MDRRMO Binangonan</h1>
-    <p class="login-subtitle">Records Management System</p>
-    <div class="login-divider"></div>
-    <label class="login-label" for="loginUsername">USERNAME</label>
-    <div class="login-input-wrap"><span>👤</span><input id="loginUsername" required autocomplete="username" value="MDRRMO"></div>
-    <label class="login-label" for="loginPassword">PASSWORD</label>
-    <div class="login-input-wrap"><span>🔒</span><input id="loginPassword" type="password" required autocomplete="current-password"></div>
-    <div id="loginError" class="login-error"></div>
-    <button id="loginSubmit" class="login-button" type="submit"><span class="btn-text">Sign In</span><span class="btn-loader">⏳ Signing in...</span></button>
-    <div class="login-footer">Secure access • Authorized personnel only</div>
+<div id="loginOverlay" style="position:fixed;inset:0;background:#f4f7fb;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px">
+  <form id="loginForm" style="width:min(420px,100%);background:white;padding:32px;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.14)">
+    <h2 style="margin-top:0">🔐 MDRRMO Login</h2><p>Sign in to access the MDRRMO Records Management System.</p>
+    <label>Username</label><input id="loginUsername" required autocomplete="username" value="MDRRMO" style="width:100%;box-sizing:border-box;padding:12px;margin:6px 0 16px">
+    <label>Password</label><input id="loginPassword" type="password" required autocomplete="current-password" style="width:100%;box-sizing:border-box;padding:12px;margin:6px 0 12px">
+    <div id="loginError" style="color:#b91c1c;min-height:22px"></div><button style="width:100%;padding:12px" type="submit">Login</button>
   </form>
 </div>
-<div id="authTransition" class="auth-transition"><div class="transition-card"><div class="transition-icon">✓</div><h2 id="transitionTitle">Welcome</h2><p id="transitionText">Preparing your secure workspace...</p><div class="transition-bar"><i></i></div></div></div>
 
 <!-- =================================
      JAVASCRIPT
@@ -1863,31 +1552,16 @@ function protectAdminFunctions(){
    }
  });
 }
-async function logout(){
-  const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
-  const t=document.getElementById('authTransition'); document.getElementById('transitionTitle').textContent='Signing out'; document.getElementById('transitionText').textContent='Securing your session...'; t.style.display='flex';
-  await fetch('/api/auth/logout',{method:'POST'});
-  await new Promise(r=>setTimeout(r,3000)); location.reload();
-}
+async function logout(){ const controls=document.getElementById('userControls'); if(controls) controls.style.display='none'; await fetch('/api/auth/logout',{method:'POST'}); location.reload(); }
 
 document.addEventListener('DOMContentLoaded', async () => {
   const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
   const form=document.getElementById('loginForm');
   form?.addEventListener('submit', async e=>{
-    e.preventDefault(); const err=document.getElementById('loginError'); const btn=document.getElementById('loginSubmit'); err.textContent='';
-    btn.disabled=true; btn.classList.add('loading');
-    const started=Date.now();
-    try{
-      const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});
-      if(!r.ok){err.textContent='Invalid username or password.'; return;} currentUser=await r.json();
-      const remaining=Math.max(0,3000-(Date.now()-started)); await new Promise(r=>setTimeout(r,remaining));
-      document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions(); await loadRecordsFromDatabase();
-    } catch(error) {
-      console.error('Login error:', error);
-      err.textContent='Unable to complete sign in. Please try again.';
-      const transition=document.getElementById('authTransition');
-      if(transition) transition.style.display='none';
-    } finally {btn.disabled=false; btn.classList.remove('loading');}
+    e.preventDefault(); const err=document.getElementById('loginError'); err.textContent='';
+    const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});
+    if(!r.ok){err.textContent='Invalid username or password.'; return;} currentUser=await r.json();
+    document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions(); await loadRecordsFromDatabase();
   });
   currentUser=await getSession();
   if(currentUser){document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions();}
@@ -2346,7 +2020,6 @@ async function saveRecord(event) {
         }
         closeModal();
         updateAll();
-        if (typeof showMDRRMOToast === 'function') showMDRRMOToast(editId ? 'Record updated successfully.' : 'Record added successfully.', 'success');
     } catch (error) {
         console.error("Unable to save record:", error);
         alert("Unable to save to the local database. Please make sure start.bat is running.\n\n" + error.message);
@@ -2481,13 +2154,12 @@ function editRecord(id) {
 async function deleteRecord(id) {
     const record = records.find(item => item.id === id);
     if (!record) return;
-    if (!(await mdrrmoDeleteConfirm())) return;
+    if (!confirm("Are you sure you want to delete this record?")) return;
     try {
         const response = await fetch(`/api/records/${encodeURIComponent(id)}`, { method: "DELETE" });
         if (!response.ok) throw new Error(await response.text());
         records = records.filter(item => item.id !== id);
         updateAll();
-        if (typeof showMDRRMOToast === 'function') showMDRRMOToast('Record deleted successfully.', 'success');
     } catch (error) {
         console.error("Unable to delete record:", error);
         alert("Unable to delete from the local database. Please make sure start.bat is running.\n\n" + error.message);
@@ -2502,7 +2174,7 @@ function getAccidents() {
 
     return records.filter(
         record =>
-            record.type === "accident"
+            record.type === "accident" && !record.archived
     );
 
 }
@@ -2516,7 +2188,7 @@ function getConductions() {
 
     return records.filter(
         record =>
-            record.type === "conduction"
+            record.type === "conduction" && !record.archived
     );
 
 }
@@ -2845,10 +2517,12 @@ function renderTable() {
             </td>
             <td>${escapeHTML(record.persons || "-").replace(/\n/g, "<br>")}</td>
             <td>${record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-"}</td>
-            <td>${escapeHTML(record.status || "")}</td>
+            <td>${escapeHTML(record.status || "")}${record.archived ? '<br><span class="archive-badge">Archived</span>' : ""}</td>
             <td>
-                <button class="btn btn-primary btn-small" onclick="editRecord('${record.id}')">Edit</button>
-                <button class="btn btn-danger btn-small" onclick="deleteRecord('${record.id}')">Delete</button>
+                <button class="btn btn-secondary btn-small" onclick="viewRecord('${record.id}')">View</button>
+                ${currentUser && currentUser.role === 'admin' ? (record.archived
+                  ? `<button class="btn btn-primary btn-small" onclick="restoreRecord('${record.id}')">Restore</button><button class="btn btn-danger btn-small" onclick="deleteRecord('${record.id}')">Delete</button>`
+                  : `<button class="btn btn-primary btn-small" onclick="editRecord('${record.id}')">Edit</button><button class="btn btn-secondary btn-small" onclick="openArchiveConfirm('${record.id}')">Archive</button><button class="btn btn-danger btn-small" onclick="deleteRecord('${record.id}')">Delete</button>`) : ''}
             </td>
         </tr>`).join("");
 
@@ -3052,8 +2726,6 @@ function exportDatabaseBackup() {
         "application/json;charset=utf-8;",
         `MDRRMO_Binangonan_Database_Backup_${stamp}.json`
     );
-    if (typeof markMDRRMOBackupToday === 'function') markMDRRMOBackupToday('JSON backup');
-    if (typeof showMDRRMOToast === 'function') showMDRRMOToast('JSON backup downloaded successfully.', 'success');
 }
 
 function openDatabaseImport() {
@@ -3110,8 +2782,12 @@ async function importDatabaseBackup(event) {
             };
         });
 
-        const shouldImport = await mdrrmoImportConfirm(cleaned.length);
-        if (!shouldImport) {
+        if (!confirm(
+            `This JSON contains ${cleaned.length} record(s).\n\n` +
+            `The records will be ADDED to your current database.\n` +
+            `Existing records will NOT be deleted.\n\n` +
+            `Continue?`
+        )) {
             input.value = "";
             return;
         }
@@ -3172,21 +2848,19 @@ async function importDatabaseBackup(event) {
 
         updateAll();
 
-        mdrrmoImportResult(
-            "success",
-            "Import Successful!",
-            `${importedCount} new record${importedCount === 1 ? "" : "s"} imported successfully.`,
-            `Duplicates skipped: ${skippedCount} · Total records now: ${records.length}`
+        alert(
+            `Import completed successfully.\n\n` +
+            `New records imported: ${importedCount}\n` +
+            `Duplicate records skipped: ${skippedCount}\n` +
+            `Total records now: ${records.length}`
         );
 
     } catch (error) {
 
         console.error("Database import failed:", error);
 
-        mdrrmoImportResult(
-            "error",
-            "Unable to import records",
-            "The import could not be completed.",
+        alert(
+            "Database import failed.\n\n" +
             error.message
         );
 
@@ -3511,8 +3185,6 @@ function exportExcel() {
         a.click();
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-        if (typeof markMDRRMOBackupToday === 'function') markMDRRMOBackupToday('Excel export');
-        if (typeof showMDRRMOToast === 'function') showMDRRMOToast('Excel file downloaded successfully.', 'success');
         closeExcelExport();
     } catch (error) {
         console.error('Excel export failed:', error);
@@ -3643,140 +3315,89 @@ checkDatabaseServer();
 loadRecordsFromDatabase();
 </script>
 
-<div id="mdrrmoImportModal" class="mdrrmo-import-modal" role="dialog" aria-modal="true">
-  <div class="mdrrmo-import-box">
-    <div id="mdrrmoImportModalContent"></div>
-  </div>
-</div>
-<script id="mdrrmoImportModalScript">
-function mdrrmoImportModalShow(content){const m=document.getElementById('mdrrmoImportModal'),c=document.getElementById('mdrrmoImportModalContent');c.innerHTML=content;m.classList.add('show');}
-function mdrrmoImportModalHide(){document.getElementById('mdrrmoImportModal').classList.remove('show');}
-function mdrrmoImportConfirm(count){return new Promise(resolve=>{mdrrmoImportModalShow(`
- <div class="mdrrmo-import-head"><h3>📥 Import Records</h3><p>Please review before continuing</p></div>
- <div class="mdrrmo-import-body"><div class="mdrrmo-import-count"><div style="font-size:1.8rem">📄</div><div><b>${count} record${count===1?'':'s'} found</b><span>Ready to import from your JSON backup</span></div></div>
- <div class="mdrrmo-import-notes"><div class="mdrrmo-import-note"><span>✓</span><span>Records will be <b>added</b> to your current database.</span></div><div class="mdrrmo-import-note"><span>✓</span><span>Existing records will <b>not be deleted</b>.</span></div><div class="mdrrmo-import-note"><span>✓</span><span>Duplicate record IDs will be skipped automatically.</span></div></div></div>
- <div class="mdrrmo-import-actions"><button class="mdrrmo-cancel" id="mdrrmoImportCancel">Cancel</button><button class="mdrrmo-primary" id="mdrrmoImportConfirm">Import Records</button></div>`);
- document.getElementById('mdrrmoImportCancel').onclick=()=>{mdrrmoImportModalHide();resolve(false)};
- document.getElementById('mdrrmoImportConfirm').onclick=()=>{resolve(true);mdrrmoImportLoading(count)};
-});}
-function mdrrmoImportLoading(count){mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>📥 Importing Records</h3><p>Please wait while we save your records</p></div><div class="mdrrmo-status"><div class="mdrrmo-spinner"></div><h3>Importing ${count} record${count===1?'':'s'}...</h3><p>Please do not close or refresh the page.</p><div class="mdrrmo-progress"><span></span></div></div>`);}
-function mdrrmoImportResult(kind,title,message,detail){const icon=kind==='success'?'✓':'!'; const bg=kind==='success'?'#e5f5eb':'#fff0f0'; const color=kind==='success'?'#17804b':'#c0392b';mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>${kind==='success'?'Import Complete':'Import Failed'}</h3><p>${kind==='success'?'Your database has been updated':'No more records will be processed'}</p></div><div class="mdrrmo-status"><div class="mdrrmo-status-icon" style="background:${bg};color:${color}">${icon}</div><h3>${title}</h3><p>${message}${detail?`<br><br><b>${detail}</b>`:''}</p></div><div class="mdrrmo-import-actions"><button class="mdrrmo-primary" id="mdrrmoImportOk">OK</button></div>`);document.getElementById('mdrrmoImportOk').onclick=mdrrmoImportModalHide;}
-</script>
+<div id="recordDetailsModal"><div class="av-box">
+  <div class="av-head"><h2>👁️ Record Details</h2><button class="av-close" onclick="closeRecordDetails()">✕ Close</button></div>
+  <div class="av-body" id="recordDetailsContent"></div>
+  <div class="av-actions" id="recordDetailsActions"></div>
+</div></div>
 
+<div id="archiveConfirmModal"><div class="av-warning">
+  <div class="av-head"><h2>📦 Archive Record?</h2></div>
+  <div class="body">This record will be removed from the active records list but will remain safely stored and can be restored later.</div>
+  <div class="actions"><button class="btn btn-secondary" onclick="closeArchiveConfirm()">Cancel</button><button class="btn btn-primary" id="archiveConfirmBtn">Archive Record</button></div>
+</div></div>
 
-<div id="mdrrmoDeleteModal" role="dialog" aria-modal="true" aria-labelledby="mdrrmoDeleteTitle">
-  <div class="mdrrmo-delete-box">
-    <div class="mdrrmo-delete-top">
-      <div class="mdrrmo-delete-icon">🗑️</div>
-      <h3 id="mdrrmoDeleteTitle">Delete Record?</h3>
-    </div>
-    <div class="mdrrmo-delete-body">
-      Are you sure you want to delete this record?
-      <div class="mdrrmo-delete-warning">This action cannot be undone.</div>
-    </div>
-    <div class="mdrrmo-delete-actions">
-      <button type="button" id="mdrrmoDeleteCancel">Cancel</button>
-      <button type="button" id="mdrrmoDeleteConfirm">Delete Record</button>
-    </div>
-  </div>
-</div>
-<script id="mdrrmoDeleteConfirmScript">
-function mdrrmoDeleteConfirm(){
-  return new Promise(resolve=>{
-    const modal=document.getElementById('mdrrmoDeleteModal');
-    const cancel=document.getElementById('mdrrmoDeleteCancel');
-    const confirmBtn=document.getElementById('mdrrmoDeleteConfirm');
-    const close=v=>{
-      modal.classList.remove('show');
-      cancel.onclick=null; confirmBtn.onclick=null;
-      resolve(v);
-    };
-    cancel.disabled=false; confirmBtn.disabled=false;
-    modal.classList.add('show');
-    cancel.onclick=()=>close(false);
-    confirmBtn.onclick=()=>close(true);
-  });
+<script id="archiveViewScript">
+let showArchivedRecords=false;
+
+function escapeDetail(v){return escapeHTML(String(v ?? "-")).replace(/\n/g,"<br>");}
+
+function viewRecord(id){
+ const r=records.find(x=>x.id===id); if(!r)return;
+ const fields=[
+  ["Record ID",r.id],["Record Type",r.type],["Date",formatDate(r.date)],["Time",r.time||"-"],
+  ["Barangay",r.barangay||"-"],["Category",r.category||"-"],["Location",r.location||"-"],
+  ["Status",r.status||"-"],["Ambulance",r.ambulance||"-"],["Responders",r.responders||"-"],
+  ["Persons Involved",r.persons||"-"],["Age",r.age??"-"],["Remarks",r.remarks||"-"],
+  ["Archived",r.archived?"Yes":"No"],["Archived At",r.archived_at?formatDate(r.archived_at.split("T")[0]):"-"]
+ ];
+ const content=document.getElementById("recordDetailsContent");
+ content.innerHTML='<div class="av-grid">'+fields.map(([k,v])=>`<div class="av-item ${["Persons Involved","Remarks"].includes(k)?"av-wide":""}"><b>${k}</b><div>${escapeDetail(v)}</div></div>`).join("")+'</div>';
+ const actions=document.getElementById("recordDetailsActions");
+ const admin=window.currentUser?.role==="admin";
+ actions.innerHTML=`<button class="btn btn-secondary" onclick="closeRecordDetails()">Close</button>`+
+   (admin&&!r.archived?`<button class="btn btn-primary" onclick="closeRecordDetails();editRecord('${r.id}')">Edit</button><button class="btn btn-danger" onclick="openArchiveConfirm('${r.id}')">Archive</button>`:"")+
+   (admin&&r.archived?`<button class="btn btn-primary" onclick="restoreRecord('${r.id}')">Restore Record</button>`:"");
+ document.getElementById("recordDetailsModal").classList.add("show");
+}
+function closeRecordDetails(){document.getElementById("recordDetailsModal").classList.remove("show");}
+
+let archiveTargetId=null;
+function openArchiveConfirm(id){archiveTargetId=id;document.getElementById("archiveConfirmModal").classList.add("show");}
+function closeArchiveConfirm(){archiveTargetId=null;document.getElementById("archiveConfirmModal").classList.remove("show");}
+document.getElementById("archiveConfirmBtn").onclick=async()=>{
+ if(!archiveTargetId)return;
+ const r=records.find(x=>x.id===archiveTargetId);if(!r)return;
+ const btn=document.getElementById("archiveConfirmBtn");btn.disabled=true;btn.textContent="Archiving...";
+ try{
+   const updated={...r,archived:true,archived_at:new Date().toISOString()};
+   const res=await fetch(`/api/records/${encodeURIComponent(r.id)}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});
+   if(!res.ok)throw new Error(await res.text());
+   Object.assign(r,updated);closeArchiveConfirm();closeRecordDetails();updateAll();
+   if(typeof showToast==="function")showToast("Record archived successfully.","success");
+   else alert("Record archived successfully.");
+ }catch(e){console.error(e);alert("Unable to archive record: "+e.message)}
+ finally{btn.disabled=false;btn.textContent="Archive Record";}
+};
+
+async function restoreRecord(id){
+ const r=records.find(x=>x.id===id);if(!r)return;
+ try{
+   const updated={...r,archived:false,archived_at:null};
+   const res=await fetch(`/api/records/${encodeURIComponent(id)}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(updated)});
+   if(!res.ok)throw new Error(await res.text());
+   Object.assign(r,updated);closeRecordDetails();updateAll();
+   if(typeof showToast==="function")showToast("Record restored successfully.","success");
+   else alert("Record restored successfully.");
+ }catch(e){alert("Unable to restore record: "+e.message)}
+}
+
+function toggleArchivedRecords(){
+ showArchivedRecords=!showArchivedRecords;
+ const b=document.getElementById("archiveToggleBtn");if(b)b.textContent=showArchivedRecords?"📋 Active Records":"📦 Archived Records";
+ currentRecordsPage=1;renderTable();
 }
 </script>
 
 
-<!-- MDRRMO Notifications + Daily Backup Reminder -->
-<style id="mdrrmoNotificationsBackupStyles">
-#mdrrmoToastContainer{position:fixed;top:18px;right:18px;z-index:100000;display:flex;flex-direction:column;gap:10px;max-width:min(390px,calc(100vw - 36px));pointer-events:none}
-.mdrrmo-toast{pointer-events:auto;display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid #cfe1f1;border-left:5px solid #1784d1;border-radius:14px;padding:14px 15px;box-shadow:0 16px 40px rgba(6,52,95,.18);animation:mdrrmoToastIn .28s ease-out}
-.mdrrmo-toast.success{border-left-color:#1b8f58}.mdrrmo-toast.error{border-left-color:#d64545}.mdrrmo-toast.warning{border-left-color:#d99a1d}
-.mdrrmo-toast-icon{font-size:20px;line-height:1}.mdrrmo-toast-title{font-weight:800;color:#06345f;margin-bottom:3px}.mdrrmo-toast-text{font-size:13px;color:#51677a;line-height:1.35}.mdrrmo-toast-close{margin-left:auto;border:0!important;background:transparent!important;color:#718096!important;padding:0!important;box-shadow:none!important;font-size:18px;cursor:pointer}
-@keyframes mdrrmoToastIn{from{opacity:0;transform:translateX(25px)}to{opacity:1;transform:none}}
-@keyframes mdrrmoSpin{to{transform:rotate(360deg)}}
-#mdrrmoBackupModal{position:fixed;inset:0;z-index:99998;background:rgba(5,25,45,.52);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
-#mdrrmoBackupModal.show{display:flex}
-.mdrrmo-backup-box{width:min(500px,100%);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 28px 75px rgba(2,35,65,.28);animation:mdrrmoBackupPop .25s ease-out}
-@keyframes mdrrmoBackupPop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
-.mdrrmo-backup-head{padding:24px 25px 16px;background:linear-gradient(135deg,#0b5fa5,#1784d1);color:#fff}
-.mdrrmo-backup-head h3{margin:0 0 5px;color:#fff!important;font-size:1.2rem}.mdrrmo-backup-head p{margin:0;opacity:.88;font-size:.92rem}
-.mdrrmo-backup-body{padding:24px 25px;color:#496174;line-height:1.55}.mdrrmo-backup-clock{display:flex;align-items:center;gap:14px;padding:14px;background:#edf6fc;border:1px solid #d4e6f4;border-radius:14px;margin-bottom:15px}.mdrrmo-backup-clock b{display:block;color:#06345f}.mdrrmo-backup-clock span{font-size:13px}
-.mdrrmo-backup-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;padding:16px 25px;background:#f5f9fd;border-top:1px solid #dce9f3}.mdrrmo-backup-actions button{border:0;border-radius:10px;padding:10px 15px;font:inherit;font-weight:700;cursor:pointer}.mdrrmo-backup-later{background:#e8f0f7!important;color:#244761!important}.mdrrmo-backup-json{background:linear-gradient(135deg,#0b5fa5,#1784d1)!important;color:#fff!important}.mdrrmo-backup-excel{background:#e9f7ef!important;color:#167344!important}
-@media(max-width:520px){.mdrrmo-backup-actions{justify-content:stretch}.mdrrmo-backup-actions button{flex:1}}
-</style>
-
-<div id="mdrrmoToastContainer" aria-live="polite" aria-atomic="true"></div>
-
-<div id="mdrrmoBackupModal" role="dialog" aria-modal="true" aria-labelledby="mdrrmoBackupTitle">
- <div class="mdrrmo-backup-box">
-  <div class="mdrrmo-backup-head"><h3 id="mdrrmoBackupTitle">💾 Daily Backup Reminder</h3><p>Protect today's MDRRMO records</p></div>
-  <div class="mdrrmo-backup-body">
-   <div class="mdrrmo-backup-clock"><div style="font-size:2rem">🕓</div><div><b>It's time for today's backup.</b><span>Daily reminder time: 4:50 PM (this computer's local time).</span></div></div>
-   <div>Choose a backup option below. Your records will not be changed or deleted.</div>
-  </div>
-  <div class="mdrrmo-backup-actions">
-   <button type="button" class="mdrrmo-backup-later" id="mdrrmoBackupLater">Remind Me Later</button>
-   <button type="button" class="mdrrmo-backup-excel" id="mdrrmoBackupExcel">📊 Export Excel</button>
-   <button type="button" class="mdrrmo-backup-json" id="mdrrmoBackupJson">💾 Export JSON</button>
-  </div>
- </div>
-</div>
-
-<script id="mdrrmoNotificationsBackupScript">
-(function(){
- const BACKUP_KEY='mdrrmoLastBackupDate';
- const REMIND_LATER_KEY='mdrrmoBackupRemindLaterUntil';
- const pad=n=>String(n).padStart(2,'0');
- const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
- window.showMDRRMOToast=function(message,type='success'){
-   const c=document.getElementById('mdrrmoToastContainer'); if(!c) return;
-   const icon=type==='success'?'✓':type==='error'?'⚠':'ℹ';
-   const title=type==='success'?'Success':type==='error'?'Something went wrong':'Notice';
-   const el=document.createElement('div'); el.className='mdrrmo-toast '+type;
-   el.innerHTML=`<div class="mdrrmo-toast-icon">${icon}</div><div><div class="mdrrmo-toast-title">${title}</div><div class="mdrrmo-toast-text"></div></div><button class="mdrrmo-toast-close" aria-label="Close">×</button>`;
-   el.querySelector('.mdrrmo-toast-text').textContent=String(message);
-   el.querySelector('.mdrrmo-toast-close').onclick=()=>el.remove();
-   c.appendChild(el); setTimeout(()=>{if(el.isConnected)el.remove()},4200);
- };
- window.markMDRRMOBackupToday=function(kind){
-   localStorage.setItem(BACKUP_KEY,todayKey()); localStorage.removeItem(REMIND_LATER_KEY);
- };
- function isAdmin(){return !!(window.currentUser && window.currentUser.role==='admin');}
- function showBackupReminder(){
-   if(!isAdmin()) return;
-   const modal=document.getElementById('mdrrmoBackupModal'); if(!modal) return;
-   modal.classList.add('show');
+<script id="archiveToggleInit">
+document.addEventListener("DOMContentLoaded",()=>{
+ const search=document.getElementById("searchInput");
+ if(search && !document.getElementById("archiveToggleBtn")){
+   const b=document.createElement("button");b.id="archiveToggleBtn";b.type="button";b.className="btn btn-secondary";b.textContent="📦 Archived Records";b.onclick=toggleArchivedRecords;
+   search.parentElement?.parentElement?.appendChild(b);
  }
- function hideBackupReminder(){document.getElementById('mdrrmoBackupModal')?.classList.remove('show')}
- function reminderDue(){
-   if(!isAdmin() || localStorage.getItem(BACKUP_KEY)===todayKey()) return false;
-   const later=Number(localStorage.getItem(REMIND_LATER_KEY)||0); if(Date.now()<later) return false;
-   const now=new Date(); return now.getHours()>16 || (now.getHours()===16 && now.getMinutes()>=50);
- }
- window.checkMDRRMOBackupReminder=function(){if(reminderDue())showBackupReminder();}
- document.getElementById('mdrrmoBackupLater').onclick=()=>{localStorage.setItem(REMIND_LATER_KEY,String(Date.now()+15*60*1000));hideBackupReminder();showMDRRMOToast('We will remind you again in 15 minutes.','info');setTimeout(window.checkMDRRMOBackupReminder,15*60*1000+500);};
- document.getElementById('mdrrmoBackupJson').onclick=()=>{hideBackupReminder();if(typeof exportDatabaseBackup==='function')exportDatabaseBackup();};
- document.getElementById('mdrrmoBackupExcel').onclick=()=>{hideBackupReminder();if(typeof openExcelExport==='function')openExcelExport();else if(typeof exportExcel==='function')exportExcel();};
- // Check shortly after login and keep watching the local computer clock.
- setInterval(window.checkMDRRMOBackupReminder,30000);
- const originalApply=window.applyRoleUI;
- if(typeof originalApply==='function'){window.applyRoleUI=function(...args){const r=originalApply.apply(this,args);setTimeout(window.checkMDRRMOBackupReminder,300);return r;};}
- setTimeout(window.checkMDRRMOBackupReminder,1000);
-})();
+});
 </script>
 
 </body>
