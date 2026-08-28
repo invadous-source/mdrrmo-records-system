@@ -1037,6 +1037,16 @@ tr:hover td {
 
 }
 
+
+
+/* Final safety: report tables must never inherit the global 950px table minimum */
+#reports .report-table,
+.report-dashboard-grid .report-table{
+    min-width:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+}
+
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
@@ -1054,8 +1064,17 @@ tr:hover td {
 .report-filter-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:end}.report-filter-bar label{display:flex;flex-direction:column;gap:4px;font-size:9px;font-weight:800;color:#52677f;min-width:115px}.report-filter-bar .period-select{min-height:36px}
 .report-note{margin-top:10px;background:#eef6ff;border-radius:7px;padding:8px 10px;color:#4f6f91;font-size:10px}
 .report-stat-grid{display:grid;grid-template-columns:repeat(7,minmax(120px,1fr));gap:12px;overflow-x:auto}.report-stat{background:#fff;border:1px solid #dbe5f0;border-radius:12px;padding:13px 12px;min-height:74px}.report-stat span{font-size:9px;font-weight:800;color:#5a6f86;letter-spacing:.02em}.report-stat strong{display:block;font-size:21px;margin-top:6px;color:#0d2e59}
-.report-two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-width:0}.report-table-panel{min-width:0;overflow:hidden}.report-barangay-panel{max-width:50%;overflow:hidden}.report-table-wrap{width:100%;max-width:100%;overflow:hidden}.report-table{display:table;width:100%;max-width:100%;table-layout:fixed;border-collapse:collapse}.report-table th,.report-table td{box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:normal}
-.report-table-wrap{padding:0 12px 12px}.report-table{width:100%;border-collapse:collapse;font-size:10px}.report-table th{background:#f4f8fc;color:#5c7189;text-align:left;font-size:8px;letter-spacing:.03em;padding:8px}.report-table td{padding:7px 8px;border-bottom:1px solid #dfe7ef;color:#27466a}.report-table th:last-child,.report-table td:last-child{text-align:left;width:38%}.report-table tbody tr:last-child td{border-bottom:none}.report-empty{text-align:left;color:#9aaabc!important}
+.report-two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;min-width:0}
+.report-table-panel{min-width:0;width:100%;box-sizing:border-box}
+.report-barangay-panel{width:100%;max-width:100%;box-sizing:border-box}
+.report-table-wrap{width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:0 12px 12px}
+.report-table{width:100%!important;max-width:100%!important;min-width:0!important;table-layout:auto;border-collapse:collapse;font-size:10px;box-sizing:border-box}
+.report-table th,.report-table td{box-sizing:border-box;min-width:0;overflow-wrap:anywhere}
+.report-table th{background:#f4f8fc;color:#5c7189;text-align:left;font-size:8px;letter-spacing:.03em;padding:8px}
+.report-table td{padding:7px 8px;border-bottom:1px solid #dfe7ef;color:#27466a}
+.report-table th:last-child,.report-table td:last-child{text-align:left;width:38%}
+.report-table tbody tr:last-child td{border-bottom:none}
+.report-empty{text-align:left;color:#9aaabc!important}
 @media(max-width:1000px){.report-stat-grid{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto}.report-two-col{grid-template-columns:1fr}.report-barangay-panel{max-width:none}}
 @media(max-width:650px){.report-stat-grid{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto}.report-filter-bar label{min-width:calc(50% - 5px)}.report-barangay-panel{max-width:none}}
 </style><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
