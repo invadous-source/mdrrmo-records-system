@@ -1085,6 +1085,115 @@ tr:hover td {
 .auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
 
 </style><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<!-- MDRRMO BLUE DASHBOARD THEME: design-only overrides -->
+<style id="mdrrmoBlueTheme">
+:root{
+  --mdrrmo-navy:#06345f;
+  --mdrrmo-blue:#0b5fa5;
+  --mdrrmo-sky:#1784d1;
+  --mdrrmo-light:#eaf4fc;
+  --mdrrmo-pale:#f5f9fd;
+  --mdrrmo-border:#cfe1f1;
+  --mdrrmo-text:#17324d;
+  --mdrrmo-muted:#6f8396;
+}
+html,body{background:linear-gradient(180deg,#edf6fc 0%,#f7fbfe 42%,#eef6fc 100%)!important;color:var(--mdrrmo-text)!important}
+header,.header,.topbar,.top-bar,.navbar,.nav-bar{
+  background:linear-gradient(115deg,var(--mdrrmo-navy),var(--mdrrmo-blue))!important;
+  color:#fff!important;
+  border-bottom:3px solid var(--mdrrmo-sky)!important;
+  box-shadow:0 6px 20px rgba(6,52,95,.18)!important;
+}
+header *, .header *, .topbar *, .top-bar *, .navbar *, .nav-bar *{color:inherit}
+button,.btn,input[type="submit"],input[type="button"]{
+  border-radius:10px!important;
+}
+button:not(.danger):not(.delete),.btn:not(.danger):not(.delete),input[type="submit"],input[type="button"]{
+  background:linear-gradient(135deg,var(--mdrrmo-blue),var(--mdrrmo-sky))!important;
+  border-color:transparent!important;
+  color:#fff!important;
+  box-shadow:0 4px 12px rgba(11,95,165,.18)!important;
+}
+button:hover,.btn:hover,input[type="submit"]:hover,input[type="button"]:hover{
+  filter:brightness(1.05);
+  transform:translateY(-1px);
+}
+.card,.stat-card,.summary-card,.dashboard-card,.report-card,.chart-card,.analytics-card,
+.records-card,.filter-card,.content-card,.panel,.section-card{
+  background:#fff!important;
+  border:1px solid var(--mdrrmo-border)!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 22px rgba(6,52,95,.07)!important;
+}
+.stat-card,.summary-card,.dashboard-card{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.stat-card:before,.summary-card:before,.dashboard-card:before{
+  content:""!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:4px!important;
+  background:linear-gradient(90deg,var(--mdrrmo-navy),var(--mdrrmo-sky))!important;
+}
+.stat-card h1,.stat-card h2,.stat-card .count,.summary-card h1,.summary-card h2,.dashboard-card h1,.dashboard-card h2{
+  color:var(--mdrrmo-navy)!important;
+}
+h1,h2,h3{color:var(--mdrrmo-navy)!important}
+section>h2,section>h3,.section-title,.card-title,.report-title{
+  border-left:5px solid var(--mdrrmo-sky)!important;
+  padding-left:10px!important;
+}
+table{border-color:var(--mdrrmo-border)!important}
+thead th,table thead td{
+  background:linear-gradient(135deg,var(--mdrrmo-navy),var(--mdrrmo-blue))!important;
+  color:#fff!important;
+  border-color:#0d548f!important;
+}
+tbody tr:nth-child(even){background:#f3f8fc!important}
+tbody tr:hover{background:#e7f2fb!important}
+td,th{border-color:var(--mdrrmo-border)!important}
+input,select,textarea{
+  background:#fff!important;
+  border:1px solid #bcd3e6!important;
+  color:var(--mdrrmo-text)!important;
+  border-radius:9px!important;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none!important;
+  border-color:var(--mdrrmo-sky)!important;
+  box-shadow:0 0 0 3px rgba(23,132,209,.14)!important;
+}
+label{color:var(--mdrrmo-navy)!important;font-weight:600!important}
+.sidebar,.side-nav,nav:not(.navbar):not(.nav-bar){
+  background:linear-gradient(180deg,#073b69,#0b5fa5)!important;
+}
+.sidebar a,.side-nav a,nav a{color:#eaf4fc!important}
+.sidebar a:hover,.side-nav a:hover,nav a:hover,.active,.active-tab{
+  background:rgba(255,255,255,.12)!important;
+  color:#fff!important;
+}
+.tabs,.tab-buttons,.filter-tabs{
+  background:#eaf4fc!important;
+  border:1px solid var(--mdrrmo-border)!important;
+  border-radius:12px!important;
+  padding:5px!important;
+}
+.tab,.tab-button,.filter-tab{
+  color:var(--mdrrmo-blue)!important;
+  background:transparent!important;
+}
+.tab.active,.tab-button.active,.filter-tab.active{
+  background:linear-gradient(135deg,var(--mdrrmo-navy),var(--mdrrmo-blue))!important;
+  color:#fff!important;
+  box-shadow:0 3px 10px rgba(6,52,95,.16)!important;
+}
+.badge,.status,.tag{
+  background:#e7f3fc!important;
+  color:var(--mdrrmo-blue)!important;
+  border:1px solid #c4dff2!important;
+}
+hr{border-color:var(--mdrrmo-border)!important}
+</style>
+
 </head>
 <body>
 <div id="userControls" style="position:fixed;right:20px;top:12px;z-index:9998;display:flex;align-items:center;gap:10px;background:#ffffff;border:1px solid #dbe5f0;border-radius:10px;padding:7px 10px;box-shadow:0 3px 10px rgba(15,39,71,.10)">
