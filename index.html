@@ -1326,6 +1326,34 @@ textarea::placeholder {
 }
 </style>
 
+
+<style id="mdrrmoImportModalStyles">
+.mdrrmo-import-modal{position:fixed;inset:0;z-index:120000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,24,43,.58);backdrop-filter:blur(5px)}
+.mdrrmo-import-modal.show{display:flex;animation:mdrrmoFade .18s ease}
+.mdrrmo-import-box{width:min(470px,100%);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 70px rgba(3,30,55,.3);border:1px solid rgba(255,255,255,.7);animation:mdrrmoPop .22s ease}
+.mdrrmo-import-head{padding:22px 24px 17px;background:linear-gradient(135deg,#06345f,#0b5fa5);color:#fff}
+.mdrrmo-import-head h3{margin:0!important;color:#fff!important;font-size:1.18rem}
+.mdrrmo-import-head p{margin:6px 0 0;color:rgba(255,255,255,.8)!important;font-size:.87rem}
+.mdrrmo-import-body{padding:24px;color:#29445b}
+.mdrrmo-import-count{display:flex;align-items:center;gap:13px;background:#eef7ff;border:1px solid #cfe6f8;border-radius:14px;padding:14px 15px;margin-bottom:18px}
+.mdrrmo-import-count b{display:block;color:#06345f;font-size:1.3rem}
+.mdrrmo-import-count span{font-size:.84rem;color:#638095}
+.mdrrmo-import-notes{display:grid;gap:9px;font-size:.88rem;color:#526b7d}
+.mdrrmo-import-note{display:flex;gap:9px;align-items:flex-start}
+.mdrrmo-import-actions{display:flex;justify-content:flex-end;gap:10px;padding:17px 24px;background:#f6f9fc;border-top:1px solid #e4edf4}
+.mdrrmo-import-actions button{min-width:105px;padding:10px 16px;border-radius:10px;border:1px solid #cbd8e3;font-weight:700;cursor:pointer;font:inherit}
+.mdrrmo-cancel{background:#fff!important;color:#466075!important}
+.mdrrmo-primary{background:linear-gradient(135deg,#0b5fa5,#1784d1)!important;color:#fff!important;border-color:transparent!important}
+.mdrrmo-status{text-align:center;padding:38px 26px}
+.mdrrmo-spinner{width:48px;height:48px;margin:0 auto 18px;border:5px solid #dcebf7;border-top-color:#0b5fa5;border-radius:50%;animation:mdrrmoSpin .85s linear infinite}
+.mdrrmo-status-icon{width:58px;height:58px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;font-size:1.7rem;background:#e5f5eb;color:#17804b}
+.mdrrmo-status h3{margin:0 0 8px;color:#06345f!important}
+.mdrrmo-status p{margin:0;color:#667e91;line-height:1.55}
+.mdrrmo-progress{height:7px;border-radius:999px;background:#e4edf4;overflow:hidden;margin:21px auto 0;max-width:310px}
+.mdrrmo-progress>span{display:block;height:100%;width:30%;border-radius:inherit;background:linear-gradient(90deg,#0b5fa5,#1784d1);animation:mdrrmoProgress 1.15s ease-in-out infinite}
+@keyframes mdrrmoSpin{to{transform:rotate(360deg)}}@keyframes mdrrmoFade{from{opacity:0}to{opacity:1}}@keyframes mdrrmoPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}@keyframes mdrrmoProgress{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
+</style>
+
 </head>
 <body>
 <div id="userControls" style="position:fixed;right:20px;top:12px;z-index:9998;display:flex;align-items:center;gap:10px;background:#ffffff;border:1px solid #dbe5f0;border-radius:10px;padding:7px 10px;box-shadow:0 3px 10px rgba(15,39,71,.10)">
@@ -3060,12 +3088,8 @@ async function importDatabaseBackup(event) {
             };
         });
 
-        if (!confirm(
-            `This JSON contains ${cleaned.length} record(s).\n\n` +
-            `The records will be ADDED to your current database.\n` +
-            `Existing records will NOT be deleted.\n\n` +
-            `Continue?`
-        )) {
+        const shouldImport = await mdrrmoImportConfirm(cleaned.length);
+        if (!shouldImport) {
             input.value = "";
             return;
         }
@@ -3126,19 +3150,21 @@ async function importDatabaseBackup(event) {
 
         updateAll();
 
-        alert(
-            `Import completed successfully.\n\n` +
-            `New records imported: ${importedCount}\n` +
-            `Duplicate records skipped: ${skippedCount}\n` +
-            `Total records now: ${records.length}`
+        mdrrmoImportResult(
+            "success",
+            "Import Successful!",
+            `${importedCount} new record${importedCount === 1 ? "" : "s"} imported successfully.`,
+            `Duplicates skipped: ${skippedCount} · Total records now: ${records.length}`
         );
 
     } catch (error) {
 
         console.error("Database import failed:", error);
 
-        alert(
-            "Database import failed.\n\n" +
+        mdrrmoImportResult(
+            "error",
+            "Unable to import records",
+            "The import could not be completed.",
             error.message
         );
 
@@ -3592,5 +3618,26 @@ updateAll();
 checkDatabaseServer();
 loadRecordsFromDatabase();
 </script>
+
+<div id="mdrrmoImportModal" class="mdrrmo-import-modal" role="dialog" aria-modal="true">
+  <div class="mdrrmo-import-box">
+    <div id="mdrrmoImportModalContent"></div>
+  </div>
+</div>
+<script id="mdrrmoImportModalScript">
+function mdrrmoImportModalShow(content){const m=document.getElementById('mdrrmoImportModal'),c=document.getElementById('mdrrmoImportModalContent');c.innerHTML=content;m.classList.add('show');}
+function mdrrmoImportModalHide(){document.getElementById('mdrrmoImportModal').classList.remove('show');}
+function mdrrmoImportConfirm(count){return new Promise(resolve=>{mdrrmoImportModalShow(`
+ <div class="mdrrmo-import-head"><h3>📥 Import Records</h3><p>Please review before continuing</p></div>
+ <div class="mdrrmo-import-body"><div class="mdrrmo-import-count"><div style="font-size:1.8rem">📄</div><div><b>${count} record${count===1?'':'s'} found</b><span>Ready to import from your JSON backup</span></div></div>
+ <div class="mdrrmo-import-notes"><div class="mdrrmo-import-note"><span>✓</span><span>Records will be <b>added</b> to your current database.</span></div><div class="mdrrmo-import-note"><span>✓</span><span>Existing records will <b>not be deleted</b>.</span></div><div class="mdrrmo-import-note"><span>✓</span><span>Duplicate record IDs will be skipped automatically.</span></div></div></div>
+ <div class="mdrrmo-import-actions"><button class="mdrrmo-cancel" id="mdrrmoImportCancel">Cancel</button><button class="mdrrmo-primary" id="mdrrmoImportConfirm">Import Records</button></div>`);
+ document.getElementById('mdrrmoImportCancel').onclick=()=>{mdrrmoImportModalHide();resolve(false)};
+ document.getElementById('mdrrmoImportConfirm').onclick=()=>{resolve(true);mdrrmoImportLoading(count)};
+});}
+function mdrrmoImportLoading(count){mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>📥 Importing Records</h3><p>Please wait while we save your records</p></div><div class="mdrrmo-status"><div class="mdrrmo-spinner"></div><h3>Importing ${count} record${count===1?'':'s'}...</h3><p>Please do not close or refresh the page.</p><div class="mdrrmo-progress"><span></span></div></div>`);}
+function mdrrmoImportResult(kind,title,message,detail){const icon=kind==='success'?'✓':'!'; const bg=kind==='success'?'#e5f5eb':'#fff0f0'; const color=kind==='success'?'#17804b':'#c0392b';mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>${kind==='success'?'Import Complete':'Import Failed'}</h3><p>${kind==='success'?'Your database has been updated':'No more records will be processed'}</p></div><div class="mdrrmo-status"><div class="mdrrmo-status-icon" style="background:${bg};color:${color}">${icon}</div><h3>${title}</h3><p>${message}${detail?`<br><br><b>${detail}</b>`:''}</p></div><div class="mdrrmo-import-actions"><button class="mdrrmo-primary" id="mdrrmoImportOk">OK</button></div>`);document.getElementById('mdrrmoImportOk').onclick=mdrrmoImportModalHide;}
+</script>
+
 </body>
 </html>
