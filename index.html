@@ -1037,6 +1037,19 @@ tr:hover td {
 
 }
 
+
+/* ===== MODERN LOGIN EXPERIENCE ===== */
+.login-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);font-family:inherit}
+.login-overlay:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.08),transparent 32%),radial-gradient(circle at 80% 75%,rgba(255,255,255,.07),transparent 28%)}
+.login-glow{position:absolute;width:340px;height:340px;border-radius:50%;filter:blur(50px);opacity:.24}.glow-one{background:#27c4b8;top:-130px;left:-100px}.glow-two{background:#f0b44c;right:-120px;bottom:-140px}
+.login-card{position:relative;width:min(430px,100%);padding:42px 38px 30px;box-sizing:border-box;background:rgba(255,255,255,.97);border:1px solid rgba(255,255,255,.6);border-radius:28px;box-shadow:0 28px 80px rgba(0,0,0,.35);animation:loginEnter .55s ease both}
+@keyframes loginEnter{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.login-mark{width:68px;height:68px;margin:0 auto 16px;display:grid;place-items:center;border-radius:22px;background:linear-gradient(135deg,#0b6a68,#12486a);font-size:31px;box-shadow:0 10px 24px rgba(13,74,92,.25)}
+.login-eyebrow{text-align:center;font-size:10px;font-weight:800;letter-spacing:1.4px;color:#0b6a68}.login-card h1{text-align:center;margin:7px 0 3px;font-size:29px;color:#102b3b}.login-subtitle{text-align:center;margin:0;color:#60717b;font-size:14px}.login-divider{height:1px;background:#e7edf0;margin:25px 0 21px}
+.login-label{display:block;margin:14px 0 7px;font-size:11px;font-weight:800;letter-spacing:1px;color:#48616f}.login-input-wrap{display:flex;align-items:center;gap:9px;border:1px solid #d8e1e5;border-radius:13px;padding:0 13px;background:#fbfcfd;transition:.2s}.login-input-wrap:focus-within{border-color:#0b8a85;box-shadow:0 0 0 4px rgba(11,138,133,.1);background:#fff}.login-input-wrap span{font-size:16px}.login-input-wrap input{border:0!important;outline:0!important;background:transparent!important;width:100%;padding:14px 0!important;margin:0!important;font-size:15px;box-sizing:border-box}
+.login-error{min-height:22px;margin-top:11px;color:#b42318;font-size:13px;text-align:center}.login-button{width:100%;border:0;border-radius:13px;padding:15px;background:linear-gradient(135deg,#0b6a68,#12486a);color:white;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 22px rgba(18,72,106,.24);transition:.2s}.login-button:hover{transform:translateY(-1px)}.login-button:disabled{cursor:not-allowed;opacity:.85;transform:none}.btn-loader{display:none}.login-button.loading .btn-text{display:none}.login-button.loading .btn-loader{display:inline}.login-footer{text-align:center;color:#8a99a1;font-size:11px;margin-top:19px}
+.auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
+
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
@@ -1058,6 +1071,19 @@ tr:hover td {
 .report-table-wrap{padding:0 12px 12px}.report-table{width:100%;border-collapse:collapse;font-size:10px}.report-table th{background:#f4f8fc;color:#5c7189;text-align:left;font-size:8px;letter-spacing:.03em;padding:8px}.report-table td{padding:7px 8px;border-bottom:1px solid #dfe7ef;color:#27466a}.report-table th:last-child,.report-table td:last-child{text-align:left;width:38%}.report-table tbody tr:last-child td{border-bottom:none}.report-empty{text-align:left;color:#9aaabc!important}
 @media(max-width:1000px){.report-stat-grid{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto}.report-two-col{grid-template-columns:1fr}.report-barangay-panel{max-width:none}}
 @media(max-width:650px){.report-stat-grid{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto}.report-filter-bar label{min-width:calc(50% - 5px)}.report-barangay-panel{max-width:none}}
+
+/* ===== MODERN LOGIN EXPERIENCE ===== */
+.login-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);font-family:inherit}
+.login-overlay:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.08),transparent 32%),radial-gradient(circle at 80% 75%,rgba(255,255,255,.07),transparent 28%)}
+.login-glow{position:absolute;width:340px;height:340px;border-radius:50%;filter:blur(50px);opacity:.24}.glow-one{background:#27c4b8;top:-130px;left:-100px}.glow-two{background:#f0b44c;right:-120px;bottom:-140px}
+.login-card{position:relative;width:min(430px,100%);padding:42px 38px 30px;box-sizing:border-box;background:rgba(255,255,255,.97);border:1px solid rgba(255,255,255,.6);border-radius:28px;box-shadow:0 28px 80px rgba(0,0,0,.35);animation:loginEnter .55s ease both}
+@keyframes loginEnter{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.login-mark{width:68px;height:68px;margin:0 auto 16px;display:grid;place-items:center;border-radius:22px;background:linear-gradient(135deg,#0b6a68,#12486a);font-size:31px;box-shadow:0 10px 24px rgba(13,74,92,.25)}
+.login-eyebrow{text-align:center;font-size:10px;font-weight:800;letter-spacing:1.4px;color:#0b6a68}.login-card h1{text-align:center;margin:7px 0 3px;font-size:29px;color:#102b3b}.login-subtitle{text-align:center;margin:0;color:#60717b;font-size:14px}.login-divider{height:1px;background:#e7edf0;margin:25px 0 21px}
+.login-label{display:block;margin:14px 0 7px;font-size:11px;font-weight:800;letter-spacing:1px;color:#48616f}.login-input-wrap{display:flex;align-items:center;gap:9px;border:1px solid #d8e1e5;border-radius:13px;padding:0 13px;background:#fbfcfd;transition:.2s}.login-input-wrap:focus-within{border-color:#0b8a85;box-shadow:0 0 0 4px rgba(11,138,133,.1);background:#fff}.login-input-wrap span{font-size:16px}.login-input-wrap input{border:0!important;outline:0!important;background:transparent!important;width:100%;padding:14px 0!important;margin:0!important;font-size:15px;box-sizing:border-box}
+.login-error{min-height:22px;margin-top:11px;color:#b42318;font-size:13px;text-align:center}.login-button{width:100%;border:0;border-radius:13px;padding:15px;background:linear-gradient(135deg,#0b6a68,#12486a);color:white;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 22px rgba(18,72,106,.24);transition:.2s}.login-button:hover{transform:translateY(-1px)}.login-button:disabled{cursor:not-allowed;opacity:.85;transform:none}.btn-loader{display:none}.login-button.loading .btn-text{display:none}.login-button.loading .btn-loader{display:inline}.login-footer{text-align:center;color:#8a99a1;font-size:11px;margin-top:19px}
+.auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
+
 </style><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -1492,14 +1518,24 @@ tr:hover td {
 </div>
 
 <!-- Online login overlay -->
-<div id="loginOverlay" style="position:fixed;inset:0;background:#f4f7fb;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px">
-  <form id="loginForm" style="width:min(420px,100%);background:white;padding:32px;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.14)">
-    <h2 style="margin-top:0">🔐 MDRRMO Login</h2><p>Sign in to access the MDRRMO Records Management System.</p>
-    <label>Username</label><input id="loginUsername" required autocomplete="username" value="MDRRMO" style="width:100%;box-sizing:border-box;padding:12px;margin:6px 0 16px">
-    <label>Password</label><input id="loginPassword" type="password" required autocomplete="current-password" style="width:100%;box-sizing:border-box;padding:12px;margin:6px 0 12px">
-    <div id="loginError" style="color:#b91c1c;min-height:22px"></div><button style="width:100%;padding:12px" type="submit">Login</button>
+<div id="<div id="loginOverlay" class="login-overlay">
+  <div class="login-glow glow-one"></div><div class="login-glow glow-two"></div>
+  <form id="loginForm" class="login-card">
+    <div class="login-mark">🛡️</div>
+    <div class="login-eyebrow">MUNICIPAL DISASTER RISK REDUCTION</div>
+    <h1>MDRRMO Binangonan</h1>
+    <p class="login-subtitle">Records Management System</p>
+    <div class="login-divider"></div>
+    <label class="login-label" for="loginUsername">USERNAME</label>
+    <div class="login-input-wrap"><span>👤</span><input id="loginUsername" required autocomplete="username" value="MDRRMO"></div>
+    <label class="login-label" for="loginPassword">PASSWORD</label>
+    <div class="login-input-wrap"><span>🔒</span><input id="loginPassword" type="password" required autocomplete="current-password"></div>
+    <div id="loginError" class="login-error"></div>
+    <button id="loginSubmit" class="login-button" type="submit"><span class="btn-text">Sign In</span><span class="btn-loader">⏳ Signing in...</span></button>
+    <div class="login-footer">Secure access • Authorized personnel only</div>
   </form>
 </div>
+<div id="authTransition" class="auth-transition"><div class="transition-card"><div class="transition-icon">✓</div><h2 id="transitionTitle">Welcome</h2><p id="transitionText">Preparing your secure workspace...</p><div class="transition-bar"><i></i></div></div></div>
 
 <!-- =================================
      JAVASCRIPT
@@ -1540,16 +1576,26 @@ function protectAdminFunctions(){
    }
  });
 }
-async function logout(){ const controls=document.getElementById('userControls'); if(controls) controls.style.display='none'; await fetch('/api/auth/logout',{method:'POST'}); location.reload(); }
+async function logout(){
+  const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
+  const t=document.getElementById('authTransition'); document.getElementById('transitionTitle').textContent='Signing out'; document.getElementById('transitionText').textContent='Securing your session...'; t.style.display='flex';
+  await fetch('/api/auth/logout',{method:'POST'});
+  await new Promise(r=>setTimeout(r,3000)); location.reload();
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
   const form=document.getElementById('loginForm');
   form?.addEventListener('submit', async e=>{
-    e.preventDefault(); const err=document.getElementById('loginError'); err.textContent='';
-    const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});
-    if(!r.ok){err.textContent='Invalid username or password.'; return;} currentUser=await r.json();
-    document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions(); await loadRecordsFromDatabase();
+    e.preventDefault(); const err=document.getElementById('loginError'); const btn=document.getElementById('loginSubmit'); err.textContent='';
+    btn.disabled=true; btn.classList.add('loading');
+    const started=Date.now();
+    try{
+      const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});
+      if(!r.ok){err.textContent='Invalid username or password.'; return;} currentUser=await r.json();
+      const remaining=Math.max(0,3000-(Date.now()-started)); await new Promise(r=>setTimeout(r,remaining));
+      document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions(); await loadRecordsFromDatabase();
+    } finally {btn.disabled=false; btn.classList.remove('loading');}
   });
   currentUser=await getSession();
   if(currentUser){document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions();}
