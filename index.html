@@ -2346,6 +2346,7 @@ async function saveRecord(event) {
         }
         closeModal();
         updateAll();
+        if (typeof showMDRRMOToast === 'function') showMDRRMOToast(editId ? 'Record updated successfully.' : 'Record added successfully.', 'success');
     } catch (error) {
         console.error("Unable to save record:", error);
         alert("Unable to save to the local database. Please make sure start.bat is running.\n\n" + error.message);
@@ -2486,6 +2487,7 @@ async function deleteRecord(id) {
         if (!response.ok) throw new Error(await response.text());
         records = records.filter(item => item.id !== id);
         updateAll();
+        if (typeof showMDRRMOToast === 'function') showMDRRMOToast('Record deleted successfully.', 'success');
     } catch (error) {
         console.error("Unable to delete record:", error);
         alert("Unable to delete from the local database. Please make sure start.bat is running.\n\n" + error.message);
@@ -3050,6 +3052,8 @@ function exportDatabaseBackup() {
         "application/json;charset=utf-8;",
         `MDRRMO_Binangonan_Database_Backup_${stamp}.json`
     );
+    if (typeof markMDRRMOBackupToday === 'function') markMDRRMOBackupToday('JSON backup');
+    if (typeof showMDRRMOToast === 'function') showMDRRMOToast('JSON backup downloaded successfully.', 'success');
 }
 
 function openDatabaseImport() {
@@ -3507,6 +3511,8 @@ function exportExcel() {
         a.click();
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
+        if (typeof markMDRRMOBackupToday === 'function') markMDRRMOBackupToday('Excel export');
+        if (typeof showMDRRMOToast === 'function') showMDRRMOToast('Excel file downloaded successfully.', 'success');
         closeExcelExport();
     } catch (error) {
         console.error('Excel export failed:', error);
@@ -3691,6 +3697,86 @@ function mdrrmoDeleteConfirm(){
     confirmBtn.onclick=()=>close(true);
   });
 }
+</script>
+
+
+<!-- MDRRMO Notifications + Daily Backup Reminder -->
+<style id="mdrrmoNotificationsBackupStyles">
+#mdrrmoToastContainer{position:fixed;top:18px;right:18px;z-index:100000;display:flex;flex-direction:column;gap:10px;max-width:min(390px,calc(100vw - 36px));pointer-events:none}
+.mdrrmo-toast{pointer-events:auto;display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid #cfe1f1;border-left:5px solid #1784d1;border-radius:14px;padding:14px 15px;box-shadow:0 16px 40px rgba(6,52,95,.18);animation:mdrrmoToastIn .28s ease-out}
+.mdrrmo-toast.success{border-left-color:#1b8f58}.mdrrmo-toast.error{border-left-color:#d64545}.mdrrmo-toast.warning{border-left-color:#d99a1d}
+.mdrrmo-toast-icon{font-size:20px;line-height:1}.mdrrmo-toast-title{font-weight:800;color:#06345f;margin-bottom:3px}.mdrrmo-toast-text{font-size:13px;color:#51677a;line-height:1.35}.mdrrmo-toast-close{margin-left:auto;border:0!important;background:transparent!important;color:#718096!important;padding:0!important;box-shadow:none!important;font-size:18px;cursor:pointer}
+@keyframes mdrrmoToastIn{from{opacity:0;transform:translateX(25px)}to{opacity:1;transform:none}}
+@keyframes mdrrmoSpin{to{transform:rotate(360deg)}}
+#mdrrmoBackupModal{position:fixed;inset:0;z-index:99998;background:rgba(5,25,45,.52);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+#mdrrmoBackupModal.show{display:flex}
+.mdrrmo-backup-box{width:min(500px,100%);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 28px 75px rgba(2,35,65,.28);animation:mdrrmoBackupPop .25s ease-out}
+@keyframes mdrrmoBackupPop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.mdrrmo-backup-head{padding:24px 25px 16px;background:linear-gradient(135deg,#0b5fa5,#1784d1);color:#fff}
+.mdrrmo-backup-head h3{margin:0 0 5px;color:#fff!important;font-size:1.2rem}.mdrrmo-backup-head p{margin:0;opacity:.88;font-size:.92rem}
+.mdrrmo-backup-body{padding:24px 25px;color:#496174;line-height:1.55}.mdrrmo-backup-clock{display:flex;align-items:center;gap:14px;padding:14px;background:#edf6fc;border:1px solid #d4e6f4;border-radius:14px;margin-bottom:15px}.mdrrmo-backup-clock b{display:block;color:#06345f}.mdrrmo-backup-clock span{font-size:13px}
+.mdrrmo-backup-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;padding:16px 25px;background:#f5f9fd;border-top:1px solid #dce9f3}.mdrrmo-backup-actions button{border:0;border-radius:10px;padding:10px 15px;font:inherit;font-weight:700;cursor:pointer}.mdrrmo-backup-later{background:#e8f0f7!important;color:#244761!important}.mdrrmo-backup-json{background:linear-gradient(135deg,#0b5fa5,#1784d1)!important;color:#fff!important}.mdrrmo-backup-excel{background:#e9f7ef!important;color:#167344!important}
+@media(max-width:520px){.mdrrmo-backup-actions{justify-content:stretch}.mdrrmo-backup-actions button{flex:1}}
+</style>
+
+<div id="mdrrmoToastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<div id="mdrrmoBackupModal" role="dialog" aria-modal="true" aria-labelledby="mdrrmoBackupTitle">
+ <div class="mdrrmo-backup-box">
+  <div class="mdrrmo-backup-head"><h3 id="mdrrmoBackupTitle">💾 Daily Backup Reminder</h3><p>Protect today's MDRRMO records</p></div>
+  <div class="mdrrmo-backup-body">
+   <div class="mdrrmo-backup-clock"><div style="font-size:2rem">🕓</div><div><b>It's time for today's backup.</b><span>Daily reminder time: 4:50 PM (this computer's local time).</span></div></div>
+   <div>Choose a backup option below. Your records will not be changed or deleted.</div>
+  </div>
+  <div class="mdrrmo-backup-actions">
+   <button type="button" class="mdrrmo-backup-later" id="mdrrmoBackupLater">Remind Me Later</button>
+   <button type="button" class="mdrrmo-backup-excel" id="mdrrmoBackupExcel">📊 Export Excel</button>
+   <button type="button" class="mdrrmo-backup-json" id="mdrrmoBackupJson">💾 Export JSON</button>
+  </div>
+ </div>
+</div>
+
+<script id="mdrrmoNotificationsBackupScript">
+(function(){
+ const BACKUP_KEY='mdrrmoLastBackupDate';
+ const REMIND_LATER_KEY='mdrrmoBackupRemindLaterUntil';
+ const pad=n=>String(n).padStart(2,'0');
+ const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
+ window.showMDRRMOToast=function(message,type='success'){
+   const c=document.getElementById('mdrrmoToastContainer'); if(!c) return;
+   const icon=type==='success'?'✓':type==='error'?'⚠':'ℹ';
+   const title=type==='success'?'Success':type==='error'?'Something went wrong':'Notice';
+   const el=document.createElement('div'); el.className='mdrrmo-toast '+type;
+   el.innerHTML=`<div class="mdrrmo-toast-icon">${icon}</div><div><div class="mdrrmo-toast-title">${title}</div><div class="mdrrmo-toast-text"></div></div><button class="mdrrmo-toast-close" aria-label="Close">×</button>`;
+   el.querySelector('.mdrrmo-toast-text').textContent=String(message);
+   el.querySelector('.mdrrmo-toast-close').onclick=()=>el.remove();
+   c.appendChild(el); setTimeout(()=>{if(el.isConnected)el.remove()},4200);
+ };
+ window.markMDRRMOBackupToday=function(kind){
+   localStorage.setItem(BACKUP_KEY,todayKey()); localStorage.removeItem(REMIND_LATER_KEY);
+ };
+ function isAdmin(){return !!(window.currentUser && window.currentUser.role==='admin');}
+ function showBackupReminder(){
+   if(!isAdmin()) return;
+   const modal=document.getElementById('mdrrmoBackupModal'); if(!modal) return;
+   modal.classList.add('show');
+ }
+ function hideBackupReminder(){document.getElementById('mdrrmoBackupModal')?.classList.remove('show')}
+ function reminderDue(){
+   if(!isAdmin() || localStorage.getItem(BACKUP_KEY)===todayKey()) return false;
+   const later=Number(localStorage.getItem(REMIND_LATER_KEY)||0); if(Date.now()<later) return false;
+   const now=new Date(); return now.getHours()>16 || (now.getHours()===16 && now.getMinutes()>=50);
+ }
+ window.checkMDRRMOBackupReminder=function(){if(reminderDue())showBackupReminder();}
+ document.getElementById('mdrrmoBackupLater').onclick=()=>{localStorage.setItem(REMIND_LATER_KEY,String(Date.now()+15*60*1000));hideBackupReminder();showMDRRMOToast('We will remind you again in 15 minutes.','info');setTimeout(window.checkMDRRMOBackupReminder,15*60*1000+500);};
+ document.getElementById('mdrrmoBackupJson').onclick=()=>{hideBackupReminder();if(typeof exportDatabaseBackup==='function')exportDatabaseBackup();};
+ document.getElementById('mdrrmoBackupExcel').onclick=()=>{hideBackupReminder();if(typeof openExcelExport==='function')openExcelExport();else if(typeof exportExcel==='function')exportExcel();};
+ // Check shortly after login and keep watching the local computer clock.
+ setInterval(window.checkMDRRMOBackupReminder,30000);
+ const originalApply=window.applyRoleUI;
+ if(typeof originalApply==='function'){window.applyRoleUI=function(...args){const r=originalApply.apply(this,args);setTimeout(window.checkMDRRMOBackupReminder,300);return r;};}
+ setTimeout(window.checkMDRRMOBackupReminder,1000);
+})();
 </script>
 
 </body>
