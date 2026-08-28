@@ -1,2 +1,0 @@
-const {makeToken}=require('../_lib');
-module.exports=async(req,res)=>{if(req.method!=='POST')return res.status(405).end();const {username,password}=req.body||{};let role=null;if(username==='MDRRMO'&&password===process.env.ADMIN_PASSWORD)role='admin';else if(username==='MDRRMO'&&password===process.env.VIEWER_PASSWORD)role='viewer';if(!role)return res.status(401).json({error:'Invalid credentials'});const token=makeToken(role);res.setHeader('Set-Cookie',`mdrrmo_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=43200`);res.json({username:'MDRRMO',role});};
