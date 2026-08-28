@@ -1518,7 +1518,7 @@ tr:hover td {
 </div>
 
 <!-- Online login overlay -->
-<div id="<div id="loginOverlay" class="login-overlay">
+<div id="loginOverlay" class="login-overlay">
   <div class="login-glow glow-one"></div><div class="login-glow glow-two"></div>
   <form id="loginForm" class="login-card">
     <div class="login-mark">🛡️</div>
@@ -1595,6 +1595,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       if(!r.ok){err.textContent='Invalid username or password.'; return;} currentUser=await r.json();
       const remaining=Math.max(0,3000-(Date.now()-started)); await new Promise(r=>setTimeout(r,remaining));
       document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions(); await loadRecordsFromDatabase();
+    } catch(error) {
+      console.error('Login error:', error);
+      err.textContent='Unable to complete sign in. Please try again.';
+      const transition=document.getElementById('authTransition');
+      if(transition) transition.style.display='none';
     } finally {btn.disabled=false; btn.classList.remove('loading');}
   });
   currentUser=await getSession();
