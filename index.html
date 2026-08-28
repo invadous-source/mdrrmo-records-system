@@ -1085,6 +1085,55 @@ tr:hover td {
 .auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
 
 </style><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style id="professionalDashboardStyles">
+/* Professional dashboard upgrade */
+.dashboard-pro{display:grid;gap:20px;margin:6px 0 24px}
+.dashboard-pro *{box-sizing:border-box}
+.dashboard-hero{position:relative;overflow:hidden;border-radius:22px;padding:28px 30px;color:#fff;background:linear-gradient(135deg,#0b3a64,#145a86)}
+.dashboard-hero:after{content:"";position:absolute;width:330px;height:330px;border:45px solid rgba(255,255,255,.07);border-radius:50%;right:-110px;top:-170px}
+.dashboard-hero>*{position:relative;z-index:1}
+.dashboard-kicker{font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.78;margin-bottom:7px}
+.dashboard-hero h2{margin:0;font-size:1.75rem}
+.dashboard-hero p{margin:8px 0 0;opacity:.88}
+.dashboard-date{margin-top:16px;display:inline-flex;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.14);font-size:.84rem}
+.dashboard-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 -6px}
+.dashboard-section-title h3{margin:0;font-size:1.05rem;color:#1f2937}
+.dashboard-section-title span{font-size:.82rem;color:#6b7280}
+.type-stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.type-stat{min-width:0;background:#fff;border:1px solid #e7edf3;border-radius:18px;padding:18px;box-shadow:0 5px 16px rgba(15,23,42,.045);transition:transform .18s ease,box-shadow .18s ease}
+.type-stat:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(15,23,42,.08)}
+.type-stat-head{display:flex;align-items:center;gap:10px;color:#5b6675;font-size:.83rem;font-weight:700}
+.type-stat-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#eef5fa;font-size:1.15rem}
+.type-stat-value{font-size:1.9rem;font-weight:800;color:#132235;margin-top:15px;line-height:1}
+.type-stat-label{font-size:.78rem;color:#8a96a3;margin-top:6px}
+.insight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.insight-card{background:#fff;border:1px solid #e7edf3;border-radius:18px;padding:19px;min-width:0}
+.insight-top{display:flex;gap:9px;align-items:center;color:#697586;font-size:.8rem;font-weight:700}
+.insight-value{font-size:1.22rem;font-weight:800;color:#132235;margin-top:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.insight-sub{font-size:.8rem;color:#8a96a3;margin-top:5px}
+.dashboard-lower{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.recent-records-card,.quick-actions-card{background:#fff;border:1px solid #e7edf3;border-radius:20px;padding:20px;min-width:0}
+.pro-card-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.pro-card-title h3{margin:0;color:#1f2937;font-size:1rem}
+.pro-card-title small{color:#8a96a3}
+.recent-list{display:grid;gap:9px}
+.recent-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px;border-radius:13px;background:#f8fafc}
+.recent-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#eaf2f8}
+.recent-main{min-width:0}
+.recent-main b{display:block;font-size:.88rem;color:#263445;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent-main span{display:block;font-size:.76rem;color:#7b8794;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent-date{font-size:.75rem;color:#84909c;text-align:right}
+.quick-actions{display:grid;gap:10px}
+.quick-action{width:100%;border:1px solid #e0e7ee;background:#fff;border-radius:13px;padding:13px 14px;text-align:left;font:inherit;font-weight:700;color:#334155;cursor:pointer;transition:.18s}
+.quick-action:hover{background:#f6f9fb;transform:translateY(-1px)}
+.quick-action .qa-icon{margin-right:9px}
+.quick-action.admin-only{display:none}
+body.is-admin .quick-action.admin-only{display:block}
+@media(max-width:900px){.type-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.insight-grid{grid-template-columns:1fr}.dashboard-lower{grid-template-columns:1fr}}
+@media(max-width:560px){.dashboard-hero{padding:22px}.type-stats-grid{grid-template-columns:1fr}.dashboard-hero h2{font-size:1.4rem}.recent-date{display:none}}
+</style>
+
 </head>
 <body>
 <div id="userControls" style="position:fixed;right:20px;top:12px;z-index:9998;display:flex;align-items:center;gap:10px;background:#ffffff;border:1px solid #dbe5f0;border-radius:10px;padding:7px 10px;box-shadow:0 3px 10px rgba(15,39,71,.10)">
@@ -3351,5 +3400,84 @@ updateAll();
 checkDatabaseServer();
 loadRecordsFromDatabase();
 </script>
+
+<script id="professionalDashboardScript">
+(function(){
+  const TYPES=[
+    ["Accident","🚗"],
+    ["Ambulance Conduction","🚑"],
+    ["Training","🎓"],
+    ["Cutting Trees","🌳"],
+    ["Fire Incident Responded","🔥"],
+    ["Clearing Operation","🧹"]
+  ];
+  function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+  function getRecords(){
+    for(const k of ["records","allRecords","incidentRecords","data"]){
+      if(Array.isArray(window[k])) return window[k];
+    }
+    try{
+      for(let i=0;i<localStorage.length;i++){
+        const k=localStorage.key(i), v=JSON.parse(localStorage.getItem(k)||"null");
+        if(Array.isArray(v)&&v.length&&typeof v[0]==="object") return v;
+      }
+    }catch(e){}
+    return [];
+  }
+  function typeOf(r){return r.type||r.recordType||r.incidentType||r.category||r.incident_type||""}
+  function dateOf(r){return r.date||r.incidentDate||r.incident_date||r.created_at||r.createdAt||""}
+  function barangayOf(r){return r.barangay||r.location||r.address||r.place||""}
+  function niceDate(v){
+    const d=new Date(v); return isNaN(d)?"No date":d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+  }
+  function ensureDashboard(){
+    const old=document.getElementById("professionalDashboard");
+    if(old) old.remove();
+    const recs=getRecords();
+    const counts=Object.fromEntries(TYPES.map(([t])=>[t,0]));
+    recs.forEach(r=>{const t=typeOf(r); const found=TYPES.find(([x])=>x.toLowerCase()===String(t).toLowerCase()); if(found)counts[found[0]]++;});
+    const typeCards=TYPES.map(([t,icon])=>`<div class="type-stat"><div class="type-stat-head"><span class="type-stat-icon">${icon}</span><span>${esc(t)}</span></div><div class="type-stat-value">${counts[t]||0}</div><div class="type-stat-label">record${counts[t]===1?"":"s"} recorded</div></div>`).join("");
+    const barangays={}; recs.forEach(r=>{const b=barangayOf(r);if(b)barangays[b]=(barangays[b]||0)+1});
+    const topB=Object.entries(barangays).sort((a,b)=>b[1]-a[1])[0];
+    const months={}; recs.forEach(r=>{const d=new Date(dateOf(r));if(!isNaN(d)){const m=d.toLocaleDateString(undefined,{month:"long"});months[m]=(months[m]||0)+1}});
+    const busy=Object.entries(months).sort((a,b)=>b[1]-a[1])[0];
+    const topT=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+    const sorted=[...recs].sort((a,b)=>new Date(dateOf(b))-new Date(dateOf(a))).slice(0,5);
+    const recent=sorted.length?sorted.map(r=>{const t=typeOf(r)||"Record";const icon=(TYPES.find(([x])=>x.toLowerCase()===String(t).toLowerCase())||["","📋"])[1];return `<div class="recent-item"><span class="recent-icon">${icon}</span><div class="recent-main"><b>${esc(t)}</b><span>${esc(barangayOf(r)||"No location")}</span></div><span class="recent-date">${esc(niceDate(dateOf(r)))}</span></div>`}).join(""):`<div class="recent-item"><span class="recent-icon">📋</span><div class="recent-main"><b>No records yet</b><span>Recent records will appear here.</span></div></div>`;
+    const admin=String(window.currentRole||window.userRole||"").toLowerCase().includes("admin") || document.body.classList.contains("is-admin");
+    const html=`<section id="professionalDashboard" class="dashboard-pro">
+      <div class="dashboard-hero"><div class="dashboard-kicker">MDRRMO Binangonan</div><h2>Records Management Dashboard</h2><p>A clear overview of your incident and operational records.</p><span class="dashboard-date">📅 ${new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</span></div>
+      <div class="dashboard-section-title"><h3>Record Overview</h3><span>${recs.length} total record${recs.length===1?"":"s"}</span></div>
+      <div class="type-stats-grid">${typeCards}</div>
+      <div class="dashboard-section-title"><h3>At a Glance</h3><span>Automatically calculated</span></div>
+      <div class="insight-grid">
+        <div class="insight-card"><div class="insight-top">📍 TOP BARANGAY</div><div class="insight-value">${esc(topB?.[0]||"No data")}</div><div class="insight-sub">${topB?topB[1]+" records":"Waiting for records"}</div></div>
+        <div class="insight-card"><div class="insight-top">📅 BUSIEST MONTH</div><div class="insight-value">${esc(busy?.[0]||"No data")}</div><div class="insight-sub">${busy?busy[1]+" records":"Waiting for records"}</div></div>
+        <div class="insight-card"><div class="insight-top">🚨 MOST COMMON TYPE</div><div class="insight-value">${esc(topT?.[0]||"No data")}</div><div class="insight-sub">${topT&&topT[1]?topT[1]+" records":"Waiting for records"}</div></div>
+      </div>
+      <div class="dashboard-lower">
+        <div class="recent-records-card"><div class="pro-card-title"><h3>🕒 Recent Records</h3><small>Latest 5</small></div><div class="recent-list">${recent}</div></div>
+        <div class="quick-actions-card"><div class="pro-card-title"><h3>⚡ Quick Actions</h3><small>${admin?"Admin access":"Viewer access"}</small></div><div class="quick-actions">
+          <button class="quick-action admin-only" onclick="document.querySelector('[data-action=add],.add-record-btn,#addRecordBtn')?.click()"><span class="qa-icon">➕</span>Add New Record</button>
+          <button class="quick-action" onclick="document.querySelector('#searchInput,input[placeholder*=Search i],input[placeholder*=search i]')?.focus()"><span class="qa-icon">🔍</span>Search Records</button>
+          <button class="quick-action" onclick="document.querySelector('#exportBtn,[data-action=export],.export-btn')?.click()"><span class="qa-icon">📊</span>Export Records</button>
+          <button class="quick-action" onclick="document.querySelector('#recordsSection,.records-section,[data-section=records]')?.scrollIntoView({behavior:'smooth'})"><span class="qa-icon">📋</span>View All Records</button>
+        </div></div>
+      </div>
+    </section>`;
+    const targets=[...document.querySelectorAll("main,.main-content,.content,.dashboard,.dashboard-container")];
+    const target=targets.find(x=>x.offsetParent!==null)||document.body;
+    target.insertAdjacentHTML("afterbegin",html);
+  }
+  function schedule(){setTimeout(ensureDashboard,350)}
+  window.addEventListener("load",schedule);
+  const oldLoad=window.loadRecordsFromDatabase;
+  if(typeof oldLoad==="function"&&!oldLoad.__proDashWrapped){
+    window.loadRecordsFromDatabase=async function(){const r=await oldLoad.apply(this,arguments);schedule();return r}; window.loadRecordsFromDatabase.__proDashWrapped=true;
+  }
+  document.addEventListener("click",e=>{if(e.target.closest("button")) setTimeout(ensureDashboard,700)});
+})();
+</script>
+
 </body>
 </html>
