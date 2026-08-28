@@ -1192,6 +1192,138 @@ label{color:var(--mdrrmo-navy)!important;font-weight:600!important}
   border:1px solid #c4dff2!important;
 }
 hr{border-color:var(--mdrrmo-border)!important}
+/* =========================================
+   MDRRMO BLUE THEME – TEXT VISIBILITY FIX
+========================================= */
+
+/* Lighter professional blue for dark areas */
+header,
+.header,
+.topbar,
+.top-bar,
+.navbar,
+.nav-bar {
+    background: linear-gradient(135deg, #0B5FA5, #1784D1) !important;
+}
+
+/* Make text visible inside blue header areas */
+header,
+.header,
+.topbar,
+.top-bar,
+.navbar,
+.nav-bar,
+header *,
+.header *,
+.topbar *,
+.top-bar *,
+.navbar *,
+.nav-bar * {
+    color: #FFFFFF !important;
+}
+
+/* Sidebar / navigation text */
+.sidebar,
+.side-nav {
+    background: linear-gradient(180deg, #0B5FA5, #146FAF) !important;
+}
+
+.sidebar *,
+.side-nav * {
+    color: #FFFFFF !important;
+}
+
+/* Keep main page text dark and readable */
+main,
+.content,
+.main-content,
+.dashboard,
+.dashboard-container {
+    color: #17324D !important;
+}
+
+/* Cards always use readable dark text */
+.card,
+.stat-card,
+.summary-card,
+.dashboard-card,
+.report-card,
+.chart-card,
+.analytics-card,
+.records-card,
+.filter-card,
+.content-card,
+.panel,
+.section-card {
+    color: #17324D !important;
+}
+
+/* Card headings */
+.card h1,
+.card h2,
+.card h3,
+.stat-card h1,
+.stat-card h2,
+.stat-card h3,
+.summary-card h1,
+.summary-card h2,
+.summary-card h3,
+.dashboard-card h1,
+.dashboard-card h2,
+.dashboard-card h3,
+.report-card h1,
+.report-card h2,
+.report-card h3 {
+    color: #06345F !important;
+}
+
+/* Regular text inside cards */
+.card p,
+.card span,
+.card div,
+.stat-card p,
+.stat-card span,
+.stat-card div,
+.summary-card p,
+.summary-card span,
+.summary-card div,
+.dashboard-card p,
+.dashboard-card span,
+.dashboard-card div {
+    color: inherit;
+}
+
+/* Table body stays readable */
+tbody td {
+    color: #17324D !important;
+}
+
+/* Table header stays white */
+thead th,
+table thead th {
+    color: #FFFFFF !important;
+}
+
+/* Buttons always readable */
+button,
+.btn {
+    color: #FFFFFF !important;
+}
+
+/* Inputs and dropdowns */
+input,
+select,
+textarea {
+    color: #17324D !important;
+    background: #FFFFFF !important;
+}
+
+/* Placeholder text */
+input::placeholder,
+textarea::placeholder {
+    color: #718096 !important;
+    opacity: 1;
+}
 </style>
 
 </head>
