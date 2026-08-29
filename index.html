@@ -1642,7 +1642,7 @@ textarea::placeholder {
 <table>
 <thead>
 <tr>
-<th class="record-select-cell"><input class="select-all-records" id="selectAllRecords" type="checkbox" aria-label="Select all records on this page" onchange="handleSelectAllCheckbox(this)"></th>
+<th class="record-select-cell"><input class="select-all-records" id="selectAllRecords" type="checkbox" aria-label="Select all filtered records across all pages" onchange="handleSelectAllCheckbox(this)"></th>
 <th>
                                     Date
                                 </th>
@@ -2508,18 +2508,18 @@ function updateBulkSelectionUI() {
     const count = document.getElementById("selectedRecordsCount");
     const deleteBtn = document.getElementById("deleteSelectedRecordsBtn");
     const selectBtn = document.getElementById("selectAllRecordsBtn");
-    const pageIds = getCurrentPageRecordIds();
-    const selectedOnPage = pageIds.filter(id => selectedRecordIds.has(id)).length;
-    const allOnPage = pageIds.length > 0 && selectedOnPage === pageIds.length;
+    const visibleIds = getVisibleRecordIds();
+    const selectedVisible = visibleIds.filter(id => selectedRecordIds.has(id)).length;
+    const allVisibleSelected = visibleIds.length > 0 && selectedVisible === visibleIds.length;
 
     if (count) count.textContent = `${selectedRecordIds.size} selected`;
     if (deleteBtn) deleteBtn.disabled = selectedRecordIds.size === 0;
-    if (selectBtn) selectBtn.textContent = allOnPage ? "Clear Page" : "Select All";
+    if (selectBtn) selectBtn.textContent = allVisibleSelected ? "Clear All" : "Select All";
 
     const header = document.getElementById("selectAllRecords");
     if (header) {
-        header.checked = allOnPage;
-        header.indeterminate = selectedOnPage > 0 && !allOnPage;
+        header.checked = allVisibleSelected;
+        header.indeterminate = selectedVisible > 0 && !allVisibleSelected;
     }
 
     document.querySelectorAll(".record-checkbox").forEach(cb => {
@@ -2535,13 +2535,13 @@ function handleRecordCheckboxChange(checkbox) {
 }
 
 function handleSelectAllCheckbox(checkbox) {
-    const ids = getCurrentPageRecordIds();
+    const ids = getVisibleRecordIds();
     ids.forEach(id => checkbox.checked ? selectedRecordIds.add(id) : selectedRecordIds.delete(id));
     updateBulkSelectionUI();
 }
 
 function toggleSelectAllRecords() {
-    const ids = getCurrentPageRecordIds();
+    const ids = getVisibleRecordIds();
     if (!ids.length) return;
     const allSelected = ids.every(id => selectedRecordIds.has(id));
     ids.forEach(id => allSelected ? selectedRecordIds.delete(id) : selectedRecordIds.add(id));
