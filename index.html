@@ -4617,5 +4617,126 @@ body.mdrrmo-dark #excelExportPanel p{color:#b9c7d9 !important;}
 })();
 </script>
 
+
+<style id="mdrrmo-professional-toast-upgrade">
+#mdrrmoToastContainer{
+  z-index:2147483640!important;
+  top:18px!important;right:18px!important;
+  gap:12px!important;
+}
+.mdrrmo-toast{
+  position:relative!important;
+  overflow:hidden!important;
+  min-width:300px;
+  max-width:min(420px,calc(100vw - 36px));
+  border-left-width:4px!important;
+  border-radius:15px!important;
+  padding:15px 16px 17px!important;
+  box-shadow:0 18px 48px rgba(6,52,95,.22)!important;
+  animation:mdrrmoToastInPro .32s cubic-bezier(.2,.8,.2,1)!important;
+}
+.mdrrmo-toast-icon{
+  width:28px;height:28px;border-radius:50%;
+  display:flex!important;align-items:center;justify-content:center;
+  font-size:15px!important;font-weight:900;flex:0 0 28px;
+  background:#eaf2f9;color:#0b5fa5;
+}
+.mdrrmo-toast.success .mdrrmo-toast-icon{background:#e8f7ef;color:#16834e}
+.mdrrmo-toast.error .mdrrmo-toast-icon{background:#fff0f0;color:#cf3f3f}
+.mdrrmo-toast.warning .mdrrmo-toast-icon{background:#fff7df;color:#b87900}
+.mdrrmo-toast-title{font-size:14px!important;letter-spacing:.1px}
+.mdrrmo-toast-text{font-size:13px!important;padding-right:4px}
+.mdrrmo-toast-close{
+  width:28px;height:28px;border-radius:8px!important;
+  display:flex!important;align-items:center;justify-content:center;
+  font-size:20px!important;line-height:1!important;
+}
+.mdrrmo-toast-close:hover{background:rgba(100,116,139,.10)!important}
+.mdrrmo-toast-progress{
+  position:absolute;left:0;bottom:0;height:3px;width:100%;
+  transform-origin:left center;
+  background:#1784d1;
+  animation:mdrrmoToastProgress var(--toast-duration,4200ms) linear forwards;
+}
+.mdrrmo-toast.success .mdrrmo-toast-progress{background:#1b8f58}
+.mdrrmo-toast.error .mdrrmo-toast-progress{background:#d64545}
+.mdrrmo-toast.warning .mdrrmo-toast-progress{background:#d99a1d}
+@keyframes mdrrmoToastInPro{from{opacity:0;transform:translateX(32px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes mdrrmoToastOutPro{to{opacity:0;transform:translateX(28px) scale(.97)}}
+@keyframes mdrrmoToastProgress{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+body.mdrrmo-dark .mdrrmo-toast{
+  background:#162235!important;
+  border-color:#30445e!important;
+  box-shadow:0 20px 55px rgba(0,0,0,.38)!important;
+}
+body.mdrrmo-dark .mdrrmo-toast-title{color:#eef5ff!important}
+body.mdrrmo-dark .mdrrmo-toast-text{color:#b9c7d9!important}
+body.mdrrmo-dark .mdrrmo-toast-icon{background:#22324a;color:#8cc8ff}
+body.mdrrmo-dark .mdrrmo-toast.success .mdrrmo-toast-icon{background:#173d31;color:#75d6a5}
+body.mdrrmo-dark .mdrrmo-toast.error .mdrrmo-toast-icon{background:#48262b;color:#ff9b9b}
+body.mdrrmo-dark .mdrrmo-toast.warning .mdrrmo-toast-icon{background:#493d20;color:#ffd36a}
+body.mdrrmo-dark .mdrrmo-toast-close{color:#b9c7d9!important}
+@media(max-width:520px){
+ #mdrrmoToastContainer{left:12px!important;right:12px!important;top:12px!important;max-width:none!important}
+ .mdrrmo-toast{min-width:0;width:100%;max-width:none}
+}
+</style>
+
+<script id="mdrrmo-professional-toast-upgrade-script">
+(function(){
+  const icons={success:'✓',error:'!',warning:'!',info:'i'};
+  const titles={success:'Success',error:'Something went wrong',warning:'Attention',info:'Notice'};
+
+  window.showMDRRMOToast=function(message,type='success',duration=4200){
+    const c=document.getElementById('mdrrmoToastContainer');
+    if(!c) return;
+    type=['success','error','warning','info'].includes(type)?type:'info';
+
+    const el=document.createElement('div');
+    el.className='mdrrmo-toast '+type;
+    el.style.setProperty('--toast-duration',duration+'ms');
+    el.setAttribute('role',type==='error'?'alert':'status');
+
+    const icon=document.createElement('div');
+    icon.className='mdrrmo-toast-icon';
+    icon.textContent=icons[type];
+
+    const body=document.createElement('div');
+    body.style.minWidth='0';
+    const title=document.createElement('div');
+    title.className='mdrrmo-toast-title';
+    title.textContent=titles[type];
+    const text=document.createElement('div');
+    text.className='mdrrmo-toast-text';
+    text.textContent=String(message);
+    body.append(title,text);
+
+    const close=document.createElement('button');
+    close.className='mdrrmo-toast-close';
+    close.type='button';
+    close.setAttribute('aria-label','Close notification');
+    close.textContent='×';
+
+    const progress=document.createElement('div');
+    progress.className='mdrrmo-toast-progress';
+
+    let removed=false, timer;
+    function remove(){
+      if(removed)return;
+      removed=true;
+      clearTimeout(timer);
+      progress.style.animation='none';
+      el.style.animation='mdrrmoToastOutPro .22s ease forwards';
+      setTimeout(()=>el.remove(),220);
+    }
+    close.onclick=remove;
+    el.append(icon,body,close,progress);
+    c.appendChild(el);
+    while(c.children.length>4)c.firstElementChild.remove();
+    timer=setTimeout(remove,duration);
+  };
+})();
+</script>
+
 </body>
 </html>
