@@ -3753,6 +3753,8 @@ function mdrrmoExcelValidate(record,rowNumber){
 }
 
 function mdrrmoExcelPreviewModal(data, resolve){
+    /* Hide the original file-selection popup before showing the review screen. */
+    if (typeof closeExcelImport === 'function') closeExcelImport();
     const invalid=data.filter(x=>x.errors.length).length;
     const duplicate=data.filter(x=>x.duplicate).length;
     const valid=data.length-invalid-duplicate;
@@ -3774,11 +3776,12 @@ function mdrrmoExcelPreviewModal(data, resolve){
         ${data.length>20?`<p style="font-size:.8rem;color:#71879a;margin:9px 0 0">Showing first 20 of ${data.length} rows. Validation applies to all rows.</p>`:''}
       </div>
       <div class="mdrrmo-import-actions"><button class="mdrrmo-cancel" id="mdrrmoExcelPreviewCancel">Cancel</button><button class="mdrrmo-primary" id="mdrrmoExcelPreviewConfirm" ${valid?'':'disabled'}>Import ${valid} Record${valid===1?'':'s'}</button></div>`);
-    document.getElementById('mdrrmoExcelPreviewCancel').onclick=()=>{mdrrmoImportModalHide();resolve(false)};
+    document.getElementById('mdrrmoExcelPreviewCancel').onclick=()=>{mdrrmoImportModalHide(); if(typeof openExcelImport==='function') openExcelImport(); resolve(false)};
     document.getElementById('mdrrmoExcelPreviewConfirm').onclick=()=>{mdrrmoImportModalHide();resolve(true)};
 }
 
 function mdrrmoExcelProgress(done,total,skipped,errors){
+    if (typeof closeExcelImport === 'function') closeExcelImport();
     mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>📥 Importing Excel Records</h3><p>Please wait while records are saved</p></div><div class="mdrrmo-status"><div class="mdrrmo-spinner"></div><h3>Processing ${done} of ${total}...</h3><p><b>${skipped}</b> duplicate${skipped===1?'':'s'} skipped · <b>${errors}</b> error${errors===1?'':'s'}</p><p style="margin-top:10px">Please do not close, navigate away, or refresh the page.</p><div class="mdrrmo-progress"><span style="animation:none;width:${total?Math.round(done/total*100):0}%;transform:none"></span></div></div>`);
 }
 
