@@ -3396,25 +3396,17 @@ async function importDatabaseBackup(event) {
         const text = await file.text();
         const parsed = JSON.parse(text);
 
-        // Accept both backup formats:
-        // { records: [...] } or just [...]
-        const incoming = Array.isArray(parsed)
-            ? parsed
-            : parsed.records;
+        // Accept both backup formats: { records: [...] } or just [...]
+        const incoming = Array.isArray(parsed) ? parsed : parsed.records;
 
         if (!Array.isArray(incoming)) {
-            throw new Error(
-                "The selected JSON file is not a valid MDRRMO database backup."
-            );
+            throw new Error("The selected JSON file is not a valid MDRRMO database backup.");
         }
 
         const cleaned = incoming.map((record, index) => {
             if (!record || typeof record !== "object") {
-                throw new Error(
-                    `Invalid record at item ${index + 1}.`
-                );
+                throw new Error(`Invalid record at item ${index + 1}.`);
             }
-
             return {
                 ...record,
                 id: record.id || generateID(),
@@ -3441,289 +3433,86 @@ async function importDatabaseBackup(event) {
             return;
         }
 
-        // Get all current IDs to avoid duplicates
+        // The browser's current records list is used as a first duplicate check.
+        // The API/database remains the final authority, so a database 409 is also
+        // treated as a duplicate instead of aborting the entire import.
         const existingIds = new Set(
-            Array.isArray(records)
-                ? records.map(record => String(record.id))
-                : []
+            Array.isArray(records) ? records.map(record => String(record.id)) : []
         );
 
         let importedCount = 0;
         let skippedCount = 0;
         const importedRecords = [];
 
-        // ADD incoming records without deleting current records
         for (const record of cleaned) {
+            const recordId = String(record.id);
 
-            // Skip record if ID already exists
-            if (existingIds.has(String(record.id))) {
+            if (existingIds.has(recordId)) {
                 skippedCount++;
                 continue;
             }
 
-            const response = await fetch("/api/records", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(record)
-            });
+            let response;
+            try {
+                response = await fetch("/api/records", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(record)
+                });
+            } catch (networkError) {
+                throw new Error(`Unable to reach the database while importing record ${recordId}. ${networkError.message}`);
+            }
+
+            if (response.status === 409) {
+                // The record already exists in the database. This is a normal
+                // duplicate condition during backup restore/import, not a fatal error.
+                skippedCount++;
+                existingIds.add(recordId);
+                continue;
+            }
 
             if (!response.ok) {
+                let detail = "";
+                try { detail = await response.text(); } catch (_) {}
                 throw new Error(
-                    `Unable to import record ${record.id} ` +
-                    `(HTTP ${response.status}).`
+                    `Unable to import record ${recordId} (HTTP ${response.status})${detail ? `: ${detail}` : "."}`
                 );
             }
 
             const savedRecord = await response.json();
-
             importedRecords.push(savedRecord);
-
-            // Add ID so duplicate IDs inside the JSON
-            // are also skipped
-            existingIds.add(String(record.id));
-
+            existingIds.add(recordId);
             importedCount++;
         }
 
-        // Add imported records to current records
         records = [
             ...importedRecords,
             ...(Array.isArray(records) ? records : [])
         ];
 
         currentRecordsPage = 1;
-
         updateAll();
 
         mdrrmoImportResult(
             "success",
-            "Import Successful!",
+            "Import Complete",
             `${importedCount} new record${importedCount === 1 ? "" : "s"} imported successfully.`,
             `Duplicates skipped: ${skippedCount} · Total records now: ${records.length}`
         );
 
     } catch (error) {
-
         console.error("Database import failed:", error);
-
         mdrrmoImportResult(
             "error",
             "Unable to import records",
             "The import could not be completed.",
             error.message
         );
-
     } finally {
-
         input.value = "";
-
     }
 }
 
-
-function downloadFile(
-    content,
-    type,
-    filename
-) {
-
-    const blob =
-        new Blob(
-            [content],
-            {
-                type: type
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(blob);
-
-
-    const link =
-        document.createElement("a");
-
-
-    link.href =
-        url;
-
-
-    link.download =
-        filename;
-
-
-    document.body.appendChild(
-        link
-    );
-
-
-    link.click();
-
-
-    link.remove();
-
-
-    URL.revokeObjectURL(
-        url
-    );
-
-}
-
-
-/* ================================
-   FORMAT DATE
-================================ */
-
-function formatDate(dateString) {
-
-    if (!dateString) {
-
-        return "-";
-
-    }
-
-
-    return new Date(
-        dateString
-        +
-        "T00:00:00"
-    )
-    .toLocaleDateString(
-        "en-US",
-        {
-            year: "numeric",
-            month: "short",
-            day: "numeric"
-        }
-    );
-
-}
-
-
-/* ================================
-   ESCAPE HTML
-================================ */
-
-function escapeHTML(value) {
-
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-
-}
-
-
-
-/* ================================
-   IMPORT EXCEL WITH DATE FILTER
-================================ */
-function openExcelImport() {
-    const panel = document.getElementById('excelImportPanel');
-    const month = document.getElementById('excelImportMonth');
-    const year = document.getElementById('excelImportYear');
-    if (month && !month.options.length) Array.from({length:12}, (_,i) => month.add(new Option(new Date(2000,i,1).toLocaleString('en-US',{month:'long'}), i)));
-    if (year && !year.options.length) { const now=new Date().getFullYear(); for(let y=now-10;y<=now+10;y++) year.add(new Option(y,y)); year.value=String(now); }
-    if (panel) panel.style.display='flex';
-    updateExcelImportFilterUI();
-}
-function closeExcelImport(){ const p=document.getElementById('excelImportPanel'); if(p)p.style.display='none'; }
-function updateExcelImportFilterUI(){ const mode=document.getElementById('excelImportMode')?.value; const m=document.getElementById('excelMonthFields'), r=document.getElementById('excelRangeFields'); if(m)m.style.display=mode==='month'?'flex':'none'; if(r)r.style.display=mode==='range'?'flex':'none'; }
-function excelDateToISO(value){
-    if(value===null||value===undefined||value==='') return '';
-    if(typeof value==='number' && typeof XLSX!=='undefined' && XLSX.SSF){ const d=XLSX.SSF.parse_date_code(value); if(d) return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`; }
-    const text=String(value).trim();
-    const iso=text.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/); if(iso) return `${iso[1]}-${String(iso[2]).padStart(2,'0')}-${String(iso[3]).padStart(2,'0')}`;
-    const dt=new Date(text); if(!Number.isNaN(dt.getTime())) return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
-    return '';
-}
-function excelTimeToHHMM(value){
-  if(value===null||value===undefined||value==='') return '';
-  if(typeof value==='number' && value>=0 && value<1){
-    const mins=Math.round(value*24*60); return `${String(Math.floor(mins/60)%24).padStart(2,'0')}:${String(mins%60).padStart(2,'0')}`;
-  }
-  const text=String(value).trim().toUpperCase().replace(/\s+/g,'');
-  let m=text.match(/^(\d{1,2}):(\d{2})(AM|PM)$/);
-  if(m){let h=Number(m[1]),mi=Number(m[2]);if(mi>59)return '';if(m[3]==='PM'&&h<12)h+=12;if(m[3]==='AM'&&h===12)h=0;return `${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}`;}
-  m=text.match(/^(\d{1,4})(AM|PM)$/);
-  if(m){let raw=m[1].padStart(4,'0'),h=Number(raw.slice(0,-2)),mi=Number(raw.slice(-2));if(mi>59||h>12)return '';if(m[2]==='PM'&&h<12)h+=12;if(m[2]==='AM'&&h===12)h=0;return `${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}`;}
-  m=text.match(/^(\d{1,2}):(\d{2})$/);
-  if(m){const h=Number(m[1]),mi=Number(m[2]);if(h>23||mi>59)return '';return `${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}`;}
-  return '';
-}
-function excelCell(row,names){
-  for(const n of names){if(row[n]!==undefined&&row[n]!==null&&String(row[n]).trim()!=='')return row[n];}
-  return '';
-}
-function excelRecordFingerprint(r){
-  return [
-    r.date,r.time,(r.persons||'').trim().toLowerCase(),(r.barangay||'').trim().toLowerCase(),
-    (r.category||'').trim().toLowerCase(),(r.location||'').trim().toLowerCase()
-  ].join('|');
-}
-function validateExcelMappedRecord(r,rowNumber){
-  const errors=[];
-  if(!r.date) errors.push('Missing/invalid date');
-  if(!r.time) errors.push('Missing/invalid time');
-  if(!r.persons) errors.push('Missing person name');
-  if(!r.barangay) errors.push('Missing barangay');
-  if(!r.category) errors.push('Missing incident/purpose');
-  if(!r.location) errors.push('Missing location');
-  if(r.age!=='' && (!Number.isFinite(Number(r.age)) || Number(r.age)<0 || Number(r.age)>120)) errors.push('Invalid age');
-  return {valid:errors.length===0,errors,row:rowNumber};
-}
-function mdrrmoExcelPreview(data){
-  return new Promise(resolve=>{
-    const esc=typeof escapeHTML==='function'?escapeHTML:(x=>String(x));
-    const {total,valid,invalid,duplicates,ready,previewRows}=data;
-    mdrrmoImportModalShow(`
-      <div class="mdrrmo-import-head"><h3>📋 Review Excel Import</h3><p>Validate and review before changing the database</p></div>
-      <div class="mdrrmo-import-body mdrrmo-excel-preview-body">
-        <div class="mdrrmo-import-stats">
-          <div><b>${total}</b><span>Rows found</span></div>
-          <div class="ok"><b>${valid}</b><span>Valid</span></div>
-          <div class="warn"><b>${duplicates}</b><span>Duplicates</span></div>
-          <div class="bad"><b>${invalid}</b><span>Invalid</span></div>
-        </div>
-        <div class="mdrrmo-import-notes">
-          <div class="mdrrmo-import-note"><span>✓</span><span><b>${ready}</b> records are ready to import.</span></div>
-          <div class="mdrrmo-import-note"><span>↻</span><span>Duplicates are skipped automatically.</span></div>
-          <div class="mdrrmo-import-note"><span>⚠</span><span>Invalid rows are skipped and are not written to the database.</span></div>
-        </div>
-        <div class="mdrrmo-excel-preview-table">
-          <table><thead><tr><th>ROW</th><th>PERSON</th><th>DATE</th><th>TIME</th><th>STATUS</th><th>DETAIL</th></tr></thead>
-          <tbody>${previewRows.map(x=>`<tr><td>${x.row}</td><td>${esc(x.persons||'-')}</td><td>${esc(x.date||'-')}</td><td>${esc(x.time||'-')}</td><td><span class="excel-preview-badge ${x.statusClass}">${esc(x.status)}</span></td><td>${esc(x.detail||'Ready')}</td></tr>`).join('')}</tbody></table>
-        </div>
-      </div>
-      <div class="mdrrmo-import-actions">
-        <button class="mdrrmo-cancel" id="mdrrmoExcelPreviewCancel">Cancel</button>
-        <button class="mdrrmo-primary" id="mdrrmoExcelPreviewConfirm" ${ready?'':'disabled'}>Import ${ready} Records</button>
-      </div>`);
-    document.getElementById('mdrrmoExcelPreviewCancel').onclick=()=>{mdrrmoImportModalHide();resolve(false);};
-    document.getElementById('mdrrmoExcelPreviewConfirm').onclick=()=>{mdrrmoImportModalHide();resolve(true);};
-  });
-}
 async function importExcelRecords(event){
  const input=event.target,file=input.files&&input.files[0]; if(!file)return;
  try{
