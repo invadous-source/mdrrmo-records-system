@@ -4240,5 +4240,79 @@ function closeOutsideBinangonanModal(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangonanModal();});
 </script>
+
+<!-- ADDITIONAL INDEX.HTML-ONLY IMPROVEMENTS: PRINT, DUPLICATE CHECK, AUTO-DRAFT -->
+<script>
+(function(){
+  const DRAFT_KEY='mdrrmo_record_form_draft_v1';
+  const FIELDS=['recordType','date','time','barangay','category','otherCategory','location','rescued','ambulance','responders','persons','age','status','remarks'];
+
+  function toast(msg,type){ if(typeof window.showMDRRMOToast==='function') window.showMDRRMOToast(msg,type||'info'); else alert(msg); }
+  function form(){ return document.getElementById('recordForm'); }
+  function getDraft(){ try{return JSON.parse(localStorage.getItem(DRAFT_KEY)||'null')}catch(e){return null} }
+  function clearDraft(){ localStorage.removeItem(DRAFT_KEY); }
+  function saveDraft(){
+    const f=form(); if(!f || !document.getElementById('recordType')?.value) return;
+    const editId=document.getElementById('editId')?.value||'';
+    if(editId) return; // protect only new-record drafts
+    const data={savedAt:new Date().toISOString(),fields:{}};
+    FIELDS.forEach(id=>{const el=document.getElementById(id); if(el) data.fields[id]=el.value;});
+    const meaningful=['date','barangay','category','location','persons','remarks'].some(id=>String(data.fields[id]||'').trim());
+    if(meaningful) localStorage.setItem(DRAFT_KEY,JSON.stringify(data));
+  }
+  function restoreDraft(){
+    const d=getDraft(); if(!d || !d.fields || document.getElementById('editId')?.value) return;
+    if(!confirm('An unfinished record draft was found. Restore it?')) return clearDraft();
+    FIELDS.forEach(id=>{const el=document.getElementById(id); if(el && d.fields[id]!==undefined) el.value=d.fields[id];});
+    if(typeof window.toggleOtherCategory==='function') window.toggleOtherCategory();
+    toast('Unfinished draft restored.','success');
+  }
+
+  const originalOpen=window.openAddModal;
+  if(typeof originalOpen==='function') window.openAddModal=function(type){ const r=originalOpen.apply(this,arguments); setTimeout(restoreDraft,100); return r; };
+  const originalClose=window.closeModal;
+  if(typeof originalClose==='function') window.closeModal=function(){ saveDraft(); return originalClose.apply(this,arguments); };
+  document.addEventListener('input',e=>{if(e.target.closest('#recordForm')) saveDraft();});
+  document.addEventListener('change',e=>{if(e.target.closest('#recordForm')) saveDraft();});
+
+  const originalSave=window.saveRecord;
+  if(typeof originalSave==='function') window.saveRecord=async function(event){
+    const editId=document.getElementById('editId')?.value||'';
+    const type=document.getElementById('recordType')?.value||'';
+    const date=document.getElementById('date')?.value||'';
+    const barangay=(document.getElementById('barangay')?.value||'').trim().toLowerCase();
+    const location=(document.getElementById('location')?.value||'').trim().toLowerCase();
+    const catEl=document.getElementById('category');
+    const category=((catEl?.value==='__other__'?document.getElementById('otherCategory')?.value:catEl?.value)||'').trim().toLowerCase();
+    const duplicates=(window.records||[]).filter(r=>String(r.id)!==String(editId) && r.type===type && r.date===date && String(r.barangay||'').trim().toLowerCase()===barangay && String(r.location||'').trim().toLowerCase()===location && String(r.category||'').trim().toLowerCase()===category);
+    if(duplicates.length){
+      const ids=duplicates.slice(0,3).map(r=>r.id).join(', ');
+      if(!confirm(`Possible duplicate record detected.\n\n${duplicates.length} similar record(s) already exist for the same date, type, barangay, category and location.\nRecord ID(s): ${ids}\n\nSave anyway?`)) return;
+    }
+    const result=await originalSave.apply(this,arguments);
+    if(!document.getElementById('editId')?.value) clearDraft();
+    return result;
+  };
+
+  window.printRecord=function(id){
+    const r=(window.records||[]).find(x=>String(x.id)===String(id)); if(!r) return toast('Record not found.','error');
+    const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    const row=(label,val)=>`<tr><th>${label}</th><td>${esc(val||'-')}</td></tr>`;
+    const w=window.open('','MDRRMO_Print_Record','width=900,height=700');
+    if(!w) return alert('Please allow pop-ups to print the record.');
+    w.document.write(`<!doctype html><html><head><title>MDRRMO Record ${esc(r.id)}</title><style>body{font-family:Arial,sans-serif;padding:32px;color:#111}h1{margin:0}h2{margin:6px 0 22px;font-size:18px;font-weight:normal}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #444;padding:10px;text-align:left;vertical-align:top}th{width:32%;background:#f2f2f2}.footer{margin-top:28px;font-size:12px;color:#555}@media print{body{padding:15px}}</style></head><body><h1>MDRRMO Binangonan</h1><h2>Incident / Response Record</h2><table>${row('Record ID',r.id)}${row('Date',r.date)}${row('Time',r.time)}${row('Record Type',getRecordTypeLabel?getRecordTypeLabel(r.type):r.type)}${row('Barangay',r.barangay)}${row('Category',r.category)}${row('Location',r.location)}${row('Persons Involved / Assisted',r.persons)}${row('Age',r.age)}${row('Number Rescued',r.rescued)}${row('Ambulance / Vehicle',r.ambulance)}${row('Responders',r.responders)}${row('Status',r.status)}${row('Remarks',r.remarks)}</table><div class="footer">Printed on ${new Date().toLocaleString()}</div></body></html>`);
+    w.document.close(); w.focus(); setTimeout(()=>w.print(),300);
+  };
+
+  const originalRender=window.renderTable;
+  if(typeof originalRender==='function') window.renderTable=function(){
+    const result=originalRender.apply(this,arguments);
+    const table=document.getElementById('recordsTable');
+    if(table){ table.querySelectorAll('tr').forEach(tr=>{ const edit=tr.querySelector('button[onclick^="editRecord("]'); if(edit && !tr.querySelector('.print-record-btn')){ const m=edit.getAttribute('onclick').match(/editRecord\('([^']+)'\)/); if(m){ const b=document.createElement('button'); b.className='btn btn-light btn-small print-record-btn'; b.type='button'; b.textContent='Print'; b.onclick=()=>window.printRecord(m[1]); edit.parentNode.insertBefore(b,edit); }}}); }
+    return result;
+  };
+})();
+</script>
+
 </body>
 </html>
