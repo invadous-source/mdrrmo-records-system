@@ -1381,6 +1381,57 @@ textarea::placeholder {
 #mdrrmoDeleteConfirm:disabled,#mdrrmoDeleteCancel:disabled{opacity:.65;cursor:not-allowed}
 </style>
 
+
+<style id="outside-binangonan-scroll-fix">
+/* Keep the OUTSIDE BINANGONAN details modal usable even with many locations. */
+.outside-binangonan-modal .modal-content,
+#outsideBinangonanModal .modal-content,
+.outside-binangonan-modal .modal-body,
+#outsideBinangonanModal .modal-body {
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+.outside-binangonan-modal .outside-list,
+#outsideBinangonanModal .outside-list,
+.outside-binangonan-modal .modal-body > div,
+#outsideBinangonanModal .modal-body > div {
+  max-height: 55vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+
+/* Make long location names wrap instead of stretching the modal. */
+.outside-binangonan-modal table,
+#outsideBinangonanModal table {
+  width: 100%;
+  table-layout: fixed;
+}
+.outside-binangonan-modal td,
+.outside-binangonan-modal th,
+#outsideBinangonanModal td,
+#outsideBinangonanModal th {
+  overflow-wrap: anywhere;
+}
+
+/* Always make the close button easy to reach. */
+.outside-binangonan-modal .modal-header,
+#outsideBinangonanModal .modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: inherit;
+}
+.outside-binangonan-modal .modal-footer,
+#outsideBinangonanModal .modal-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: inherit;
+}
+</style>
+
 </head>
 <body>
 <div id="userControls" style="position:fixed;right:20px;top:12px;z-index:9998;display:flex;align-items:center;gap:10px;background:#ffffff;border:1px solid #dbe5f0;border-radius:10px;padding:7px 10px;box-shadow:0 3px 10px rgba(15,39,71,.10)">
