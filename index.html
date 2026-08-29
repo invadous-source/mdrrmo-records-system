@@ -1050,6 +1050,10 @@ tr:hover td {
 .login-error{min-height:22px;margin-top:11px;color:#b42318;font-size:13px;text-align:center}.login-button{width:100%;border:0;border-radius:13px;padding:15px;background:linear-gradient(135deg,#0b6a68,#12486a);color:white;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 22px rgba(18,72,106,.24);transition:.2s}.login-button:hover{transform:translateY(-1px)}.login-button:disabled{cursor:not-allowed;opacity:.85;transform:none}.btn-loader{display:none}.login-button.loading .btn-text{display:none}.login-button.loading .btn-loader{display:inline}.login-footer{text-align:center;color:#8a99a1;font-size:11px;margin-top:19px}
 .auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
 
+
+/* Advanced records date filtering */
+.table-filters #datePreset{min-width:145px}
+.table-filters #dateFromFilter,.table-filters #dateToFilter{min-width:145px}
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
@@ -1749,7 +1753,20 @@ textarea::placeholder {
 <option value="Ongoing">Ongoing</option>
 <option value="Pending">Pending</option>
 </select>
-<input id="dateFilter" onchange="currentRecordsPage = 1; renderTable()" type="date"/>
+<select id="datePreset" onchange="applyRecordsDatePreset()" title="Quick date range">
+<option value="">📅 Any Date</option>
+<option value="today">Today</option>
+<option value="yesterday">Yesterday</option>
+<option value="thisWeek">This Week</option>
+<option value="last7">Last 7 Days</option>
+<option value="thisMonth">This Month</option>
+<option value="last30">Last 30 Days</option>
+<option value="thisYear">This Year</option>
+<option value="custom">Custom Range</option>
+</select>
+<input id="dateFromFilter" onchange="setCustomRecordsDateRange()" type="date" title="From date"/>
+<input id="dateToFilter" onchange="setCustomRecordsDateRange()" type="date" title="To date"/>
+<button class="btn btn-light" type="button" onclick="clearRecordsDateRange()">Clear Date</button>
 <button class="btn btn-light" onclick="clearFilters()">
                         Clear Filters
                     </button>
@@ -2936,6 +2953,59 @@ function updateFilterOptions() {
 }
 
 
+
+function formatLocalDate(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+}
+
+function setRecordsDateRange(from, to, presetValue) {
+    const fromEl = document.getElementById("dateFromFilter");
+    const toEl = document.getElementById("dateToFilter");
+    const presetEl = document.getElementById("datePreset");
+    if (fromEl) fromEl.value = from || "";
+    if (toEl) toEl.value = to || "";
+    if (presetEl && presetValue !== undefined) presetEl.value = presetValue;
+    currentRecordsPage = 1;
+    renderTable();
+}
+
+function applyRecordsDatePreset() {
+    const preset = document.getElementById("datePreset")?.value || "";
+    const today = new Date(); today.setHours(0,0,0,0);
+    let from = "", to = "";
+    const endOfToday = formatLocalDate(today);
+    if (preset === "today") from = to = endOfToday;
+    else if (preset === "yesterday") { const d = new Date(today); d.setDate(d.getDate()-1); from = to = formatLocalDate(d); }
+    else if (preset === "thisWeek") { const d = new Date(today); const day = d.getDay() || 7; d.setDate(d.getDate()-day+1); from = formatLocalDate(d); to = endOfToday; }
+    else if (preset === "last7") { const d = new Date(today); d.setDate(d.getDate()-6); from = formatLocalDate(d); to = endOfToday; }
+    else if (preset === "thisMonth") { const d = new Date(today.getFullYear(), today.getMonth(), 1); from = formatLocalDate(d); to = endOfToday; }
+    else if (preset === "last30") { const d = new Date(today); d.setDate(d.getDate()-29); from = formatLocalDate(d); to = endOfToday; }
+    else if (preset === "thisYear") { from = `${today.getFullYear()}-01-01`; to = endOfToday; }
+    else if (preset === "custom") { currentRecordsPage = 1; renderTable(); return; }
+    setRecordsDateRange(from, to, preset);
+}
+
+function setCustomRecordsDateRange() {
+    const presetEl = document.getElementById("datePreset");
+    if (presetEl) presetEl.value = "custom";
+    currentRecordsPage = 1;
+    renderTable();
+}
+
+function clearRecordsDateRange(render = true) {
+    const fromEl = document.getElementById("dateFromFilter");
+    const toEl = document.getElementById("dateToFilter");
+    const presetEl = document.getElementById("datePreset");
+    if (fromEl) fromEl.value = "";
+    if (toEl) toEl.value = "";
+    if (presetEl) presetEl.value = "";
+    currentRecordsPage = 1;
+    if (render) renderTable();
+}
+
 /* ================================
    RENDER TABLE
 ================================ */
@@ -2945,13 +3015,15 @@ function getFilteredRecordsForTable() {
     const typeEl = document.getElementById("recordTypeFilter");
     const barangayEl = document.getElementById("barangayFilter");
     const statusEl = document.getElementById("statusFilter");
-    const dateEl = document.getElementById("dateFilter");
+    const dateFromEl = document.getElementById("dateFromFilter");
+    const dateToEl = document.getElementById("dateToFilter");
 
     const search = (searchEl?.value || "").toLowerCase().trim();
     const typeFilter = typeEl?.value || "";
     const barangayFilter = barangayEl?.value || "";
     const statusFilter = statusEl?.value || "";
-    const dateFilter = dateEl?.value || "";
+    const dateFrom = dateFromEl?.value || "";
+    const dateTo = dateToEl?.value || "";
 
     return records.filter(record => {
         const searchable = [
@@ -2970,7 +3042,8 @@ function getFilteredRecordsForTable() {
             && (!typeFilter || record.type === typeFilter)
             && (!barangayFilter || record.barangay === barangayFilter)
             && (!statusFilter || String(record.status || "") === statusFilter)
-            && (!dateFilter || record.date === dateFilter);
+            && (!dateFrom || String(record.date || "") >= dateFrom)
+            && (!dateTo || String(record.date || "") <= dateTo);
     });
 }
 
@@ -3131,9 +3204,7 @@ function clearFilters() {
     .value = "";
 
 
-    document
-    .getElementById("dateFilter")
-    .value = "";
+    clearRecordsDateRange(false);
 
 
     renderTable();
@@ -4240,79 +4311,5 @@ function closeOutsideBinangonanModal(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangonanModal();});
 </script>
-
-<!-- ADDITIONAL INDEX.HTML-ONLY IMPROVEMENTS: PRINT, DUPLICATE CHECK, AUTO-DRAFT -->
-<script>
-(function(){
-  const DRAFT_KEY='mdrrmo_record_form_draft_v1';
-  const FIELDS=['recordType','date','time','barangay','category','otherCategory','location','rescued','ambulance','responders','persons','age','status','remarks'];
-
-  function toast(msg,type){ if(typeof window.showMDRRMOToast==='function') window.showMDRRMOToast(msg,type||'info'); else alert(msg); }
-  function form(){ return document.getElementById('recordForm'); }
-  function getDraft(){ try{return JSON.parse(localStorage.getItem(DRAFT_KEY)||'null')}catch(e){return null} }
-  function clearDraft(){ localStorage.removeItem(DRAFT_KEY); }
-  function saveDraft(){
-    const f=form(); if(!f || !document.getElementById('recordType')?.value) return;
-    const editId=document.getElementById('editId')?.value||'';
-    if(editId) return; // protect only new-record drafts
-    const data={savedAt:new Date().toISOString(),fields:{}};
-    FIELDS.forEach(id=>{const el=document.getElementById(id); if(el) data.fields[id]=el.value;});
-    const meaningful=['date','barangay','category','location','persons','remarks'].some(id=>String(data.fields[id]||'').trim());
-    if(meaningful) localStorage.setItem(DRAFT_KEY,JSON.stringify(data));
-  }
-  function restoreDraft(){
-    const d=getDraft(); if(!d || !d.fields || document.getElementById('editId')?.value) return;
-    if(!confirm('An unfinished record draft was found. Restore it?')) return clearDraft();
-    FIELDS.forEach(id=>{const el=document.getElementById(id); if(el && d.fields[id]!==undefined) el.value=d.fields[id];});
-    if(typeof window.toggleOtherCategory==='function') window.toggleOtherCategory();
-    toast('Unfinished draft restored.','success');
-  }
-
-  const originalOpen=window.openAddModal;
-  if(typeof originalOpen==='function') window.openAddModal=function(type){ const r=originalOpen.apply(this,arguments); setTimeout(restoreDraft,100); return r; };
-  const originalClose=window.closeModal;
-  if(typeof originalClose==='function') window.closeModal=function(){ saveDraft(); return originalClose.apply(this,arguments); };
-  document.addEventListener('input',e=>{if(e.target.closest('#recordForm')) saveDraft();});
-  document.addEventListener('change',e=>{if(e.target.closest('#recordForm')) saveDraft();});
-
-  const originalSave=window.saveRecord;
-  if(typeof originalSave==='function') window.saveRecord=async function(event){
-    const editId=document.getElementById('editId')?.value||'';
-    const type=document.getElementById('recordType')?.value||'';
-    const date=document.getElementById('date')?.value||'';
-    const barangay=(document.getElementById('barangay')?.value||'').trim().toLowerCase();
-    const location=(document.getElementById('location')?.value||'').trim().toLowerCase();
-    const catEl=document.getElementById('category');
-    const category=((catEl?.value==='__other__'?document.getElementById('otherCategory')?.value:catEl?.value)||'').trim().toLowerCase();
-    const duplicates=(window.records||[]).filter(r=>String(r.id)!==String(editId) && r.type===type && r.date===date && String(r.barangay||'').trim().toLowerCase()===barangay && String(r.location||'').trim().toLowerCase()===location && String(r.category||'').trim().toLowerCase()===category);
-    if(duplicates.length){
-      const ids=duplicates.slice(0,3).map(r=>r.id).join(', ');
-      if(!confirm(`Possible duplicate record detected.\n\n${duplicates.length} similar record(s) already exist for the same date, type, barangay, category and location.\nRecord ID(s): ${ids}\n\nSave anyway?`)) return;
-    }
-    const result=await originalSave.apply(this,arguments);
-    if(!document.getElementById('editId')?.value) clearDraft();
-    return result;
-  };
-
-  window.printRecord=function(id){
-    const r=(window.records||[]).find(x=>String(x.id)===String(id)); if(!r) return toast('Record not found.','error');
-    const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    const row=(label,val)=>`<tr><th>${label}</th><td>${esc(val||'-')}</td></tr>`;
-    const w=window.open('','MDRRMO_Print_Record','width=900,height=700');
-    if(!w) return alert('Please allow pop-ups to print the record.');
-    w.document.write(`<!doctype html><html><head><title>MDRRMO Record ${esc(r.id)}</title><style>body{font-family:Arial,sans-serif;padding:32px;color:#111}h1{margin:0}h2{margin:6px 0 22px;font-size:18px;font-weight:normal}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{border:1px solid #444;padding:10px;text-align:left;vertical-align:top}th{width:32%;background:#f2f2f2}.footer{margin-top:28px;font-size:12px;color:#555}@media print{body{padding:15px}}</style></head><body><h1>MDRRMO Binangonan</h1><h2>Incident / Response Record</h2><table>${row('Record ID',r.id)}${row('Date',r.date)}${row('Time',r.time)}${row('Record Type',getRecordTypeLabel?getRecordTypeLabel(r.type):r.type)}${row('Barangay',r.barangay)}${row('Category',r.category)}${row('Location',r.location)}${row('Persons Involved / Assisted',r.persons)}${row('Age',r.age)}${row('Number Rescued',r.rescued)}${row('Ambulance / Vehicle',r.ambulance)}${row('Responders',r.responders)}${row('Status',r.status)}${row('Remarks',r.remarks)}</table><div class="footer">Printed on ${new Date().toLocaleString()}</div></body></html>`);
-    w.document.close(); w.focus(); setTimeout(()=>w.print(),300);
-  };
-
-  const originalRender=window.renderTable;
-  if(typeof originalRender==='function') window.renderTable=function(){
-    const result=originalRender.apply(this,arguments);
-    const table=document.getElementById('recordsTable');
-    if(table){ table.querySelectorAll('tr').forEach(tr=>{ const edit=tr.querySelector('button[onclick^="editRecord("]'); if(edit && !tr.querySelector('.print-record-btn')){ const m=edit.getAttribute('onclick').match(/editRecord\('([^']+)'\)/); if(m){ const b=document.createElement('button'); b.className='btn btn-light btn-small print-record-btn'; b.type='button'; b.textContent='Print'; b.onclick=()=>window.printRecord(m[1]); edit.parentNode.insertBefore(b,edit); }}}); }
-    return result;
-  };
-})();
-</script>
-
 </body>
 </html>
