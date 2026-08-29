@@ -1624,10 +1624,16 @@ textarea::placeholder {
                         Clear Filters
                     </button>
 </div>
+<div class="bulk-record-actions">
+    <button type="button" class="bulk-select-btn" id="selectAllRecordsBtn" onclick="toggleSelectAllRecords()">Select All</button>
+    <button type="button" class="bulk-delete-btn" id="deleteSelectedRecordsBtn" onclick="deleteSelectedRecords()" disabled>Delete Selected</button>
+    <span class="bulk-count" id="selectedRecordsCount">0 selected</span>
+</div>
 <div class="table-wrapper">
 <table>
 <thead>
 <tr>
+<th class="record-select-cell"><input class="select-all-records" id="selectAllRecords" type="checkbox" aria-label="Select all records on this page" onchange="handleSelectAllCheckbox(this)"></th>
 <th>
                                     Date
                                 </th>
@@ -1857,7 +1863,7 @@ async function requireAdmin() {
   return true;
 }
 function protectAdminFunctions(){
- ['saveRecord','deleteRecord','importDatabaseBackup','importExcelRecords','openDatabaseImport','openExcelImport'].forEach(name=>{
+ ['saveRecord','deleteRecord','deleteSelectedRecords','importDatabaseBackup','importExcelRecords','openDatabaseImport','openExcelImport'].forEach(name=>{
    const original=window[name]; if(typeof original==='function' && !original.__protected){
      const wrapped=async function(...args){ if(!(await requireAdmin())) return; return original.apply(this,args); }; wrapped.__protected=true; window[name]=wrapped;
    }
@@ -2475,6 +2481,115 @@ function editRecord(id) {
 
 
 /* ================================
+   BULK RECORD SELECTION / DELETE
+================================ */
+let selectedRecordIds = new Set();
+
+function getVisibleRecordIds() {
+    return getFilteredRecordsForTable().map(record => String(record.id));
+}
+
+function getCurrentPageRecordIds() {
+    const filtered = getFilteredRecordsForTable();
+    const start = (currentRecordsPage - 1) * RECORDS_PER_PAGE;
+    return filtered.slice(start, start + RECORDS_PER_PAGE).map(record => String(record.id));
+}
+
+function updateBulkSelectionUI() {
+    const count = document.getElementById("selectedRecordsCount");
+    const deleteBtn = document.getElementById("deleteSelectedRecordsBtn");
+    const selectBtn = document.getElementById("selectAllRecordsBtn");
+    const pageIds = getCurrentPageRecordIds();
+    const selectedOnPage = pageIds.filter(id => selectedRecordIds.has(id)).length;
+    const allOnPage = pageIds.length > 0 && selectedOnPage === pageIds.length;
+
+    if (count) count.textContent = `${selectedRecordIds.size} selected`;
+    if (deleteBtn) deleteBtn.disabled = selectedRecordIds.size === 0;
+    if (selectBtn) selectBtn.textContent = allOnPage ? "Clear Page" : "Select All";
+
+    const header = document.getElementById("selectAllRecords");
+    if (header) {
+        header.checked = allOnPage;
+        header.indeterminate = selectedOnPage > 0 && !allOnPage;
+    }
+
+    document.querySelectorAll(".record-checkbox").forEach(cb => {
+        cb.checked = selectedRecordIds.has(String(cb.value));
+    });
+}
+
+function handleRecordCheckboxChange(checkbox) {
+    const id = String(checkbox.value);
+    if (checkbox.checked) selectedRecordIds.add(id);
+    else selectedRecordIds.delete(id);
+    updateBulkSelectionUI();
+}
+
+function handleSelectAllCheckbox(checkbox) {
+    const ids = getCurrentPageRecordIds();
+    ids.forEach(id => checkbox.checked ? selectedRecordIds.add(id) : selectedRecordIds.delete(id));
+    updateBulkSelectionUI();
+}
+
+function toggleSelectAllRecords() {
+    const ids = getCurrentPageRecordIds();
+    if (!ids.length) return;
+    const allSelected = ids.every(id => selectedRecordIds.has(id));
+    ids.forEach(id => allSelected ? selectedRecordIds.delete(id) : selectedRecordIds.add(id));
+    updateBulkSelectionUI();
+}
+
+async function deleteSelectedRecords() {
+    if (!(await requireAdmin())) return;
+    const ids = Array.from(selectedRecordIds);
+    if (!ids.length) return;
+
+    if (!(await mdrrmoBulkDeleteConfirm(ids.length))) return;
+
+    try {
+        const response = await fetch("/api/records", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ids })
+        });
+        if (!response.ok) throw new Error(await response.text());
+
+        const result = await response.json();
+        const deletedIds = new Set((result.ids || ids).map(String));
+        records = records.filter(record => !deletedIds.has(String(record.id)));
+        selectedRecordIds.clear();
+        currentRecordsPage = Math.min(currentRecordsPage, Math.max(1, Math.ceil(getFilteredRecordsForTable().length / RECORDS_PER_PAGE)));
+        updateAll();
+        updateBulkSelectionUI();
+        if (typeof showMDRRMOToast === "function") showMDRRMOToast(`${deletedIds.size} record${deletedIds.size === 1 ? "" : "s"} deleted successfully.`, "success");
+    } catch (error) {
+        console.error("Unable to bulk delete records:", error);
+        alert("Unable to delete the selected records. Please make sure the database/API is available.\n\n" + error.message);
+    }
+}
+
+function mdrrmoBulkDeleteConfirm(count) {
+    return new Promise(resolve => {
+        const modal = document.getElementById("mdrrmoDeleteModal");
+        const cancel = document.getElementById("mdrrmoDeleteCancel");
+        const confirmBtn = document.getElementById("mdrrmoDeleteConfirm");
+        const body = modal?.querySelector(".mdrrmo-delete-body");
+        const original = body?.innerHTML;
+        const close = value => {
+            modal.classList.remove("show");
+            cancel.onclick = null; confirmBtn.onclick = null;
+            if (body) body.innerHTML = original;
+            resolve(value);
+        };
+        if (!modal || !cancel || !confirmBtn) return resolve(confirm(`Delete ${count} selected record${count === 1 ? "" : "s"}?\n\nThis action cannot be undone.`));
+        if (body) body.innerHTML = `Are you sure you want to delete <b>${count} selected record${count === 1 ? "" : "s"}</b>?<div class="mdrrmo-delete-warning">This action cannot be undone.</div>`;
+        modal.classList.add("show");
+        cancel.onclick = () => close(false);
+        confirmBtn.onclick = () => close(true);
+    });
+}
+
+/* ================================
    DELETE RECORD
 ================================ */
 
@@ -2822,9 +2937,10 @@ function renderTable() {
     if (filtered.length === 0) {
         table.innerHTML = `
             <tr>
-                <td colspan="10" class="empty-row">No records found.</td>
+                <td colspan="11" class="empty-row">No records found.</td>
             </tr>`;
         renderPagination(0);
+        updateBulkSelectionUI();
         return;
     }
 
@@ -2833,6 +2949,7 @@ function renderTable() {
 
     table.innerHTML = pageRecords.map(record => `
         <tr>
+            <td class="record-select-cell"><input class="record-checkbox" type="checkbox" value="${escapeHTML(String(record.id))}" aria-label="Select record" onchange="handleRecordCheckboxChange(this)"></td>
             <td>${formatDate(record.date)}</td>
             <td>${record.time || "-"}</td>
             <td>${getRecordTypeBadge(record.type)}</td>
@@ -2853,6 +2970,7 @@ function renderTable() {
         </tr>`).join("");
 
     renderPagination(filtered.length);
+    updateBulkSelectionUI();
 }
 
 
@@ -3520,6 +3638,17 @@ function exportExcel() {
     }
 }
 
+
+/* ================================
+   BULK RECORD ACTIONS
+================================ */
+.bulk-record-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+.bulk-record-actions .bulk-count{font-size:13px;color:#64748b;margin-left:auto}
+.bulk-select-btn{border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:9px;padding:9px 12px;font-weight:700;cursor:pointer}
+.bulk-delete-btn{border:0;background:#c0392b;color:#fff;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer}
+.bulk-delete-btn:disabled,.bulk-select-btn:disabled{opacity:.5;cursor:not-allowed}
+.record-select-cell{width:42px;text-align:center}
+.record-checkbox,.select-all-records{width:17px;height:17px;cursor:pointer;accent-color:#174c94}
 
 /* ================================
    SCROLL SECTION
