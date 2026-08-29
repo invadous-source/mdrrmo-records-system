@@ -4311,5 +4311,42 @@ function closeOutsideBinangonanModal(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangonanModal();});
 </script>
+
+<!-- MDRRMO UI Enhancement: Dark Mode + Loading Animation (index.html only) -->
+<style id="mdrrmo-ui-enhancements">
+#mdrrmoPageLoader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(243,246,251,.96);backdrop-filter:blur(4px);transition:opacity .35s ease,visibility .35s ease}
+#mdrrmoPageLoader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.mdrrmo-loader-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 34px;border-radius:18px;background:#fff;box-shadow:0 18px 50px rgba(15,23,42,.16);font-weight:700;color:#174c94;letter-spacing:.2px}
+.mdrrmo-spinner{width:46px;height:46px;border:5px solid rgba(23,76,148,.16);border-top-color:#174c94;border-radius:50%;animation:mdrrmoSpin .8s linear infinite}
+@keyframes mdrrmoSpin{to{transform:rotate(360deg)}}
+#mdrrmoThemeToggle{position:fixed;right:22px;bottom:22px;z-index:9990;width:52px;height:52px;border:0;border-radius:50%;cursor:pointer;background:#102f63;color:#fff;box-shadow:0 10px 24px rgba(15,23,42,.24);font-size:21px;transition:transform .2s ease,box-shadow .2s ease}
+#mdrrmoThemeToggle:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(15,23,42,.3)}
+body.mdrrmo-dark{background:#0f172a!important;color:#e5e7eb!important}
+body.mdrrmo-dark .main-content,body.mdrrmo-dark .content,body.mdrrmo-dark .page-content{background:#0f172a!important;color:#e5e7eb!important}
+body.mdrrmo-dark .card,body.mdrrmo-dark .stat-card,body.mdrrmo-dark .modal-content,body.mdrrmo-dark .panel,body.mdrrmo-dark .form-container,body.mdrrmo-dark .table-container,body.mdrrmo-dark .chart-card{background:#172033!important;color:#e5e7eb!important;border-color:#334155!important}
+body.mdrrmo-dark input,body.mdrrmo-dark select,body.mdrrmo-dark textarea{background:#0f172a!important;color:#f8fafc!important;border-color:#475569!important}
+body.mdrrmo-dark table,body.mdrrmo-dark tr,body.mdrrmo-dark td,body.mdrrmo-dark th{border-color:#334155!important;color:#e5e7eb!important}
+body.mdrrmo-dark tr:nth-child(even){background:rgba(148,163,184,.06)!important}
+body.mdrrmo-dark .topbar,body.mdrrmo-dark .header{background:#172033!important;color:#f8fafc!important}
+body.mdrrmo-dark .btn-light{background:#273449!important;color:#f8fafc!important;border-color:#475569!important}
+body.mdrrmo-dark #mdrrmoPageLoader{background:rgba(15,23,42,.96)}
+body.mdrrmo-dark .mdrrmo-loader-card{background:#172033;color:#93c5fd;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+body.mdrrmo-dark .mdrrmo-spinner{border-color:rgba(147,197,253,.18);border-top-color:#93c5fd}
+</style>
+<div id="mdrrmoPageLoader" aria-live="polite"><div class="mdrrmo-loader-card"><div class="mdrrmo-spinner"></div><div>Loading MDRRMO Records System...</div></div></div>
+<button id="mdrrmoThemeToggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+<script>
+(function(){
+ const KEY='mdrrmo_theme_preference';
+ function apply(dark){document.body.classList.toggle('mdrrmo-dark',dark);const b=document.getElementById('mdrrmoThemeToggle');if(b){b.textContent=dark?'☀️':'🌙';b.title=dark?'Switch to light mode':'Switch to dark mode';}}
+ const saved=localStorage.getItem(KEY);apply(saved==='dark');
+ document.getElementById('mdrrmoThemeToggle').addEventListener('click',function(){const dark=!document.body.classList.contains('mdrrmo-dark');apply(dark);localStorage.setItem(KEY,dark?'dark':'light');});
+ function hideLoader(){const l=document.getElementById('mdrrmoPageLoader');if(l)setTimeout(()=>l.classList.add('hide'),180)}
+ if(document.readyState==='complete')hideLoader(); else window.addEventListener('load',hideLoader,{once:true});
+ // Brief professional loading feedback when navigating between sections.
+ document.addEventListener('click',function(e){const el=e.target.closest('a,button');if(!el)return;const href=el.getAttribute('href')||'';if(el.closest('.sidebar')||href.startsWith('#')){const l=document.getElementById('mdrrmoPageLoader');if(l){l.querySelector('div:last-child').textContent='Loading...';l.classList.remove('hide');setTimeout(()=>l.classList.add('hide'),450);}}});
+})();
+</script>
+
 </body>
 </html>
