@@ -1382,6 +1382,62 @@ textarea::placeholder {
 </style>
 
 
+
+<style id="outside-binangonan-pagination-fix">
+#outsideBinangonanModal .mdrrmo-import-box{
+  max-height:85vh;
+  display:flex;
+  flex-direction:column;
+}
+#outsideBinangonanModal #outsideBinangonanBody{
+  overflow:hidden;
+  min-height:0;
+}
+#outsideBinangonanModal .outside-binangonan-list{
+  max-height:none;
+  overflow:hidden;
+}
+#outsideBinangonanModal .outside-binangonan-table-wrap{
+  max-height:46vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  border-radius:8px;
+}
+#outsideBinangonanModal .outside-binangonan-table-wrap table{
+  width:100%;
+  table-layout:fixed;
+  margin:0;
+}
+#outsideBinangonanModal .outside-binangonan-table-wrap th{
+  position:sticky;
+  top:0;
+  z-index:2;
+}
+#outsideBinangonanModal .outside-binangonan-table-wrap td,
+#outsideBinangonanModal .outside-binangonan-table-wrap th{
+  overflow-wrap:anywhere;
+}
+#outsideBinangonanModal .outside-binangonan-pagination{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:10px;
+}
+#outsideBinangonanModal .outside-binangonan-pagination button{
+  min-width:82px;
+}
+#outsideBinangonanModal .outside-binangonan-page-info{
+  font-size:12px;
+  color:#64748b;
+  text-align:center;
+  flex:1;
+}
+#outsideBinangonanModal .outside-binangonan-total{
+  flex-shrink:0;
+}
+</style>
+
 <style id="outside-binangonan-scroll-fix">
 /* Keep the OUTSIDE BINANGONAN details modal usable even with many locations. */
 .outside-binangonan-modal .modal-content,
@@ -4015,18 +4071,66 @@ function mdrrmoDeleteConfirm(){
   </div>
 </div>
 <script>
-function openOutsideBinangonanModal(){
-  const modal=document.getElementById('outsideBinangonanModal');
+window._outsideBinangonanPage = 1;
+window._outsideBinangonanPageSize = 5;
+
+function renderOutsideBinangonanPage(){
   const body=document.getElementById('outsideBinangonanBody');
+  if(!body)return;
   const data=window._outsideBinangonanBreakdown||{};
   const entries=Object.entries(data).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
   const total=entries.reduce((s,[,n])=>s+n,0);
-  body.innerHTML=entries.length
-    ? `<div class="outside-binangonan-list"><table><thead><tr><th>PLACE / BARANGAY</th><th>RECORDS</th></tr></thead><tbody>${entries.map(([place,count])=>`<tr><td>${escapeHTML(place)}</td><td><b>${count}</b></td></tr>`).join('')}</tbody></table></div><div class="outside-binangonan-total"><span>Total outside-Binangonan responses</span><strong>${total}</strong></div>`
-    : `<div class="outside-binangonan-empty">No outside-Binangonan records in the selected period.</div>`;
-  modal.classList.add('show');
+  const pageSize=window._outsideBinangonanPageSize||5;
+  const pageCount=Math.max(1,Math.ceil(entries.length/pageSize));
+  window._outsideBinangonanPage=Math.min(Math.max(1,window._outsideBinangonanPage||1),pageCount);
+  const page=window._outsideBinangonanPage;
+  const start=(page-1)*pageSize;
+  const pageEntries=entries.slice(start,start+pageSize);
+
+  if(!entries.length){
+    body.innerHTML=`<div class="outside-binangonan-empty">No outside-Binangonan records in the selected period.</div>`;
+    return;
+  }
+
+  const rows=pageEntries.map(([place,count])=>
+    `<tr><td>${escapeHTML(place)}</td><td><b>${count}</b></td></tr>`
+  ).join('');
+
+  body.innerHTML=`
+    <div class="outside-binangonan-list">
+      <div class="outside-binangonan-table-wrap">
+        <table>
+          <thead><tr><th>PLACE / BARANGAY</th><th>RECORDS</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      ${pageCount>1?`
+      <div class="outside-binangonan-pagination">
+        <button type="button" class="btn btn-light" onclick="changeOutsideBinangonanPage(-1)" ${page<=1?'disabled':''}>← Previous</button>
+        <div class="outside-binangonan-page-info">Page ${page} of ${pageCount} · ${entries.length} places</div>
+        <button type="button" class="btn btn-light" onclick="changeOutsideBinangonanPage(1)" ${page>=pageCount?'disabled':''}>Next →</button>
+      </div>`:''}
+    </div>
+    <div class="outside-binangonan-total">
+      <span>Total outside-Binangonan responses</span><strong>${total}</strong>
+    </div>`;
 }
-function closeOutsideBinangonanModal(){const m=document.getElementById('outsideBinangonanModal');if(m)m.classList.remove('show');}
+
+function changeOutsideBinangonanPage(direction){
+  window._outsideBinangonanPage=(window._outsideBinangonanPage||1)+direction;
+  renderOutsideBinangonanPage();
+}
+
+function openOutsideBinangonanModal(){
+  const modal=document.getElementById('outsideBinangonanModal');
+  window._outsideBinangonanPage=1;
+  renderOutsideBinangonanPage();
+  if(modal)modal.classList.add('show');
+}
+function closeOutsideBinangonanModal(){
+  const m=document.getElementById('outsideBinangonanModal');
+  if(m)m.classList.remove('show');
+}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangonanModal();});
 </script>
 </body>
