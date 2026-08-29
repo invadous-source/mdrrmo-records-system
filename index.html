@@ -1508,10 +1508,7 @@ textarea::placeholder {
 
 </head>
 <body>
-<div id="userControls" style="position:fixed;right:20px;top:12px;z-index:9998;display:flex;align-items:center;gap:10px;background:#ffffff;border:1px solid #dbe5f0;border-radius:10px;padding:7px 10px;box-shadow:0 3px 10px rgba(15,39,71,.10)">
-  <span id="userRoleBadge" style="font-weight:700;color:#15345b;font-size:12px"></span>
-  <button type="button" onclick="logout()" title="Sign out of the MDRRMO system" style="border:1px solid #cfd9e5;background:#f7f9fc;color:#15345b;border-radius:7px;padding:6px 10px;cursor:pointer;font-weight:700;font-size:12px">🚪 Logout</button>
-</div>
+
 <!-- =================================
      SIDEBAR
 ================================= -->
@@ -1569,7 +1566,14 @@ textarea::placeholder {
                 Accident and Ambulance Conduction Tracker
             </p>
 </div>
-<div class="topbar-actions"><div class="date-display" id="currentDate"></div><button id="mdrrmoThemeToggle" class="mdrrmo-header-theme-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">🌙 <span>Dark Mode</span></button></div>
+<div class="topbar-actions">
+  <div class="date-display" id="currentDate"></div>
+  <button id="mdrrmoThemeToggle" class="mdrrmo-header-theme-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">🌙 <span>Dark Mode</span></button>
+  <div id="userControls" class="mdrrmo-user-controls">
+    <span id="userRoleBadge"></span>
+    <button type="button" onclick="logout()" title="Sign out of the MDRRMO system" class="mdrrmo-logout-btn">🚪 Logout</button>
+  </div>
+</div>
 </header>
 <div class="content">
 <!-- ============================
@@ -4315,11 +4319,31 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangon
 <!-- MDRRMO UI Enhancement: Dark Mode + Loading Animation (index.html only) -->
 <style id="mdrrmo-ui-enhancements">
 #mdrrmoPageLoader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(243,246,251,.96);backdrop-filter:blur(4px);transition:opacity .35s ease,visibility .35s ease}#mdrrmoPageLoader.hide{opacity:0;visibility:hidden;pointer-events:none}.mdrrmo-loader-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 34px;border-radius:18px;background:#fff;box-shadow:0 18px 50px rgba(15,23,42,.16);font-weight:700;color:#174c94}.mdrrmo-spinner{width:46px;height:46px;border:5px solid rgba(23,76,148,.16);border-top-color:#174c94;border-radius:50%;animation:mdrrmoSpin .8s linear infinite}@keyframes mdrrmoSpin{to{transform:rotate(360deg)}}
-.topbar-actions{display:flex;align-items:center;gap:12px}.mdrrmo-header-theme-toggle{border:1px solid rgba(255,255,255,.28);border-radius:9px;padding:8px 12px;background:rgba(255,255,255,.14);color:#fff!important;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}.mdrrmo-header-theme-toggle:hover{background:rgba(255,255,255,.24)}
+.topbar-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:0}.mdrrmo-header-theme-toggle{border:1px solid rgba(255,255,255,.28);border-radius:9px;padding:8px 12px;background:rgba(255,255,255,.14);color:#fff!important;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}.mdrrmo-header-theme-toggle:hover{background:rgba(255,255,255,.24)}
+/* Header account controls: integrated into the topbar instead of floating over the page. */
+#userControls.mdrrmo-user-controls{position:static!important;right:auto!important;top:auto!important;z-index:auto!important;display:flex!important;align-items:center;gap:8px;background:rgba(255,255,255,.10)!important;border:1px solid rgba(255,255,255,.22)!important;border-radius:9px!important;padding:5px 6px 5px 10px!important;box-shadow:none!important;white-space:nowrap}
+#userControls.mdrrmo-user-controls #userRoleBadge{font-weight:700!important;color:#fff!important;font-size:12px!important}
+#userControls.mdrrmo-user-controls .mdrrmo-logout-btn{border:1px solid rgba(255,255,255,.22)!important;background:rgba(255,255,255,.16)!important;color:#fff!important;border-radius:7px!important;padding:7px 10px!important;cursor:pointer;font-weight:700!important;font-size:12px!important;box-shadow:none!important;transform:none!important}
+#userControls.mdrrmo-user-controls .mdrrmo-logout-btn:hover{background:rgba(255,255,255,.25)!important;transform:none!important}
 body.mdrrmo-dark{background:#101827!important;color:#e5e7eb!important}body.mdrrmo-dark .main,body.mdrrmo-dark .content,body.mdrrmo-dark .main-content,body.mdrrmo-dark .page-content{background:#101827!important;color:#e5e7eb!important}body.mdrrmo-dark .card,body.mdrrmo-dark .stat-card,body.mdrrmo-dark .summary-card,body.mdrrmo-dark .dashboard-card,body.mdrrmo-dark .report-card,body.mdrrmo-dark .chart-card,body.mdrrmo-dark .analytics-card,body.mdrrmo-dark .records-card,body.mdrrmo-dark .filter-card,body.mdrrmo-dark .content-card,body.mdrrmo-dark .panel,body.mdrrmo-dark .form-container,body.mdrrmo-dark .table-container,body.mdrrmo-dark .table-wrapper{background:#182235!important;color:#e5e7eb!important;border-color:#334155!important}body.mdrrmo-dark input,body.mdrrmo-dark select,body.mdrrmo-dark textarea{background:#111a2b!important;color:#f8fafc!important;border-color:#475569!important}
 body.mdrrmo-dark table{background:#182235!important;color:#e5e7eb!important}body.mdrrmo-dark table thead,body.mdrrmo-dark table thead tr,body.mdrrmo-dark table th{background:#223047!important;color:#f8fafc!important;border-color:#3b4b63!important}body.mdrrmo-dark table tbody,body.mdrrmo-dark table tbody tr{background:#182235!important;color:#e5e7eb!important}body.mdrrmo-dark table td{background:transparent!important;color:#e5e7eb!important;border-color:#334155!important}body.mdrrmo-dark table tbody tr:nth-child(even){background:#1d293d!important}body.mdrrmo-dark table tbody tr:hover,body.mdrrmo-dark table tbody tr:hover td{background:#26354d!important;color:#fff!important}body.mdrrmo-dark .table-container *{border-color:#334155!important}
+/* Comprehensive dark-mode card adaptation so the dashboard does not leave white cards behind. */
+body.mdrrmo-dark .content .card,body.mdrrmo-dark .content .stat-card,body.mdrrmo-dark .content .summary-card,body.mdrrmo-dark .content .dashboard-card,body.mdrrmo-dark .content .report-card,body.mdrrmo-dark .content .chart-card,body.mdrrmo-dark .content .analytics-card,body.mdrrmo-dark .content .records-card,body.mdrrmo-dark .content .filter-card,body.mdrrmo-dark .content .content-card,body.mdrrmo-dark .content .panel,body.mdrrmo-dark .content .section-card,body.mdrrmo-dark .content .report-filter-panel,body.mdrrmo-dark .content .report-stat{background:#182235!important;color:#e5e7eb!important;border-color:#334155!important;box-shadow:0 8px 22px rgba(0,0,0,.22)!important}
+body.mdrrmo-dark .content .dashboard-intro{background:linear-gradient(135deg,#182235,#202d42)!important;border-color:#334155!important;box-shadow:0 8px 22px rgba(0,0,0,.18)!important}
+body.mdrrmo-dark .content .dashboard-intro h2,body.mdrrmo-dark .content h1,body.mdrrmo-dark .content h2,body.mdrrmo-dark .content h3,body.mdrrmo-dark .content .card h1,body.mdrrmo-dark .content .card h2,body.mdrrmo-dark .content .card h3,body.mdrrmo-dark .content .stat-card h1,body.mdrrmo-dark .content .stat-card h2,body.mdrrmo-dark .content .stat-card h3,body.mdrrmo-dark .content .summary-card h1,body.mdrrmo-dark .content .summary-card h2,body.mdrrmo-dark .content .summary-card h3{color:#f8fafc!important}
+body.mdrrmo-dark .content p,body.mdrrmo-dark .content span,body.mdrrmo-dark .content div,body.mdrrmo-dark .content label{color:inherit!important}
+body.mdrrmo-dark .content .dashboard-intro p,body.mdrrmo-dark .content .report-heading p,body.mdrrmo-dark .content .report-stat span,body.mdrrmo-dark .content .report-empty{color:#aebbd0!important}
+body.mdrrmo-dark .content .report-note{background:#1f2d43!important;color:#bfdbfe!important}
+body.mdrrmo-dark .content .report-table th{background:#223047!important;color:#f8fafc!important}body.mdrrmo-dark .content .report-table td{color:#e5e7eb!important;border-color:#334155!important}
+body.mdrrmo-dark .content .report-stat strong{color:#f8fafc!important}
+body.mdrrmo-dark .content .card{background:linear-gradient(135deg,#16355f,#1e4e82,#1f648c)!important;color:#fff!important;border-color:#2d5d92!important}
+body.mdrrmo-dark .content .card h1,body.mdrrmo-dark .content .card h2,body.mdrrmo-dark .content .card h3,body.mdrrmo-dark .content .card p,body.mdrrmo-dark .content .card span,body.mdrrmo-dark .content .card div{color:#fff!important}
+body.mdrrmo-dark .content .mdrrmo-excel-summary-card{background:#1f2d43!important;border-color:#334155!important}body.mdrrmo-dark .content .mdrrmo-excel-summary-card b{color:#e5e7eb!important}body.mdrrmo-dark .content .mdrrmo-excel-summary-card span{color:#aebbd0!important}
+body.mdrrmo-dark .content .table-filters,body.mdrrmo-dark .content .date-filter-wrap,body.mdrrmo-dark .content .report-filter-bar{color:#e5e7eb!important}
 body.mdrrmo-dark .modal-content,body.mdrrmo-dark .modal-body{background:#182235!important;color:#e5e7eb!important}body.mdrrmo-dark .btn-light{background:#273449!important;color:#f8fafc!important;border-color:#475569!important}body.mdrrmo-dark #mdrrmoPageLoader{background:rgba(10,15,25,.96)}body.mdrrmo-dark .mdrrmo-loader-card{background:#182235;color:#93c5fd;box-shadow:0 18px 50px rgba(0,0,0,.45)}body.mdrrmo-dark .mdrrmo-spinner{border-color:rgba(147,197,253,.18);border-top-color:#93c5fd}
-@media(max-width:700px){.topbar-actions{gap:7px}.mdrrmo-header-theme-toggle span{display:none}.mdrrmo-header-theme-toggle{padding:8px 10px}}
+@media(max-width:850px){.topbar{flex-wrap:wrap!important}.topbar-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}.date-display{margin-right:auto}}
+@media(max-width:700px){.topbar-actions{gap:7px}.mdrrmo-header-theme-toggle span{display:none}.mdrrmo-header-theme-toggle{padding:8px 10px}#userControls.mdrrmo-user-controls{padding:5px 6px!important}#userControls.mdrrmo-user-controls #userRoleBadge{display:none}}
+@media(max-width:460px){.mdrrmo-logout-btn{font-size:0!important}.mdrrmo-logout-btn::before{content:'🚪';font-size:14px}.date-display{font-size:11px!important}}
 </style>
 <div id="mdrrmoPageLoader" aria-live="polite"><div class="mdrrmo-loader-card"><div class="mdrrmo-spinner"></div><div>Loading MDRRMO Records System...</div></div></div>
 <script>
