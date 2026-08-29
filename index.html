@@ -4391,8 +4391,8 @@ body.mdrrmo-dark .modal-content,body.mdrrmo-dark .modal-body{background:#182235!
  document.getElementById('mdrrmoThemeToggle').addEventListener('click',function(){const dark=!document.body.classList.contains('mdrrmo-dark');apply(dark);localStorage.setItem(KEY,dark?'dark':'light');});
  function hideLoader(){const l=document.getElementById('mdrrmoPageLoader');if(l)setTimeout(()=>l.classList.add('hide'),180)}
  if(document.readyState==='complete')hideLoader(); else window.addEventListener('load',hideLoader,{once:true});
- // Brief professional loading feedback when navigating between sections.
- document.addEventListener('click',function(e){const el=e.target.closest('a,button');if(!el)return;const href=el.getAttribute('href')||'';if(el.closest('.sidebar')||href.startsWith('#')){const l=document.getElementById('mdrrmoPageLoader');if(l){l.querySelector('div:last-child').textContent='Loading...';l.classList.remove('hide');setTimeout(()=>l.classList.add('hide'),450);}}});
+ // Brief loading feedback only for section navigation. Add Record buttons open immediately.
+ document.addEventListener('click',function(e){const el=e.target.closest('a,button');if(!el)return;const href=el.getAttribute('href')||'';const opensAddRecord=String(el.getAttribute('onclick')||'').includes('openAddModal');if(opensAddRecord)return;if((el.closest('.sidebar')&&String(el.getAttribute('onclick')||'').includes('scrollToSection'))||href.startsWith('#')){const l=document.getElementById('mdrrmoPageLoader');if(l){l.querySelector('div:last-child').textContent='Loading...';l.classList.remove('hide');setTimeout(()=>l.classList.add('hide'),450);}}});
 })();
 </script>
 
