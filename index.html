@@ -3146,10 +3146,36 @@ function updateReportTables() {
 
     const barangayBody=document.getElementById("barangaySummaryBody");
     if(barangayBody){
-        const mapB={};
-        filtered.forEach(r=>{const b=(r.barangay||"Unspecified").trim()||"Unspecified"; mapB[b]=(mapB[b]||0)+1;});
-        const rows=Object.entries(mapB).sort((a,b)=>b[1]-a[1]);
-        barangayBody.innerHTML=rows.length?rows.map(([b,c])=>`<tr><td>${escapeHTML(b)}</td><td>${c}</td></tr>`).join(""):`<tr><td colspan="2" class="report-empty">No data</td></tr>`;
+        const official = BINANGONAN_BARANGAYS.filter(b => b && b !== "Not Specified");
+        const officialSet = new Set(official.map(b => b.trim().toLowerCase()));
+        const counts = {};
+        official.forEach(b => counts[b] = 0);
+        const outside = {};
+        let unspecified = 0;
+
+        filtered.forEach(r => {
+            const raw = String(r.barangay || "").trim();
+            if (!raw) { unspecified++; return; }
+            const match = official.find(b => b.trim().toLowerCase() === raw.toLowerCase());
+            if (match) counts[match]++;
+            else outside[raw] = (outside[raw] || 0) + 1;
+        });
+
+        const officialRows = official
+            .filter(b => counts[b] > 0)
+            .sort((a,b) => counts[b] - counts[a] || a.localeCompare(b));
+
+        const outsideCount = Object.values(outside).reduce((sum,n) => sum + n, 0);
+        const rowsHtml = officialRows.map(b => `<tr><td>${escapeHTML(b)}</td><td>${counts[b]}</td></tr>`).join("");
+        const outsideHtml = outsideCount > 0
+            ? `<tr class="outside-binangonan-row" onclick="openOutsideBinangonanModal()" title="View outside-Binangonan responses" style="cursor:pointer"><td><b>OUTSIDE BINANGONAN</b><span style="display:block;font-size:11px;color:#64748b;margin-top:3px">Click to view places</span></td><td><b>${outsideCount}</b></td></tr>`
+            : "";
+        const unspecifiedHtml = unspecified > 0
+            ? `<tr><td>Not Specified</td><td>${unspecified}</td></tr>`
+            : "";
+        barangayBody.innerHTML = rowsHtml + outsideHtml + unspecifiedHtml || `<tr><td colspan="2" class="report-empty">No data</td></tr>`;
+
+        window._outsideBinangonanBreakdown = outside;
     }
 }
 
@@ -3474,21 +3500,12 @@ async function importExcelRecords(event){
   const pick=(o,names)=>{for(const n of names){if(o[n]!==undefined&&o[n]!==null&&String(o[n]).trim()!=='')return o[n];} return '';};
   const selected=rows.filter(row=>{ const d=excelDateToISO(pick(row,['Date','date','Incident Date','Record Date'])); if(!d)return false; if(mode==='month'){const x=new Date(d+'T12:00:00'); return x.getFullYear()===year&&x.getMonth()===month;} return mode==='range'?d>=from&&d<=to:true; });
   if(!selected.length) throw new Error('No Excel records match the selected date filter.');
-  const shouldImport = await mdrrmoImportConfirm(selected.length, 'your Excel file');
-  if(!shouldImport) { input.value=''; return; }
+  if(!confirm(`Import ${selected.length} record(s) as ${type.replace(/_/g,' ').toUpperCase()}?\n\nExisting records will NOT be deleted.`)) return;
   const existing=new Set((Array.isArray(records)?records:[]).map(r=>String(r.id))); let added=[],skipped=0;
-  mdrrmoImportLoading(selected.length);
-  for(let i=0;i<selected.length;i++){
-   const row=selected[i]; let id=pick(row,['ID','Id','id'])||generateID();
-   if(existing.has(String(id))){skipped++;continue;}
-   const record={id,type,date:excelDateToISO(pick(row,['Date','date','Incident Date','Record Date'])),time:pick(row,['Time','time','Incident Time','Record Time']),barangay:pick(row,['Barangay','barangay']),category:pick(row,['Category','category','Incident / Purpose','Purpose']),location:pick(row,['Location','location','Location / Destination','Destination']),rescued:Number(pick(row,['Rescued','rescued']))||0,ambulance:pick(row,['Ambulance','ambulance']),status:pick(row,['Status','status'])||'Completed',responders:pick(row,['Responders','responders','Responding Team / Personnel']),persons:pick(row,['Persons','persons','Person(s) Involved / Assisted']),age:Number(pick(row,['Age','age']))||0,remarks:pick(row,['Remarks','remarks','Notes']),updatedAt:new Date().toISOString()};
-   const response=await fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)});
-   if(!response.ok) throw new Error(`Failed to import Excel row ${i+2}.`);
-   added.push(await response.json()); existing.add(String(id));
-  }
-  records=[...added,...(Array.isArray(records)?records:[])]; currentRecordsPage=1; updateAll(); closeExcelImport();
-  mdrrmoImportResult('success','Excel Import Successful!',`${added.length} new record${added.length===1?'':'s'} imported successfully.`,`Duplicates skipped: ${skipped} · Total records now: ${records.length}`);
- }catch(error){console.error('Excel import error:',error);mdrrmoImportResult('error','Excel Import Failed','The import could not be completed.',error.message);}finally{input.value='';}
+  for(let i=0;i<selected.length;i++){const row=selected[i]; let id=pick(row,['ID','Id','id'])||generateID(); if(existing.has(String(id))){skipped++;continue;} const record={id,type,date:excelDateToISO(pick(row,['Date','date','Incident Date','Record Date'])),time:pick(row,['Time','time','Incident Time','Record Time']),barangay:pick(row,['Barangay','barangay']),category:pick(row,['Category','category','Incident / Purpose','Purpose']),location:pick(row,['Location','location','Location / Destination','Destination']),rescued:Number(pick(row,['Rescued','rescued']))||0,ambulance:pick(row,['Ambulance','ambulance']),status:pick(row,['Status','status'])||'Completed',responders:pick(row,['Responders','responders','Responding Team / Personnel']),persons:pick(row,['Persons','persons','Person(s) Involved / Assisted']),age:Number(pick(row,['Age','age']))||0,remarks:pick(row,['Remarks','remarks','Notes']),updatedAt:new Date().toISOString()};
+   const response=await fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)}); if(!response.ok)throw new Error(`Failed to import Excel row ${i+2}.`); added.push(await response.json()); existing.add(String(id)); }
+  records=[...added,...(Array.isArray(records)?records:[])]; currentRecordsPage=1; updateAll(); closeExcelImport(); alert(`Excel Import Completed!\n\nImported: ${added.length}\nDuplicates skipped: ${skipped}\nTotal records: ${records.length}`);
+ }catch(error){console.error('Excel import error:',error);alert('Excel Import Failed.\n\n'+error.message);}finally{input.value='';}
 }
 
 function updateExcelExportFilterUI() {
@@ -3791,9 +3808,9 @@ loadRecordsFromDatabase();
 <script id="mdrrmoImportModalScript">
 function mdrrmoImportModalShow(content){const m=document.getElementById('mdrrmoImportModal'),c=document.getElementById('mdrrmoImportModalContent');c.innerHTML=content;m.classList.add('show');}
 function mdrrmoImportModalHide(){document.getElementById('mdrrmoImportModal').classList.remove('show');}
-function mdrrmoImportConfirm(count,sourceLabel='your database backup'){return new Promise(resolve=>{mdrrmoImportModalShow(`
+function mdrrmoImportConfirm(count){return new Promise(resolve=>{mdrrmoImportModalShow(`
  <div class="mdrrmo-import-head"><h3>📥 Import Records</h3><p>Please review before continuing</p></div>
- <div class="mdrrmo-import-body"><div class="mdrrmo-import-count"><div style="font-size:1.8rem">📄</div><div><b>${count} record${count===1?'':'s'} found</b><span>Ready to import from ${sourceLabel}</span></div></div>
+ <div class="mdrrmo-import-body"><div class="mdrrmo-import-count"><div style="font-size:1.8rem">📄</div><div><b>${count} record${count===1?'':'s'} found</b><span>Ready to import from your JSON backup</span></div></div>
  <div class="mdrrmo-import-notes"><div class="mdrrmo-import-note"><span>✓</span><span>Records will be <b>added</b> to your current database.</span></div><div class="mdrrmo-import-note"><span>✓</span><span>Existing records will <b>not be deleted</b>.</span></div><div class="mdrrmo-import-note"><span>✓</span><span>Duplicate record IDs will be skipped automatically.</span></div></div></div>
  <div class="mdrrmo-import-actions"><button class="mdrrmo-cancel" id="mdrrmoImportCancel">Cancel</button><button class="mdrrmo-primary" id="mdrrmoImportConfirm">Import Records</button></div>`);
  document.getElementById('mdrrmoImportCancel').onclick=()=>{mdrrmoImportModalHide();resolve(false)};
@@ -3919,5 +3936,31 @@ function mdrrmoDeleteConfirm(){
 })();
 </script>
 
+
+<style>
+.outside-binangonan-row td{background:#f8fbff;transition:.15s}.outside-binangonan-row:hover td{background:#eef6ff}.outside-binangonan-list{margin-top:14px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}.outside-binangonan-list table{min-width:0}.outside-binangonan-list th,.outside-binangonan-list td{padding:11px 13px}.outside-binangonan-total{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;background:#f8fafc;border-radius:10px;margin-top:12px;color:#334155}.outside-binangonan-total strong{font-size:20px;color:#173d79}.outside-binangonan-empty{text-align:center;padding:24px;color:#94a3b8}
+</style>
+<div id="outsideBinangonanModal" class="mdrrmo-import-modal" role="dialog" aria-modal="true" aria-labelledby="outsideBinangonanTitle">
+  <div class="mdrrmo-import-box" style="max-width:620px">
+    <div class="mdrrmo-import-head"><h3 id="outsideBinangonanTitle">📍 OUTSIDE BINANGONAN</h3><p>Responses for persons/incidents from places outside the official Binangonan barangay list.</p></div>
+    <div class="mdrrmo-import-body" id="outsideBinangonanBody"></div>
+    <div class="mdrrmo-import-actions"><button type="button" class="btn btn-light" onclick="closeOutsideBinangonanModal()">Close</button></div>
+  </div>
+</div>
+<script>
+function openOutsideBinangonanModal(){
+  const modal=document.getElementById('outsideBinangonanModal');
+  const body=document.getElementById('outsideBinangonanBody');
+  const data=window._outsideBinangonanBreakdown||{};
+  const entries=Object.entries(data).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+  const total=entries.reduce((s,[,n])=>s+n,0);
+  body.innerHTML=entries.length
+    ? `<div class="outside-binangonan-list"><table><thead><tr><th>PLACE / BARANGAY</th><th>RECORDS</th></tr></thead><tbody>${entries.map(([place,count])=>`<tr><td>${escapeHTML(place)}</td><td><b>${count}</b></td></tr>`).join('')}</tbody></table></div><div class="outside-binangonan-total"><span>Total outside-Binangonan responses</span><strong>${total}</strong></div>`
+    : `<div class="outside-binangonan-empty">No outside-Binangonan records in the selected period.</div>`;
+  modal.classList.add('show');
+}
+function closeOutsideBinangonanModal(){const m=document.getElementById('outsideBinangonanModal');if(m)m.classList.remove('show');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangonanModal();});
+</script>
 </body>
 </html>
