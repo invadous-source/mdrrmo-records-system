@@ -1324,6 +1324,15 @@ textarea::placeholder {
     color: #718096 !important;
     opacity: 1;
 }
+
+/* Bulk record actions */
+.bulk-record-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+.bulk-record-actions .bulk-count{font-size:13px;color:#64748b;margin-left:auto}
+.bulk-select-btn{border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:9px;padding:9px 12px;font-weight:700;cursor:pointer}
+.bulk-delete-btn{border:0;background:#c0392b;color:#fff;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer}
+.bulk-delete-btn:disabled,.bulk-select-btn:disabled{opacity:.5;cursor:not-allowed}
+.record-select-cell{width:42px;text-align:center}
+.record-checkbox,.select-all-records{width:17px;height:17px;cursor:pointer;accent-color:#174c94}
 </style>
 
 
@@ -1633,7 +1642,7 @@ textarea::placeholder {
 <table>
 <thead>
 <tr>
-<th class="record-select-cell"><input class="select-all-records" id="selectAllRecords" type="checkbox" aria-label="Select all filtered records across all pages" onchange="handleSelectAllCheckbox(this)"></th>
+<th class="record-select-cell"><input class="select-all-records" id="selectAllRecords" type="checkbox" aria-label="Select all records on this page" onchange="handleSelectAllCheckbox(this)"></th>
 <th>
                                     Date
                                 </th>
@@ -2499,18 +2508,18 @@ function updateBulkSelectionUI() {
     const count = document.getElementById("selectedRecordsCount");
     const deleteBtn = document.getElementById("deleteSelectedRecordsBtn");
     const selectBtn = document.getElementById("selectAllRecordsBtn");
-    const visibleIds = getVisibleRecordIds();
-    const selectedVisible = visibleIds.filter(id => selectedRecordIds.has(id)).length;
-    const allVisibleSelected = visibleIds.length > 0 && selectedVisible === visibleIds.length;
+    const pageIds = getCurrentPageRecordIds();
+    const selectedOnPage = pageIds.filter(id => selectedRecordIds.has(id)).length;
+    const allOnPage = pageIds.length > 0 && selectedOnPage === pageIds.length;
 
     if (count) count.textContent = `${selectedRecordIds.size} selected`;
     if (deleteBtn) deleteBtn.disabled = selectedRecordIds.size === 0;
-    if (selectBtn) selectBtn.textContent = allVisibleSelected ? "Clear All" : "Select All";
+    if (selectBtn) selectBtn.textContent = allOnPage ? "Clear Page" : "Select All";
 
     const header = document.getElementById("selectAllRecords");
     if (header) {
-        header.checked = allVisibleSelected;
-        header.indeterminate = selectedVisible > 0 && !allVisibleSelected;
+        header.checked = allOnPage;
+        header.indeterminate = selectedOnPage > 0 && !allOnPage;
     }
 
     document.querySelectorAll(".record-checkbox").forEach(cb => {
@@ -2526,17 +2535,13 @@ function handleRecordCheckboxChange(checkbox) {
 }
 
 function handleSelectAllCheckbox(checkbox) {
-    // Select/deselect every record in the current filtered result set,
-    // including records on pages that are not currently visible.
-    const ids = getVisibleRecordIds();
+    const ids = getCurrentPageRecordIds();
     ids.forEach(id => checkbox.checked ? selectedRecordIds.add(id) : selectedRecordIds.delete(id));
     updateBulkSelectionUI();
 }
 
 function toggleSelectAllRecords() {
-    // The top Select All button operates on the complete filtered result set,
-    // not only the current pagination page.
-    const ids = getVisibleRecordIds();
+    const ids = getCurrentPageRecordIds();
     if (!ids.length) return;
     const allSelected = ids.every(id => selectedRecordIds.has(id));
     ids.forEach(id => allSelected ? selectedRecordIds.delete(id) : selectedRecordIds.add(id));
@@ -3646,13 +3651,6 @@ function exportExcel() {
 /* ================================
    BULK RECORD ACTIONS
 ================================ */
-.bulk-record-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px}
-.bulk-record-actions .bulk-count{font-size:13px;color:#64748b;margin-left:auto}
-.bulk-select-btn{border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:9px;padding:9px 12px;font-weight:700;cursor:pointer}
-.bulk-delete-btn{border:0;background:#c0392b;color:#fff;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer}
-.bulk-delete-btn:disabled,.bulk-select-btn:disabled{opacity:.5;cursor:not-allowed}
-.record-select-cell{width:42px;text-align:center}
-.record-checkbox,.select-all-records{width:17px;height:17px;cursor:pointer;accent-color:#174c94}
 
 /* ================================
    SCROLL SECTION
