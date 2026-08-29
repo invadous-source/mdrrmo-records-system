@@ -4547,38 +4547,73 @@ button:disabled, .btn:disabled { opacity:.65; cursor:not-allowed; transform:none
 </script>
 
 
-<style id="mdrrmo-excel-modal-fix">
-/* Keep Excel import/export popups above all transition/loading layers */
-#excelImportModal, #excelExportModal,
-[id*="Excel"][class*="modal"], [id*="excel"][class*="modal"] {
-  z-index: 5000 !important;
+<style id="mdrrmo-excel-popup-layout-fix">
+/* Excel panels must live above every section/transition stacking layer */
+#excelImportPanel,
+#excelExportPanel{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:2147483000 !important;
+  width:100vw !important;
+  height:100vh !important;
+  min-height:100vh !important;
+  display:none;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:20px !important;
+  box-sizing:border-box !important;
 }
-#excelImportModal .modal-content, #excelExportModal .modal-content,
-#excelImportModal .modal-box, #excelExportModal .modal-box {
-  opacity: 1 !important;
-  transform: none !important;
-  animation: none !important;
+#excelImportPanel > div,
+#excelExportPanel > div{
+  position:relative !important;
+  z-index:1 !important;
+  width:min(520px, calc(100vw - 40px)) !important;
+  max-height:calc(100vh - 40px) !important;
+  overflow:auto !important;
+  box-sizing:border-box !important;
 }
-body.mdrrmo-dark #excelImportModal .modal-box,
-body.mdrrmo-dark #excelExportModal .modal-box,
-body.mdrrmo-dark #excelImportModal .modal-content,
-body.mdrrmo-dark #excelExportModal .modal-content {
-  background: #162235 !important;
-  color: #e8eef8 !important;
+body.mdrrmo-dark #excelImportPanel > div,
+body.mdrrmo-dark #excelExportPanel > div{
+  background:#162235 !important;
+  color:#e8eef8 !important;
 }
+body.mdrrmo-dark #excelImportPanel p,
+body.mdrrmo-dark #excelExportPanel p{color:#b9c7d9 !important;}
 </style>
-<script>
-/* Repair Excel modal opening so page-transition effects never interfere. */
+
+<script id="mdrrmo-excel-popup-stack-fix">
 (function(){
-  ['openExcelImport','openExcelExport'].forEach(function(name){
-    const original=window[name];
-    if(typeof original==='function'){
-      window[name]=function(){
-        document.querySelectorAll('#mdrrmoPageLoader').forEach(function(x){x.classList.add('hide');});
-        return original.apply(this,arguments);
-      };
-    }
-  });
+  function moveExcelPanelsToBody(){
+    ['excelImportPanel','excelExportPanel'].forEach(function(id){
+      var panel=document.getElementById(id);
+      if(panel && panel.parentElement!==document.body){
+        document.body.appendChild(panel);
+      }
+    });
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', moveExcelPanelsToBody);
+  }else{
+    moveExcelPanelsToBody();
+  }
+
+  /* Run again before opening in case another script rebuilds a section. */
+  var originalImport=window.openExcelImport;
+  if(typeof originalImport==='function'){
+    window.openExcelImport=function(){
+      moveExcelPanelsToBody();
+      return originalImport.apply(this,arguments);
+    };
+  }
+
+  var originalExport=window.openExcelExport;
+  if(typeof originalExport==='function'){
+    window.openExcelExport=function(){
+      moveExcelPanelsToBody();
+      return originalExport.apply(this,arguments);
+    };
+  }
 })();
 </script>
 
