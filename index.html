@@ -4381,6 +4381,95 @@ body.mdrrmo-dark .modal-content,body.mdrrmo-dark .modal-body{background:#182235!
 @media(max-width:850px){.topbar{flex-wrap:wrap!important}.topbar-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}.date-display{margin-right:auto}}
 @media(max-width:700px){.topbar-actions{gap:7px}.mdrrmo-header-theme-toggle span{display:none}.mdrrmo-header-theme-toggle{padding:8px 10px}#userControls.mdrrmo-user-controls{padding:5px 6px!important}#userControls.mdrrmo-user-controls #userRoleBadge{display:none}}
 @media(max-width:460px){.mdrrmo-logout-btn{font-size:0!important}.mdrrmo-logout-btn::before{content:'🚪';font-size:14px}.date-display{font-size:11px!important}}
+
+/* Dark-mode correction: keep the login screen in its original light design,
+   while fully adapting the Outside Binangonan popup. */
+body.mdrrmo-dark #loginOverlay .login-card{
+  background:rgba(255,255,255,.97)!important;
+  color:#102b3b!important;
+  border-color:rgba(255,255,255,.6)!important;
+}
+body.mdrrmo-dark #loginOverlay .login-card h1{color:#102b3b!important}
+body.mdrrmo-dark #loginOverlay .login-eyebrow{color:#0b6a68!important}
+body.mdrrmo-dark #loginOverlay .login-subtitle{color:#60717b!important}
+body.mdrrmo-dark #loginOverlay .login-label{color:#48616f!important}
+body.mdrrmo-dark #loginOverlay .login-divider{background:#e7edf0!important}
+body.mdrrmo-dark #loginOverlay .login-input-wrap{
+  background:#fbfcfd!important;
+  border-color:#d8e1e5!important;
+  box-shadow:none!important;
+}
+body.mdrrmo-dark #loginOverlay .login-input-wrap:focus-within{
+  background:#fff!important;
+  border-color:#0b8a85!important;
+  box-shadow:0 0 0 4px rgba(11,138,133,.1)!important;
+}
+body.mdrrmo-dark #loginOverlay .login-input-wrap input{
+  background:transparent!important;
+  color:#17324D!important;
+  border:0!important;
+}
+body.mdrrmo-dark #loginOverlay .login-input-wrap input::placeholder{color:#718096!important}
+body.mdrrmo-dark #loginOverlay .login-error{color:#b42318!important}
+body.mdrrmo-dark #loginOverlay .login-footer{color:#8a99a1!important}
+body.mdrrmo-dark #loginOverlay .login-button{color:#fff!important}
+
+/* OUTSIDE BINANGONAN popup */
+body.mdrrmo-dark #outsideBinangonanModal .mdrrmo-import-box{
+  background:#182235!important;
+  color:#e5e7eb!important;
+  border-color:#334155!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.5)!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal .mdrrmo-import-head{
+  background:linear-gradient(135deg,#142f52,#1d4d78)!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal .mdrrmo-import-body{
+  background:#182235!important;
+  color:#e5e7eb!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal .mdrrmo-import-actions{
+  background:#141e2f!important;
+  border-color:#334155!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal .outside-binangonan-list{
+  background:#182235!important;
+  border-color:#334155!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal .outside-binangonan-table-wrap{
+  background:#182235!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal table,
+body.mdrrmo-dark #outsideBinangonanModal tbody,
+body.mdrrmo-dark #outsideBinangonanModal tbody tr,
+body.mdrrmo-dark #outsideBinangonanModal td{
+  background:#182235!important;
+  color:#e5e7eb!important;
+  border-color:#334155!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal th{
+  background:#223047!important;
+  color:#f8fafc!important;
+  border-color:#3b4b63!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal .outside-binangonan-row td{background:#182235!important}
+body.mdrrmo-dark #outsideBinangonanModal .outside-binangonan-row:hover td,
+body.mdrrmo-dark #outsideBinangonanModal tbody tr:hover td{background:#26354d!important;color:#fff!important}
+body.mdrrmo-dark #outsideBinangonanModal .outside-binangonan-total{
+  background:#1f2d43!important;
+  color:#cbd5e1!important;
+  border:1px solid #334155!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal .outside-binangonan-total strong{color:#93c5fd!important}
+body.mdrrmo-dark #outsideBinangonanModal .outside-binangonan-page-info{color:#aebbd0!important}
+body.mdrrmo-dark #outsideBinangonanModal .outside-binangonan-empty{color:#94a3b8!important}
+body.mdrrmo-dark #outsideBinangonanModal .btn-light{
+  background:#273449!important;
+  color:#f8fafc!important;
+  border-color:#475569!important;
+}
+body.mdrrmo-dark #outsideBinangonanModal .btn-light:hover{background:#334155!important}
+
 </style>
 <div id="mdrrmoPageLoader" aria-live="polite"><div class="mdrrmo-loader-card"><div class="mdrrmo-spinner"></div><div>Loading MDRRMO Records System...</div></div></div>
 <script>
