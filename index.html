@@ -4485,5 +4485,66 @@ body.mdrrmo-dark #outsideBinangonanModal .btn-light:hover{background:#334155!imp
 })();
 </script>
 
+
+<style id="mdrrmo-polish-upgrade">
+/* Smooth section/page transitions */
+.content > section, .content .section {
+  animation: mdrrmoFadeIn .28s ease both;
+}
+@keyframes mdrrmoFadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+
+/* Better dashboard cards */
+.card, .stat-card, .dashboard-card {
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.card:hover, .stat-card:hover, .dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(15,23,42,.12);
+}
+body.mdrrmo-dark .card:hover, body.mdrrmo-dark .stat-card:hover, body.mdrrmo-dark .dashboard-card:hover {
+  box-shadow: 0 12px 28px rgba(0,0,0,.28);
+}
+
+/* Better button feedback */
+button, .btn {
+  transition: transform .12s ease, filter .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+button:hover, .btn:hover { filter: brightness(1.04); }
+button:active, .btn:active { transform: scale(.97); }
+button:disabled, .btn:disabled { opacity:.65; cursor:not-allowed; transform:none; }
+</style>
+<script id="mdrrmo-polish-script">
+(function(){
+  // Re-run a subtle entrance animation when sidebar sections are changed.
+  document.addEventListener('click', function(e){
+    const el=e.target.closest('.sidebar button, .sidebar a');
+    if(!el) return;
+    const target=el.getAttribute('onclick')||'';
+    if(!target.includes('scrollToSection')) return;
+    setTimeout(function(){
+      const active=document.querySelector('.content section:not([style*="display: none"])') || document.querySelector('.content .section:not([style*="display: none"])');
+      if(active){ active.style.animation='none'; active.offsetHeight; active.style.animation='mdrrmoFadeIn .28s ease both'; }
+    }, 30);
+  });
+
+  // Prevent repeated clicks during async Save-like actions and provide feedback.
+  document.addEventListener('click', function(e){
+    const b=e.target.closest('button');
+    if(!b || b.dataset.mdrrmoFeedback || b.disabled) return;
+    const text=(b.textContent||'').trim();
+    if(!/^(save|update|submit|add record)$/i.test(text)) return;
+    b.dataset.mdrrmoFeedback='1';
+    const original=b.innerHTML;
+    b.innerHTML='Please wait...';
+    b.disabled=true;
+    setTimeout(function(){
+      if(b.isConnected && b.disabled){
+        b.innerHTML=original; b.disabled=false; delete b.dataset.mdrrmoFeedback;
+      }
+    }, 2500);
+  }, true);
+})();
+</script>
+
 </body>
 </html>
