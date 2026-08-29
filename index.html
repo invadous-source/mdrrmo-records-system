@@ -1336,6 +1336,20 @@ textarea::placeholder {
 </style>
 
 
+<style id="mdrrmoExcelWorkflowStyles">
+.mdrrmo-excel-preview-table-wrap{max-height:42vh;overflow:auto;border:1px solid #dbe7f0;border-radius:12px;margin-top:14px}
+.mdrrmo-excel-preview-table{width:100%;border-collapse:collapse;font-size:12px;min-width:760px}
+.mdrrmo-excel-preview-table th{position:sticky;top:0;background:#eef5fb;color:#244761;padding:9px;text-align:left;z-index:1}
+.mdrrmo-excel-preview-table td{padding:8px;border-bottom:1px solid #e7eef4;color:#40586b;vertical-align:top}
+.mdrrmo-excel-preview-table tr.invalid{background:#fff5f5}
+.mdrrmo-excel-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}
+.mdrrmo-excel-summary-card{border:1px solid #dbe7f0;border-radius:12px;padding:11px;background:#f9fcff}
+.mdrrmo-excel-summary-card b{display:block;font-size:1.2rem;color:#06345f}
+.mdrrmo-excel-summary-card span{font-size:.76rem;color:#667e91}
+.mdrrmo-excel-warning{padding:11px 13px;border-radius:11px;background:#fff8e8;border:1px solid #f2d49a;color:#795b20;font-size:.84rem;line-height:1.45}
+.mdrrmo-excel-error{padding:11px 13px;border-radius:11px;background:#fff3f3;border:1px solid #efc7c7;color:#8a3a3a;font-size:.84rem;line-height:1.45}
+@media(max-width:600px){.mdrrmo-excel-summary{grid-template-columns:1fr}.mdrrmo-import-box{width:100%!important}}
+</style>
 <style id="mdrrmoImportModalStyles">
 .mdrrmo-import-modal{position:fixed;inset:0;z-index:120000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,24,43,.58);backdrop-filter:blur(5px)}
 .mdrrmo-import-modal.show{display:flex;animation:mdrrmoFade .18s ease}
@@ -1486,27 +1500,6 @@ textarea::placeholder {
   z-index: 2;
   background: inherit;
 }
-</style>
-
-
-<style id="record-details-modal-css">
-#recordDetailsModal{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.55)}
-#recordDetailsModal.show{display:flex}
-#recordDetailsModal .rdm-card{width:min(760px,96vw);max-height:90vh;overflow:hidden;background:var(--card-bg,#fff);color:var(--text-color,#222);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column}
-#recordDetailsModal .rdm-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(128,128,128,.22);flex-shrink:0}
-#recordDetailsModal .rdm-title{margin:0;font-size:20px;font-weight:700}
-#recordDetailsModal .rdm-close{border:0;background:transparent;cursor:pointer;font-size:28px;line-height:1;padding:4px 8px;border-radius:8px}
-#recordDetailsModal .rdm-close:hover{background:rgba(128,128,128,.12)}
-#recordDetailsModal .rdm-body{overflow-y:auto;padding:20px}
-#recordDetailsModal .rdm-section{margin:0 0 18px}
-#recordDetailsModal .rdm-section h4{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
-#recordDetailsModal .rdm-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}
-#recordDetailsModal .rdm-field{padding:10px 0;border-bottom:1px solid rgba(128,128,128,.16);min-width:0}
-#recordDetailsModal .rdm-label{display:block;font-size:12px;opacity:.65;margin-bottom:3px}
-#recordDetailsModal .rdm-value{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
-#recordDetailsModal .rdm-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid rgba(128,128,128,.22);flex-shrink:0}
-#recordDetailsModal .rdm-btn{border:1px solid rgba(128,128,128,.3);border-radius:8px;padding:9px 14px;cursor:pointer;background:transparent}
-@media(max-width:600px){#recordDetailsModal .rdm-grid{grid-template-columns:1fr}#recordDetailsModal{padding:10px}}
 </style>
 
 </head>
@@ -3614,10 +3607,87 @@ function excelDateToISO(value){
     const dt=new Date(text); if(!Number.isNaN(dt.getTime())) return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
     return '';
 }
+function mdrrmoExcelKey(record){
+    return [record.date, record.time, record.persons, record.location, record.category]
+        .map(v => String(v ?? '').trim().toLowerCase())
+        .join('|');
+}
+
+function mdrrmoExcelPick(o,names){
+    for(const n of names){
+        if(o[n]!==undefined && o[n]!==null && String(o[n]).trim()!=='') return o[n];
+    }
+    return '';
+}
+
+function mdrrmoExcelBuildRecord(row,type){
+    const date=excelDateToISO(mdrrmoExcelPick(row,['Date','date','Incident Date','Record Date']));
+    const time=mdrrmoExcelPick(row,['Time','time','Incident Time','Record Time']);
+    const persons=mdrrmoExcelPick(row,['Persons','persons','Person(s) Involved / Assisted','Name','name']);
+    const barangay=mdrrmoExcelPick(row,['Barangay','barangay']);
+    const category=mdrrmoExcelPick(row,['Category','category','Incident / Purpose','Purpose']);
+    const location=mdrrmoExcelPick(row,['Location','location','Location / Destination','Destination']);
+    const ageRaw=mdrrmoExcelPick(row,['Age','age']);
+    const age=ageRaw===''?0:Number(ageRaw);
+    const id=mdrrmoExcelPick(row,['ID','Id','id'])||generateID();
+    return {
+        id,type,date,time,barangay,category,location,
+        rescued:Number(mdrrmoExcelPick(row,['Rescued','rescued']))||0,
+        ambulance:mdrrmoExcelPick(row,['Ambulance','ambulance']),
+        status:mdrrmoExcelPick(row,['Status','status'])||'Completed',
+        responders:mdrrmoExcelPick(row,['Responders','responders','Responding Team / Personnel']),
+        persons,age:Number.isFinite(age)?age:NaN,
+        remarks:mdrrmoExcelPick(row,['Remarks','remarks','Notes']),
+        updatedAt:new Date().toISOString()
+    };
+}
+
+function mdrrmoExcelValidate(record,rowNumber){
+    const errors=[];
+    if(!record.date) errors.push('Missing/invalid date');
+    if(!record.time) errors.push('Missing time');
+    if(!record.persons) errors.push('Missing person/name');
+    if(!record.barangay) errors.push('Missing barangay');
+    if(!record.category) errors.push('Missing incident/category');
+    if(!record.location) errors.push('Missing location');
+    if(Number.isNaN(record.age) || record.age<0 || record.age>130) errors.push('Invalid age');
+    return errors;
+}
+
+function mdrrmoExcelPreviewModal(data, resolve){
+    const invalid=data.filter(x=>x.errors.length).length;
+    const duplicate=data.filter(x=>x.duplicate).length;
+    const valid=data.length-invalid-duplicate;
+    const rows=data.slice(0,20).map(x=>`<tr class="${x.errors.length||x.duplicate?'invalid':''}">
+        <td>${x.rowNumber}</td><td>${escapeHTML(x.record.date||'-')}</td><td>${escapeHTML(x.record.time||'-')}</td>
+        <td>${escapeHTML(x.record.persons||'-')}</td><td>${escapeHTML(x.record.barangay||'-')}</td>
+        <td>${escapeHTML(x.record.category||'-')}</td><td>${escapeHTML(x.errors.length?x.errors.join(', '):(x.duplicate?'Duplicate':'Ready'))}</td>
+    </tr>`).join('');
+    mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>📋 Review Excel Import</h3><p>Preview and validate before anything is saved</p></div>
+      <div class="mdrrmo-import-body">
+        <div class="mdrrmo-excel-summary">
+          <div class="mdrrmo-excel-summary-card"><b>${data.length}</b><span>Rows found</span></div>
+          <div class="mdrrmo-excel-summary-card"><b>${valid}</b><span>Ready to import</span></div>
+          <div class="mdrrmo-excel-summary-card"><b>${duplicate}</b><span>Duplicates</span></div>
+        </div>
+        ${invalid?`<div class="mdrrmo-excel-error">⚠️ <b>${invalid} row${invalid===1?'':'s'} need attention.</b> Invalid rows will not be imported.</div>`:''}
+        ${duplicate?`<div class="mdrrmo-excel-warning" style="margin-top:9px">↻ <b>${duplicate} duplicate${duplicate===1?'':'s'} detected.</b> Existing records and duplicates within this file will be skipped.</div>`:''}
+        <div class="mdrrmo-excel-preview-table-wrap"><table class="mdrrmo-excel-preview-table"><thead><tr><th>Row</th><th>Date</th><th>Time</th><th>Person</th><th>Barangay</th><th>Incident</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
+        ${data.length>20?`<p style="font-size:.8rem;color:#71879a;margin:9px 0 0">Showing first 20 of ${data.length} rows. Validation applies to all rows.</p>`:''}
+      </div>
+      <div class="mdrrmo-import-actions"><button class="mdrrmo-cancel" id="mdrrmoExcelPreviewCancel">Cancel</button><button class="mdrrmo-primary" id="mdrrmoExcelPreviewConfirm" ${valid?'':'disabled'}>Import ${valid} Record${valid===1?'':'s'}</button></div>`);
+    document.getElementById('mdrrmoExcelPreviewCancel').onclick=()=>{mdrrmoImportModalHide();resolve(false)};
+    document.getElementById('mdrrmoExcelPreviewConfirm').onclick=()=>{mdrrmoImportModalHide();resolve(true)};
+}
+
+function mdrrmoExcelProgress(done,total,skipped,errors){
+    mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>📥 Importing Excel Records</h3><p>Please wait while records are saved</p></div><div class="mdrrmo-status"><div class="mdrrmo-spinner"></div><h3>Processing ${done} of ${total}...</h3><p><b>${skipped}</b> duplicate${skipped===1?'':'s'} skipped · <b>${errors}</b> error${errors===1?'':'s'}</p><p style="margin-top:10px">Please do not close, navigate away, or refresh the page.</p><div class="mdrrmo-progress"><span style="animation:none;width:${total?Math.round(done/total*100):0}%;transform:none"></span></div></div>`);
+}
+
 async function importExcelRecords(event){
  const input=event.target,file=input.files&&input.files[0]; if(!file)return;
  try{
-  if(typeof XLSX==='undefined') throw new Error('Excel import library could not be loaded. Please check your internet connection and restart the application.');
+  if(typeof XLSX==='undefined') throw new Error('Excel import library could not be loaded. Please check your internet connection.');
   const workbook=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:false});
   const ws=workbook.Sheets[workbook.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
   if(!rows.length) throw new Error('The Excel file does not contain any records.');
@@ -3626,29 +3696,45 @@ async function importExcelRecords(event){
   let from=document.getElementById('excelImportFrom').value, to=document.getElementById('excelImportTo').value;
   if(mode==='range' && (!from||!to)) throw new Error('Please select both From and To dates.');
   if(from>to)[from,to]=[to,from];
-  const pick=(o,names)=>{for(const n of names){if(o[n]!==undefined&&o[n]!==null&&String(o[n]).trim()!=='')return o[n];} return '';};
-  const selected=rows.filter(row=>{ const d=excelDateToISO(pick(row,['Date','date','Incident Date','Record Date'])); if(!d)return false; if(mode==='month'){const x=new Date(d+'T12:00:00'); return x.getFullYear()===year&&x.getMonth()===month;} return mode==='range'?d>=from&&d<=to:true; });
+  const selected=rows.filter(row=>{ const d=excelDateToISO(mdrrmoExcelPick(row,['Date','date','Incident Date','Record Date'])); if(!d)return false; if(mode==='month'){const x=new Date(d+'T12:00:00'); return x.getFullYear()===year&&x.getMonth()===month;} return mode==='range'?d>=from&&d<=to:true; });
   if(!selected.length) throw new Error('No Excel records match the selected date filter.');
 
-  const confirmed=typeof mdrrmoImportConfirm==='function' ? await mdrrmoImportConfirm(selected.length) : confirm(`Import ${selected.length} record(s)?`);
-  if(!confirmed) return;
+  const existingIds=new Set((Array.isArray(records)?records:[]).map(r=>String(r.id)));
+  const existingKeys=new Set((Array.isArray(records)?records:[]).map(mdrrmoExcelKey));
+  const seenIds=new Set(existingIds), seenKeys=new Set(existingKeys);
+  const prepared=selected.map((row,i)=>{
+      const record=mdrrmoExcelBuildRecord(row,type);
+      const errors=mdrrmoExcelValidate(record,i+2);
+      const duplicate=seenIds.has(String(record.id)) || seenKeys.has(mdrrmoExcelKey(record));
+      if(!errors.length && !duplicate){seenIds.add(String(record.id));seenKeys.add(mdrrmoExcelKey(record));}
+      return {rowNumber:i+2,record,errors,duplicate};
+  });
 
-  const existing=new Set((Array.isArray(records)?records:[]).map(r=>String(r.id))); let added=[],skipped=0;
-  for(let i=0;i<selected.length;i++){
-   const row=selected[i]; let id=pick(row,['ID','Id','id'])||generateID();
-   if(existing.has(String(id))){skipped++;continue;}
-   const record={id,type,date:excelDateToISO(pick(row,['Date','date','Incident Date','Record Date'])),time:pick(row,['Time','time','Incident Time','Record Time']),barangay:pick(row,['Barangay','barangay']),category:pick(row,['Category','category','Incident / Purpose','Purpose']),location:pick(row,['Location','location','Location / Destination','Destination']),rescued:Number(pick(row,['Rescued','rescued']))||0,ambulance:pick(row,['Ambulance','ambulance']),status:pick(row,['Status','status'])||'Completed',responders:pick(row,['Responders','responders','Responding Team / Personnel']),persons:pick(row,['Persons','persons','Person(s) Involved / Assisted']),age:Number(pick(row,['Age','age']))||0,remarks:pick(row,['Remarks','remarks','Notes']),updatedAt:new Date().toISOString()};
-   const response=await fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)});
-   if(!response.ok) throw new Error(`Failed to import Excel row ${i+2}.`);
-   added.push(await response.json()); existing.add(String(id));
+  const confirmed=await new Promise(resolve=>mdrrmoExcelPreviewModal(prepared,resolve));
+  if(!confirmed) return;
+  const toImport=prepared.filter(x=>!x.errors.length&&!x.duplicate);
+  if(!toImport.length){mdrrmoImportResult('error','Nothing to Import','No valid new records were found.','Invalid rows and duplicates were skipped.');return;}
+
+  let added=[],skipped=prepared.filter(x=>x.duplicate).length,errors=prepared.filter(x=>x.errors.length).length;
+  mdrrmoExcelProgress(0,toImport.length,skipped,errors);
+  for(let i=0;i<toImport.length;i++){
+      const item=toImport[i];
+      try{
+        const response=await fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(item.record)});
+        if(response.status===409){skipped++; mdrrmoExcelProgress(i+1,toImport.length,skipped,errors); continue;}
+        if(!response.ok) throw new Error(`HTTP ${response.status}`);
+        added.push(await response.json());
+      }catch(err){
+        console.error('Excel row import error:',item.rowNumber,err);
+        errors++;
+      }
+      mdrrmoExcelProgress(i+1,toImport.length,skipped,errors);
   }
   records=[...added,...(Array.isArray(records)?records:[])]; currentRecordsPage=1; updateAll(); closeExcelImport();
-  if(typeof mdrrmoImportResult==='function') mdrrmoImportResult('success','Import Successful',`${added.length} record${added.length===1?'':'s'} imported successfully.`,`Duplicates skipped: ${skipped}\nTotal records in database: ${records.length}`);
-  else alert(`Excel Import Completed!\n\nImported: ${added.length}\nDuplicates skipped: ${skipped}\nTotal records: ${records.length}`);
+  mdrrmoImportResult('success','Import Complete',`${added.length} record${added.length===1?'':'s'} imported successfully.`,`Duplicates skipped: ${skipped} · Invalid/error rows: ${errors} · Total records now: ${records.length}`);
  }catch(error){
   console.error('Excel import error:',error);
-  if(typeof mdrrmoImportResult==='function') mdrrmoImportResult('error','Excel Import Failed',error.message,'No more records will be processed.');
-  else alert('Excel Import Failed.\n\n'+error.message);
+  mdrrmoImportResult('error','Excel Import Failed',error.message,'No records were saved from this failed operation.');
  }finally{input.value='';}
 }
 
@@ -4154,51 +4240,5 @@ function closeOutsideBinangonanModal(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangonanModal();});
 </script>
-
-<div id="recordDetailsModal" aria-hidden="true">
- <div class="rdm-card" role="dialog" aria-modal="true" aria-labelledby="recordDetailsTitle">
-  <div class="rdm-header"><h3 id="recordDetailsTitle" class="rdm-title">Record Details</h3><button type="button" class="rdm-close" onclick="closeRecordDetails()" aria-label="Close">×</button></div>
-  <div id="recordDetailsBody" class="rdm-body"></div>
-  <div class="rdm-footer"><button type="button" class="rdm-btn" onclick="closeRecordDetails()">Close</button><button type="button" class="rdm-btn" id="recordDetailsEditBtn" onclick="editRecordFromDetails()">Edit Record</button></div>
- </div>
-</div>
-
-
-<script id="record-details-modal-js">
-(function(){
-window.__mdrrmoViewedRecord=null;
-function esc(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
-function val(o,ks){for(const k of ks){if(o&&o[k]!=null&&String(o[k]).trim()!=="")return o[k]}return"NOT SPECIFIED"}
-function field(l,v){return '<div class="rdm-field"><span class="rdm-label">'+esc(l)+'</span><span class="rdm-value">'+esc(v)+'</span></div>'}
-window.viewRecordDetails=function(r){
- if(typeof r==="string"||typeof r==="number"){const a=window.records||window.allRecords||window.currentRecords||[];r=a.find(x=>String(x.id??x.record_id)===String(r))}
- if(!r){alert("Unable to find this record.");return}
- window.__mdrrmoViewedRecord=r;
- const body=document.getElementById("recordDetailsBody"),modal=document.getElementById("recordDetailsModal"); if(!body||!modal)return;
- const id=val(r,["id","record_id"]),date=val(r,["date","incident_date","record_date"]),time=val(r,["time","incident_time","record_time"]),type=val(r,["record_type","recordType","type"]),incident=val(r,["incident","incident_type","category","purpose"]),name=val(r,["name","person_name","patient_name","client_name"]),age=val(r,["age"]),sex=val(r,["sex","gender"]),barangay=val(r,["barangay"]),location=val(r,["location","incident_location","address"]),team=val(r,["team","responding_team","response_team"]),status=val(r,["status"]),hospital=val(r,["hospital","receiving_hospital","receiving_facility"]),complaint=val(r,["chief_complaint","complaint"]),remarks=val(r,["remarks","notes","description"]);
- document.getElementById("recordDetailsTitle").textContent="Record Details"+(id!=="NOT SPECIFIED"?" — "+id:"");
- body.innerHTML='<div class="rdm-section"><h4>Incident Information</h4><div class="rdm-grid">'+field("Date",date)+field("Time",time)+field("Record Type",type)+field("Incident / Purpose",incident)+field("Location",location)+field("Barangay",barangay)+'</div></div>'+
- '<div class="rdm-section"><h4>Person Assisted</h4><div class="rdm-grid">'+field("Name",name)+field("Age",age)+field("Sex / Gender",sex)+field("Chief Complaint",complaint)+'</div></div>'+
- '<div class="rdm-section"><h4>Response Information</h4><div class="rdm-grid">'+field("Responding Team",team)+field("Status",status)+field("Receiving Hospital / Facility",hospital)+'</div></div>'+
- '<div class="rdm-section"><h4>Additional Information</h4><div class="rdm-grid">'+field("Remarks",remarks)+'</div></div>';
- modal.classList.add("show");modal.setAttribute("aria-hidden","false");
-};
-window.closeRecordDetails=function(){const m=document.getElementById("recordDetailsModal");if(m){m.classList.remove("show");m.setAttribute("aria-hidden","true")}window.__mdrrmoViewedRecord=null};
-window.editRecordFromDetails=function(){const r=window.__mdrrmoViewedRecord;if(!r)return;closeRecordDetails();if(typeof window.editRecord==="function")return window.editRecord(r);if(typeof window.openEditModal==="function")return window.openEditModal(r);if(typeof window.editRecordById==="function")return window.editRecordById(r.id)};
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeRecordDetails()});
-document.addEventListener("click",e=>{const m=document.getElementById("recordDetailsModal");if(m&&e.target===m)closeRecordDetails()});
-})();
-</script>
-
-
-<script id="record-details-view-enhancer">
-(function(){
-function list(){return window.records||window.allRecords||window.currentRecords||[]}
-function resolve(btn){const id=btn.getAttribute("data-id")||btn.closest("tr")?.getAttribute("data-id");if(id){const r=list().find(x=>String(x.id??x.record_id)===String(id));if(r)return r}const row=btn.closest("tr");if(!row)return null;const t=(row.innerText||"").trim();return list().find(x=>x.id!=null&&t.includes(String(x.id)))||null}
-function add(){document.querySelectorAll("button,a").forEach(function(b){if(!/^\s*edit\s*$/i.test(b.textContent||"")||b.dataset.rdmViewAdded==="1")return;const v=document.createElement("button");v.type="button";v.textContent="View";v.className=b.className||"btn";v.style.marginRight="6px";v.addEventListener("click",function(){const r=resolve(b);if(r)viewRecordDetails(r);else alert("Unable to find this record.")});b.parentNode.insertBefore(v,b);b.dataset.rdmViewAdded="1"});}
-const o=new MutationObserver(add);o.observe(document.body,{childList:true,subtree:true});setTimeout(add,500);setTimeout(add,1500);
-})();
-</script>
-
 </body>
 </html>
