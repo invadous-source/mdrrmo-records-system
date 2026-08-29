@@ -1569,7 +1569,7 @@ textarea::placeholder {
                 Accident and Ambulance Conduction Tracker
             </p>
 </div>
-<div class="date-display" id="currentDate"></div>
+<div class="topbar-actions"><div class="date-display" id="currentDate"></div><button id="mdrrmoThemeToggle" class="mdrrmo-header-theme-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">🌙 <span>Dark Mode</span></button></div>
 </header>
 <div class="content">
 <!-- ============================
@@ -4314,31 +4314,18 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangon
 
 <!-- MDRRMO UI Enhancement: Dark Mode + Loading Animation (index.html only) -->
 <style id="mdrrmo-ui-enhancements">
-#mdrrmoPageLoader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(243,246,251,.96);backdrop-filter:blur(4px);transition:opacity .35s ease,visibility .35s ease}
-#mdrrmoPageLoader.hide{opacity:0;visibility:hidden;pointer-events:none}
-.mdrrmo-loader-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 34px;border-radius:18px;background:#fff;box-shadow:0 18px 50px rgba(15,23,42,.16);font-weight:700;color:#174c94;letter-spacing:.2px}
-.mdrrmo-spinner{width:46px;height:46px;border:5px solid rgba(23,76,148,.16);border-top-color:#174c94;border-radius:50%;animation:mdrrmoSpin .8s linear infinite}
-@keyframes mdrrmoSpin{to{transform:rotate(360deg)}}
-#mdrrmoThemeToggle{position:fixed;right:22px;bottom:22px;z-index:9990;width:52px;height:52px;border:0;border-radius:50%;cursor:pointer;background:#102f63;color:#fff;box-shadow:0 10px 24px rgba(15,23,42,.24);font-size:21px;transition:transform .2s ease,box-shadow .2s ease}
-#mdrrmoThemeToggle:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(15,23,42,.3)}
-body.mdrrmo-dark{background:#0f172a!important;color:#e5e7eb!important}
-body.mdrrmo-dark .main-content,body.mdrrmo-dark .content,body.mdrrmo-dark .page-content{background:#0f172a!important;color:#e5e7eb!important}
-body.mdrrmo-dark .card,body.mdrrmo-dark .stat-card,body.mdrrmo-dark .modal-content,body.mdrrmo-dark .panel,body.mdrrmo-dark .form-container,body.mdrrmo-dark .table-container,body.mdrrmo-dark .chart-card{background:#172033!important;color:#e5e7eb!important;border-color:#334155!important}
-body.mdrrmo-dark input,body.mdrrmo-dark select,body.mdrrmo-dark textarea{background:#0f172a!important;color:#f8fafc!important;border-color:#475569!important}
-body.mdrrmo-dark table,body.mdrrmo-dark tr,body.mdrrmo-dark td,body.mdrrmo-dark th{border-color:#334155!important;color:#e5e7eb!important}
-body.mdrrmo-dark tr:nth-child(even){background:rgba(148,163,184,.06)!important}
-body.mdrrmo-dark .topbar,body.mdrrmo-dark .header{background:#172033!important;color:#f8fafc!important}
-body.mdrrmo-dark .btn-light{background:#273449!important;color:#f8fafc!important;border-color:#475569!important}
-body.mdrrmo-dark #mdrrmoPageLoader{background:rgba(15,23,42,.96)}
-body.mdrrmo-dark .mdrrmo-loader-card{background:#172033;color:#93c5fd;box-shadow:0 18px 50px rgba(0,0,0,.45)}
-body.mdrrmo-dark .mdrrmo-spinner{border-color:rgba(147,197,253,.18);border-top-color:#93c5fd}
+#mdrrmoPageLoader{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(243,246,251,.96);backdrop-filter:blur(4px);transition:opacity .35s ease,visibility .35s ease}#mdrrmoPageLoader.hide{opacity:0;visibility:hidden;pointer-events:none}.mdrrmo-loader-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 34px;border-radius:18px;background:#fff;box-shadow:0 18px 50px rgba(15,23,42,.16);font-weight:700;color:#174c94}.mdrrmo-spinner{width:46px;height:46px;border:5px solid rgba(23,76,148,.16);border-top-color:#174c94;border-radius:50%;animation:mdrrmoSpin .8s linear infinite}@keyframes mdrrmoSpin{to{transform:rotate(360deg)}}
+.topbar-actions{display:flex;align-items:center;gap:12px}.mdrrmo-header-theme-toggle{border:1px solid rgba(255,255,255,.28);border-radius:9px;padding:8px 12px;background:rgba(255,255,255,.14);color:#fff!important;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}.mdrrmo-header-theme-toggle:hover{background:rgba(255,255,255,.24)}
+body.mdrrmo-dark{background:#101827!important;color:#e5e7eb!important}body.mdrrmo-dark .main,body.mdrrmo-dark .content,body.mdrrmo-dark .main-content,body.mdrrmo-dark .page-content{background:#101827!important;color:#e5e7eb!important}body.mdrrmo-dark .card,body.mdrrmo-dark .stat-card,body.mdrrmo-dark .summary-card,body.mdrrmo-dark .dashboard-card,body.mdrrmo-dark .report-card,body.mdrrmo-dark .chart-card,body.mdrrmo-dark .analytics-card,body.mdrrmo-dark .records-card,body.mdrrmo-dark .filter-card,body.mdrrmo-dark .content-card,body.mdrrmo-dark .panel,body.mdrrmo-dark .form-container,body.mdrrmo-dark .table-container,body.mdrrmo-dark .table-wrapper{background:#182235!important;color:#e5e7eb!important;border-color:#334155!important}body.mdrrmo-dark input,body.mdrrmo-dark select,body.mdrrmo-dark textarea{background:#111a2b!important;color:#f8fafc!important;border-color:#475569!important}
+body.mdrrmo-dark table{background:#182235!important;color:#e5e7eb!important}body.mdrrmo-dark table thead,body.mdrrmo-dark table thead tr,body.mdrrmo-dark table th{background:#223047!important;color:#f8fafc!important;border-color:#3b4b63!important}body.mdrrmo-dark table tbody,body.mdrrmo-dark table tbody tr{background:#182235!important;color:#e5e7eb!important}body.mdrrmo-dark table td{background:transparent!important;color:#e5e7eb!important;border-color:#334155!important}body.mdrrmo-dark table tbody tr:nth-child(even){background:#1d293d!important}body.mdrrmo-dark table tbody tr:hover,body.mdrrmo-dark table tbody tr:hover td{background:#26354d!important;color:#fff!important}body.mdrrmo-dark .table-container *{border-color:#334155!important}
+body.mdrrmo-dark .modal-content,body.mdrrmo-dark .modal-body{background:#182235!important;color:#e5e7eb!important}body.mdrrmo-dark .btn-light{background:#273449!important;color:#f8fafc!important;border-color:#475569!important}body.mdrrmo-dark #mdrrmoPageLoader{background:rgba(10,15,25,.96)}body.mdrrmo-dark .mdrrmo-loader-card{background:#182235;color:#93c5fd;box-shadow:0 18px 50px rgba(0,0,0,.45)}body.mdrrmo-dark .mdrrmo-spinner{border-color:rgba(147,197,253,.18);border-top-color:#93c5fd}
+@media(max-width:700px){.topbar-actions{gap:7px}.mdrrmo-header-theme-toggle span{display:none}.mdrrmo-header-theme-toggle{padding:8px 10px}}
 </style>
 <div id="mdrrmoPageLoader" aria-live="polite"><div class="mdrrmo-loader-card"><div class="mdrrmo-spinner"></div><div>Loading MDRRMO Records System...</div></div></div>
-<button id="mdrrmoThemeToggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
 <script>
 (function(){
  const KEY='mdrrmo_theme_preference';
- function apply(dark){document.body.classList.toggle('mdrrmo-dark',dark);const b=document.getElementById('mdrrmoThemeToggle');if(b){b.textContent=dark?'☀️':'🌙';b.title=dark?'Switch to light mode':'Switch to dark mode';}}
+ function apply(dark){document.body.classList.toggle('mdrrmo-dark',dark);const b=document.getElementById('mdrrmoThemeToggle');if(b){b.innerHTML=dark?'☀️ <span>Light Mode</span>':'🌙 <span>Dark Mode</span>';b.title=dark?'Switch to light mode':'Switch to dark mode';}}
  const saved=localStorage.getItem(KEY);apply(saved==='dark');
  document.getElementById('mdrrmoThemeToggle').addEventListener('click',function(){const dark=!document.body.classList.contains('mdrrmo-dark');apply(dark);localStorage.setItem(KEY,dark?'dark':'light');});
  function hideLoader(){const l=document.getElementById('mdrrmoPageLoader');if(l)setTimeout(()=>l.classList.add('hide'),180)}
