@@ -1512,6 +1512,20 @@ textarea::placeholder {
 .mdrrmo-trash-actions{display:flex;justify-content:flex-end;gap:10px;padding:15px 22px;background:#f6f9fc;border-top:1px solid #e1e9f0;flex-wrap:wrap}
 .mdrrmo-trash-empty{text-align:center;padding:35px;color:#718096}
 @media(max-width:650px){.mdrrmo-import-stats{grid-template-columns:repeat(2,1fr)}.mdrrmo-trash-box{max-height:92vh}.mdrrmo-trash-body{max-height:66vh}}
+<style id="mdrrmoBulkDeleteProgressStyles">
+#mdrrmoBulkDeleteProgressModal{position:fixed;inset:0;z-index:130000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,24,43,.68);backdrop-filter:blur(6px)}
+#mdrrmoBulkDeleteProgressModal.show{display:flex;animation:mdrrmoFade .18s ease}
+.mdrrmo-bulk-delete-progress-box{width:min(470px,100%);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(3,30,55,.34);animation:mdrrmoPop .22s ease}
+.mdrrmo-bulk-delete-progress-head{padding:22px 24px 17px;background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff}
+.mdrrmo-bulk-delete-progress-head h3{margin:0!important;color:#fff!important;font-size:1.18rem}
+.mdrrmo-bulk-delete-progress-head p{margin:6px 0 0;color:rgba(255,255,255,.84)!important;font-size:.87rem}
+.mdrrmo-bulk-delete-progress-body{text-align:center;padding:36px 26px 30px;color:#29445b}
+.mdrrmo-bulk-delete-spinner{width:48px;height:48px;margin:0 auto 18px;border:5px solid #f4d8d8;border-top-color:#dc2626;border-radius:50%;animation:mdrrmoSpin .85s linear infinite}
+.mdrrmo-bulk-delete-progress-body h3{margin:0 0 8px;color:#06345f!important}
+.mdrrmo-bulk-delete-progress-body p{margin:0;color:#667e91;line-height:1.55}
+.mdrrmo-bulk-delete-progress{height:7px;border-radius:999px;background:#f0e2e2;overflow:hidden;margin:21px auto 0;max-width:310px}
+.mdrrmo-bulk-delete-progress>span{display:block;height:100%;width:30%;border-radius:inherit;background:linear-gradient(90deg,#b42318,#dc2626);animation:mdrrmoProgress 1.15s ease-in-out infinite}
+.mdrrmo-bulk-delete-lock{margin-top:14px;font-size:.8rem;color:#8a3a3a;font-weight:700}
 </style>
 
 </head>
@@ -2691,6 +2705,24 @@ async function deleteSelectedRecords() {
 
     if (!(await mdrrmoBulkDeleteConfirm(ids.length))) return;
 
+    const progressModal = document.getElementById("mdrrmoBulkDeleteProgressModal");
+    const progressCount = document.getElementById("mdrrmoBulkDeleteProgressCount");
+    const progressMessage = document.getElementById("mdrrmoBulkDeleteProgressMessage");
+    const showProgress = () => {
+        if (progressCount) progressCount.textContent = `Deleting ${ids.length} record${ids.length === 1 ? "" : "s"}...`;
+        if (progressMessage) progressMessage.textContent = "Please do not close, navigate away, or refresh the page.";
+        if (progressModal) {
+            progressModal.classList.add("show");
+            document.body.style.overflow = "hidden";
+        }
+    };
+    const hideProgress = () => {
+        if (progressModal) progressModal.classList.remove("show");
+        document.body.style.overflow = "";
+    };
+
+    showProgress();
+
     try {
         const response = await fetch("/api/records", {
             method: "DELETE",
@@ -2706,9 +2738,11 @@ async function deleteSelectedRecords() {
         currentRecordsPage = Math.min(currentRecordsPage, Math.max(1, Math.ceil(getFilteredRecordsForTable().length / RECORDS_PER_PAGE)));
         updateAll();
         updateBulkSelectionUI();
+        hideProgress();
         if (typeof showMDRRMOToast === "function") showMDRRMOToast(`${deletedIds.size} record${deletedIds.size === 1 ? "" : "s"} moved to Trash.`, "success");
     } catch (error) {
         console.error("Unable to move records to Trash:", error);
+        hideProgress();
         alert("Unable to move the selected records to Trash. Please make sure the database/API is available.\n\n" + error.message);
     }
 }
@@ -4353,5 +4387,12 @@ function closeOutsideBinangonanModal(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangonanModal();});
 </script>
+<script id="mdrrmoBulkDeleteProgressLock">
+document.addEventListener("keydown", function(event){
+  const modal=document.getElementById("mdrrmoBulkDeleteProgressModal");
+  if(modal && modal.classList.contains("show") && event.key === "Escape") event.preventDefault();
+});
+</script>
+
 </body>
 </html>
