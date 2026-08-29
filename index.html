@@ -4546,5 +4546,41 @@ button:disabled, .btn:disabled { opacity:.65; cursor:not-allowed; transform:none
 })();
 </script>
 
+
+<style id="mdrrmo-excel-modal-fix">
+/* Keep Excel import/export popups above all transition/loading layers */
+#excelImportModal, #excelExportModal,
+[id*="Excel"][class*="modal"], [id*="excel"][class*="modal"] {
+  z-index: 5000 !important;
+}
+#excelImportModal .modal-content, #excelExportModal .modal-content,
+#excelImportModal .modal-box, #excelExportModal .modal-box {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+body.mdrrmo-dark #excelImportModal .modal-box,
+body.mdrrmo-dark #excelExportModal .modal-box,
+body.mdrrmo-dark #excelImportModal .modal-content,
+body.mdrrmo-dark #excelExportModal .modal-content {
+  background: #162235 !important;
+  color: #e8eef8 !important;
+}
+</style>
+<script>
+/* Repair Excel modal opening so page-transition effects never interfere. */
+(function(){
+  ['openExcelImport','openExcelExport'].forEach(function(name){
+    const original=window[name];
+    if(typeof original==='function'){
+      window[name]=function(){
+        document.querySelectorAll('#mdrrmoPageLoader').forEach(function(x){x.classList.add('hide');});
+        return original.apply(this,arguments);
+      };
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
