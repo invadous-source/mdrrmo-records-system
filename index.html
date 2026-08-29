@@ -1488,46 +1488,6 @@ textarea::placeholder {
 }
 </style>
 
-
-<style id="mdrrmoSafetyFeaturesStyles">
-.mdrrmo-import-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
-.mdrrmo-import-stats>div{padding:10px;border:1px solid #dce8f2;border-radius:10px;background:#f7fafc;text-align:center}
-.mdrrmo-import-stats b{display:block;font-size:1.25rem;color:#173d79}.mdrrmo-import-stats span{font-size:11px;color:#66798a}
-.mdrrmo-import-stats .ok{background:#eefaf3;border-color:#cdebd9}.mdrrmo-import-stats .ok b{color:#16834b}
-.mdrrmo-import-stats .warn{background:#fff8e9;border-color:#f2dfae}.mdrrmo-import-stats .warn b{color:#a76b00}
-.mdrrmo-import-stats .bad{background:#fff1f1;border-color:#f0cccc}.mdrrmo-import-stats .bad b{color:#bd3030}
-.mdrrmo-excel-preview-table{margin-top:16px;border:1px solid #dbe5ee;border-radius:12px;overflow:auto;max-height:290px}
-.mdrrmo-excel-preview-table table{width:100%;min-width:650px;border-collapse:collapse;font-size:11px}
-.mdrrmo-excel-preview-table th{position:sticky;top:0;background:#06345f;color:#fff;padding:9px;text-align:left}
-.mdrrmo-excel-preview-table td{padding:8px;border-bottom:1px solid #e1e9f0;color:#29445b}
-.excel-preview-badge{display:inline-block;padding:3px 7px;border-radius:999px;font-weight:800;font-size:10px;background:#eef7f0;color:#16834b}
-.excel-preview-badge.duplicate{background:#fff5dc;color:#9a6800}.excel-preview-badge.invalid{background:#fff0f0;color:#b52f2f}
-#mdrrmoTrashModal{position:fixed;inset:0;z-index:120001;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,24,43,.62);backdrop-filter:blur(5px)}
-#mdrrmoTrashModal.show{display:flex}
-.mdrrmo-trash-box{width:min(900px,100%);max-height:88vh;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 25px 80px rgba(3,30,55,.32)}
-.mdrrmo-trash-head{padding:20px 24px;background:linear-gradient(135deg,#06345f,#0b5fa5);color:#fff;display:flex;align-items:center;gap:12px}
-.mdrrmo-trash-head h3{margin:0;color:#fff!important}.mdrrmo-trash-head button{margin-left:auto;border:0;background:transparent;color:#fff;font-size:26px;cursor:pointer}
-.mdrrmo-trash-body{padding:18px 22px;max-height:60vh;overflow:auto}
-.mdrrmo-trash-table{width:100%;border-collapse:collapse;font-size:12px}.mdrrmo-trash-table th{position:sticky;top:0;background:#f0f5fa;color:#31506b;padding:9px;text-align:left}.mdrrmo-trash-table td{padding:9px;border-bottom:1px solid #e1e9f0}
-.mdrrmo-trash-actions{display:flex;justify-content:flex-end;gap:10px;padding:15px 22px;background:#f6f9fc;border-top:1px solid #e1e9f0;flex-wrap:wrap}
-.mdrrmo-trash-empty{text-align:center;padding:35px;color:#718096}
-@media(max-width:650px){.mdrrmo-import-stats{grid-template-columns:repeat(2,1fr)}.mdrrmo-trash-box{max-height:92vh}.mdrrmo-trash-body{max-height:66vh}}
-<style id="mdrrmoBulkDeleteProgressStyles">
-#mdrrmoBulkDeleteProgressModal{position:fixed;inset:0;z-index:130000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,24,43,.68);backdrop-filter:blur(6px)}
-#mdrrmoBulkDeleteProgressModal.show{display:flex;animation:mdrrmoFade .18s ease}
-.mdrrmo-bulk-delete-progress-box{width:min(470px,100%);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(3,30,55,.34);animation:mdrrmoPop .22s ease}
-.mdrrmo-bulk-delete-progress-head{padding:22px 24px 17px;background:linear-gradient(135deg,#7f1d1d,#dc2626);color:#fff}
-.mdrrmo-bulk-delete-progress-head h3{margin:0!important;color:#fff!important;font-size:1.18rem}
-.mdrrmo-bulk-delete-progress-head p{margin:6px 0 0;color:rgba(255,255,255,.84)!important;font-size:.87rem}
-.mdrrmo-bulk-delete-progress-body{text-align:center;padding:36px 26px 30px;color:#29445b}
-.mdrrmo-bulk-delete-spinner{width:48px;height:48px;margin:0 auto 18px;border:5px solid #f4d8d8;border-top-color:#dc2626;border-radius:50%;animation:mdrrmoSpin .85s linear infinite}
-.mdrrmo-bulk-delete-progress-body h3{margin:0 0 8px;color:#06345f!important}
-.mdrrmo-bulk-delete-progress-body p{margin:0;color:#667e91;line-height:1.55}
-.mdrrmo-bulk-delete-progress{height:7px;border-radius:999px;background:#f0e2e2;overflow:hidden;margin:21px auto 0;max-width:310px}
-.mdrrmo-bulk-delete-progress>span{display:block;height:100%;width:30%;border-radius:inherit;background:linear-gradient(90deg,#b42318,#dc2626);animation:mdrrmoProgress 1.15s ease-in-out infinite}
-.mdrrmo-bulk-delete-lock{margin-top:14px;font-size:.8rem;color:#8a3a3a;font-weight:700}
-</style>
-
 </head>
 <body>
 <div id="userControls" style="position:fixed;right:20px;top:12px;z-index:9998;display:flex;align-items:center;gap:10px;background:#ffffff;border:1px solid #dbe5f0;border-radius:10px;padding:7px 10px;box-shadow:0 3px 10px rgba(15,39,71,.10)">
@@ -1604,13 +1564,10 @@ textarea::placeholder {
 <!-- ACTIONS -->
 <div class="action-row">
 <button class="btn btn-success" type="button" onclick="exportDatabaseBackup()">
-                    💾 Backup Database
+                    💾 Export Database
                 </button>
 <button class="btn btn-light" type="button" onclick="openDatabaseImport()">
-                    ♻️ Restore Database
-                </button>
-<button class="btn btn-light" type="button" onclick="openTrashModal()" id="trashButton">
-                    🗑️ Trash
+                    ♻️ Import Database
                 </button>
 <input id="databaseImportInput" type="file" accept=".json,application/json" style="display:none" onchange="importDatabaseBackup(event)">
 <button class="btn btn-success" type="button" onclick="openExcelExport()">
@@ -2012,7 +1969,7 @@ function applyRoleUI() {
   const isAdmin = currentUser && currentUser.role === 'admin';
   document.querySelectorAll('[onclick]').forEach(el => {
     const a = el.getAttribute('onclick') || '';
-    if (/saveRecord|deleteRecord|openDatabaseImport|importDatabaseBackup|importExcelRecords|openExcelImport|openTrashModal|addPerson|removePerson|editRecord|openAdd/i.test(a)) el.style.display = isAdmin ? '' : 'none';
+    if (/saveRecord|deleteRecord|openDatabaseImport|importDatabaseBackup|importExcelRecords|openExcelImport|addPerson|removePerson|editRecord|openAdd/i.test(a)) el.style.display = isAdmin ? '' : 'none';
   });
   const badge=document.getElementById('userRoleBadge');
   if(badge) badge.textContent=currentUser ? `${currentUser.username} (${isAdmin?'Admin':'Viewer'})` : '';
@@ -2022,7 +1979,7 @@ async function requireAdmin() {
   return true;
 }
 function protectAdminFunctions(){
- ['saveRecord','deleteRecord','deleteSelectedRecords','importDatabaseBackup','importExcelRecords','openDatabaseImport','openExcelImport','openTrashModal','restoreTrashRecord','restoreAllTrash','permanentlyDeleteAllTrash'].forEach(name=>{
+ ['saveRecord','deleteRecord','deleteSelectedRecords','importDatabaseBackup','importExcelRecords','openDatabaseImport','openExcelImport'].forEach(name=>{
    const original=window[name]; if(typeof original==='function' && !original.__protected){
      const wrapped=async function(...args){ if(!(await requireAdmin())) return; return original.apply(this,args); }; wrapped.__protected=true; window[name]=wrapped;
    }
@@ -2065,7 +2022,7 @@ async function loadRecordsFromDatabase() {
         const r = await fetch("/api/records", { cache: "no-store" });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const data = await r.json();
-        records = (Array.isArray(data) ? data : []).filter(record => !record.deletedAt);
+        records = Array.isArray(data) ? data : [];
         updateAll();
         return true;
     } catch (e) {
@@ -2705,24 +2662,6 @@ async function deleteSelectedRecords() {
 
     if (!(await mdrrmoBulkDeleteConfirm(ids.length))) return;
 
-    const progressModal = document.getElementById("mdrrmoBulkDeleteProgressModal");
-    const progressCount = document.getElementById("mdrrmoBulkDeleteProgressCount");
-    const progressMessage = document.getElementById("mdrrmoBulkDeleteProgressMessage");
-    const showProgress = () => {
-        if (progressCount) progressCount.textContent = `Deleting ${ids.length} record${ids.length === 1 ? "" : "s"}...`;
-        if (progressMessage) progressMessage.textContent = "Please do not close, navigate away, or refresh the page.";
-        if (progressModal) {
-            progressModal.classList.add("show");
-            document.body.style.overflow = "hidden";
-        }
-    };
-    const hideProgress = () => {
-        if (progressModal) progressModal.classList.remove("show");
-        document.body.style.overflow = "";
-    };
-
-    showProgress();
-
     try {
         const response = await fetch("/api/records", {
             method: "DELETE",
@@ -2738,12 +2677,10 @@ async function deleteSelectedRecords() {
         currentRecordsPage = Math.min(currentRecordsPage, Math.max(1, Math.ceil(getFilteredRecordsForTable().length / RECORDS_PER_PAGE)));
         updateAll();
         updateBulkSelectionUI();
-        hideProgress();
-        if (typeof showMDRRMOToast === "function") showMDRRMOToast(`${deletedIds.size} record${deletedIds.size === 1 ? "" : "s"} moved to Trash.`, "success");
+        if (typeof showMDRRMOToast === "function") showMDRRMOToast(`${deletedIds.size} record${deletedIds.size === 1 ? "" : "s"} deleted successfully.`, "success");
     } catch (error) {
-        console.error("Unable to move records to Trash:", error);
-        hideProgress();
-        alert("Unable to move the selected records to Trash. Please make sure the database/API is available.\n\n" + error.message);
+        console.error("Unable to bulk delete records:", error);
+        alert("Unable to delete the selected records. Please make sure the database/API is available.\n\n" + error.message);
     }
 }
 
@@ -2760,8 +2697,8 @@ function mdrrmoBulkDeleteConfirm(count) {
             if (body) body.innerHTML = original;
             resolve(value);
         };
-        if (!modal || !cancel || !confirmBtn) return resolve(confirm(`Delete ${count} selected record${count === 1 ? "" : "s"}?\n\nSelected records will be moved to Trash and can be restored by an administrator.`));
-        if (body) body.innerHTML = `Are you sure you want to delete <b>${count} selected record${count === 1 ? "" : "s"}</b>?<div class="mdrrmo-delete-warning">Selected records will be moved to Trash and can be restored by an administrator.</div>`;
+        if (!modal || !cancel || !confirmBtn) return resolve(confirm(`Delete ${count} selected record${count === 1 ? "" : "s"}?\n\nThis action cannot be undone.`));
+        if (body) body.innerHTML = `Are you sure you want to delete <b>${count} selected record${count === 1 ? "" : "s"}</b>?<div class="mdrrmo-delete-warning">This action cannot be undone.</div>`;
         modal.classList.add("show");
         cancel.onclick = () => close(false);
         confirmBtn.onclick = () => close(true);
@@ -2780,13 +2717,11 @@ async function deleteRecord(id) {
         const response = await fetch(`/api/records/${encodeURIComponent(id)}`, { method: "DELETE" });
         if (!response.ok) throw new Error(await response.text());
         records = records.filter(item => item.id !== id);
-        selectedRecordIds.delete(String(id));
         updateAll();
-        updateBulkSelectionUI();
-        if (typeof showMDRRMOToast === 'function') showMDRRMOToast('Record moved to Trash.', 'success');
+        if (typeof showMDRRMOToast === 'function') showMDRRMOToast('Record deleted successfully.', 'success');
     } catch (error) {
-        console.error("Unable to move record to Trash:", error);
-        alert("Unable to move the record to Trash. Please make sure the database/API is available.\n\n" + error.message);
+        console.error("Unable to delete record:", error);
+        alert("Unable to delete from the local database. Please make sure start.bat is running.\n\n" + error.message);
     }
 }
 
@@ -3396,17 +3331,25 @@ async function importDatabaseBackup(event) {
         const text = await file.text();
         const parsed = JSON.parse(text);
 
-        // Accept both backup formats: { records: [...] } or just [...]
-        const incoming = Array.isArray(parsed) ? parsed : parsed.records;
+        // Accept both backup formats:
+        // { records: [...] } or just [...]
+        const incoming = Array.isArray(parsed)
+            ? parsed
+            : parsed.records;
 
         if (!Array.isArray(incoming)) {
-            throw new Error("The selected JSON file is not a valid MDRRMO database backup.");
+            throw new Error(
+                "The selected JSON file is not a valid MDRRMO database backup."
+            );
         }
 
         const cleaned = incoming.map((record, index) => {
             if (!record || typeof record !== "object") {
-                throw new Error(`Invalid record at item ${index + 1}.`);
+                throw new Error(
+                    `Invalid record at item ${index + 1}.`
+                );
             }
+
             return {
                 ...record,
                 id: record.id || generateID(),
@@ -3433,178 +3376,258 @@ async function importDatabaseBackup(event) {
             return;
         }
 
-        // The browser's current records list is used as a first duplicate check.
-        // The API/database remains the final authority, so a database 409 is also
-        // treated as a duplicate instead of aborting the entire import.
+        // Get all current IDs to avoid duplicates
         const existingIds = new Set(
-            Array.isArray(records) ? records.map(record => String(record.id)) : []
+            Array.isArray(records)
+                ? records.map(record => String(record.id))
+                : []
         );
 
         let importedCount = 0;
         let skippedCount = 0;
         const importedRecords = [];
 
+        // ADD incoming records without deleting current records
         for (const record of cleaned) {
-            const recordId = String(record.id);
 
-            if (existingIds.has(recordId)) {
+            // Skip record if ID already exists
+            if (existingIds.has(String(record.id))) {
                 skippedCount++;
                 continue;
             }
 
-            let response;
-            try {
-                response = await fetch("/api/records", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(record)
-                });
-            } catch (networkError) {
-                throw new Error(`Unable to reach the database while importing record ${recordId}. ${networkError.message}`);
-            }
-
-            if (response.status === 409) {
-                // The record already exists in the database. This is a normal
-                // duplicate condition during backup restore/import, not a fatal error.
-                skippedCount++;
-                existingIds.add(recordId);
-                continue;
-            }
+            const response = await fetch("/api/records", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(record)
+            });
 
             if (!response.ok) {
-                let detail = "";
-                try { detail = await response.text(); } catch (_) {}
                 throw new Error(
-                    `Unable to import record ${recordId} (HTTP ${response.status})${detail ? `: ${detail}` : "."}`
+                    `Unable to import record ${record.id} ` +
+                    `(HTTP ${response.status}).`
                 );
             }
 
             const savedRecord = await response.json();
+
             importedRecords.push(savedRecord);
-            existingIds.add(recordId);
+
+            // Add ID so duplicate IDs inside the JSON
+            // are also skipped
+            existingIds.add(String(record.id));
+
             importedCount++;
         }
 
+        // Add imported records to current records
         records = [
             ...importedRecords,
             ...(Array.isArray(records) ? records : [])
         ];
 
         currentRecordsPage = 1;
+
         updateAll();
 
         mdrrmoImportResult(
             "success",
-            "Import Complete",
+            "Import Successful!",
             `${importedCount} new record${importedCount === 1 ? "" : "s"} imported successfully.`,
             `Duplicates skipped: ${skippedCount} · Total records now: ${records.length}`
         );
 
     } catch (error) {
+
         console.error("Database import failed:", error);
+
         mdrrmoImportResult(
             "error",
             "Unable to import records",
             "The import could not be completed.",
             error.message
         );
+
     } finally {
+
         input.value = "";
+
     }
 }
 
+
+function downloadFile(
+    content,
+    type,
+    filename
+) {
+
+    const blob =
+        new Blob(
+            [content],
+            {
+                type: type
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href =
+        url;
+
+
+    link.download =
+        filename;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+/* ================================
+   FORMAT DATE
+================================ */
+
+function formatDate(dateString) {
+
+    if (!dateString) {
+
+        return "-";
+
+    }
+
+
+    return new Date(
+        dateString
+        +
+        "T00:00:00"
+    )
+    .toLocaleDateString(
+        "en-US",
+        {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        }
+    );
+
+}
+
+
+/* ================================
+   ESCAPE HTML
+================================ */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+
+/* ================================
+   IMPORT EXCEL WITH DATE FILTER
+================================ */
+function openExcelImport() {
+    const panel = document.getElementById('excelImportPanel');
+    const month = document.getElementById('excelImportMonth');
+    const year = document.getElementById('excelImportYear');
+    if (month && !month.options.length) Array.from({length:12}, (_,i) => month.add(new Option(new Date(2000,i,1).toLocaleString('en-US',{month:'long'}), i)));
+    if (year && !year.options.length) { const now=new Date().getFullYear(); for(let y=now-10;y<=now+10;y++) year.add(new Option(y,y)); year.value=String(now); }
+    if (panel) panel.style.display='flex';
+    updateExcelImportFilterUI();
+}
+function closeExcelImport(){ const p=document.getElementById('excelImportPanel'); if(p)p.style.display='none'; }
+function updateExcelImportFilterUI(){ const mode=document.getElementById('excelImportMode')?.value; const m=document.getElementById('excelMonthFields'), r=document.getElementById('excelRangeFields'); if(m)m.style.display=mode==='month'?'flex':'none'; if(r)r.style.display=mode==='range'?'flex':'none'; }
+function excelDateToISO(value){
+    if(value===null||value===undefined||value==='') return '';
+    if(typeof value==='number' && typeof XLSX!=='undefined' && XLSX.SSF){ const d=XLSX.SSF.parse_date_code(value); if(d) return `${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`; }
+    const text=String(value).trim();
+    const iso=text.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/); if(iso) return `${iso[1]}-${String(iso[2]).padStart(2,'0')}-${String(iso[3]).padStart(2,'0')}`;
+    const dt=new Date(text); if(!Number.isNaN(dt.getTime())) return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    return '';
+}
 async function importExcelRecords(event){
  const input=event.target,file=input.files&&input.files[0]; if(!file)return;
  try{
   if(typeof XLSX==='undefined') throw new Error('Excel import library could not be loaded. Please check your internet connection and restart the application.');
   const workbook=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:false});
-  const ws=workbook.Sheets[workbook.SheetNames[0]];
-  const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
+  const ws=workbook.Sheets[workbook.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
   if(!rows.length) throw new Error('The Excel file does not contain any records.');
   const mode=document.getElementById('excelImportMode').value, type=document.getElementById('excelRecordType').value;
   const month=Number(document.getElementById('excelImportMonth').value), year=Number(document.getElementById('excelImportYear').value);
   let from=document.getElementById('excelImportFrom').value, to=document.getElementById('excelImportTo').value;
   if(mode==='range' && (!from||!to)) throw new Error('Please select both From and To dates.');
   if(from>to)[from,to]=[to,from];
-
-  const selected=rows.map((row,idx)=>{
-    const d=excelDateToISO(excelCell(row,['Date','date','Incident Date','Record Date']));
-    return {row, rowNumber:idx+2, date:d};
-  }).filter(x=>{
-    if(!x.date)return mode==='all';
-    if(mode==='month'){const xdate=new Date(x.date+'T12:00:00');return xdate.getFullYear()===year&&xdate.getMonth()===month;}
-    return mode==='range'?x.date>=from&&x.date<=to:true;
-  });
-
+  const pick=(o,names)=>{for(const n of names){if(o[n]!==undefined&&o[n]!==null&&String(o[n]).trim()!=='')return o[n];} return '';};
+  const selected=rows.filter(row=>{ const d=excelDateToISO(pick(row,['Date','date','Incident Date','Record Date'])); if(!d)return false; if(mode==='month'){const x=new Date(d+'T12:00:00'); return x.getFullYear()===year&&x.getMonth()===month;} return mode==='range'?d>=from&&d<=to:true; });
   if(!selected.length) throw new Error('No Excel records match the selected date filter.');
 
-  const existingIds=new Set((Array.isArray(records)?records:[]).map(r=>String(r.id)));
-  const existingFingerprints=new Set((Array.isArray(records)?records:[]).map(excelRecordFingerprint));
-  const fileFingerprints=new Set();
-  const prepared=[];
-  let invalid=0,duplicates=0;
-
-  selected.forEach(item=>{
-    const row=item.row;
-    const mapped={
-      id:String(excelCell(row,['ID','Id','id'])||generateID()),
-      type,
-      date:item.date,
-      time:excelTimeToHHMM(excelCell(row,['Time','time','Incident Time','Record Time'])),
-      barangay:String(excelCell(row,['Barangay','barangay'])||'').trim(),
-      category:String(excelCell(row,['Category','category','Incident / Purpose','Purpose'])||'').trim(),
-      location:String(excelCell(row,['Location','location','Location / Destination','Destination'])||'').trim(),
-      rescued:Number(excelCell(row,['Rescued','rescued']))||0,
-      ambulance:String(excelCell(row,['Ambulance','ambulance'])||'').trim(),
-      status:String(excelCell(row,['Status','status'])||'Completed').trim()||'Completed',
-      responders:String(excelCell(row,['Responders','responders','Responding Team / Personnel'])||'').trim(),
-      persons:String(excelCell(row,['Persons','persons','Person(s) Involved / Assisted','Name of Patient'])||'').trim(),
-      age:excelCell(row,['Age','age'])===''?'':Number(excelCell(row,['Age','age'])),
-      remarks:String(excelCell(row,['Remarks','remarks','Notes'])||'').trim(),
-      updatedAt:new Date().toISOString()
-    };
-    const validation=validateExcelMappedRecord(mapped,item.rowNumber);
-    let status='Ready', statusClass='ready', detail='';
-    let isDup=false;
-    if(existingIds.has(mapped.id)||existingFingerprints.has(excelRecordFingerprint(mapped))||fileFingerprints.has(excelRecordFingerprint(mapped))){
-      isDup=true; duplicates++; status='Duplicate'; statusClass='duplicate'; detail='Already in database or file';
-    } else if(!validation.valid){
-      invalid++; status='Invalid'; statusClass='invalid'; detail=validation.errors.join(', ');
-    } else {
-      fileFingerprints.add(excelRecordFingerprint(mapped));
-      prepared.push(mapped);
-    }
-    // IDs are tracked even for duplicates so repeated IDs in the same file are caught.
-    if(existingIds.has(mapped.id)){}
-    else existingIds.add(mapped.id);
-    item.mapped=mapped; item.status=status; item.statusClass=statusClass; item.detail=detail;
-  });
-
-  const previewRows=selected.slice(0,12).map(x=>({row:x.rowNumber,persons:x.mapped.persons,date:x.mapped.date,time:x.mapped.time,status:x.status,statusClass:x.statusClass,detail:x.detail}));
-  if(selected.length>12) previewRows.push({row:'…',persons:`${selected.length-12} more rows`,date:'',time:'',status:'Preview',statusClass:'ready',detail:'Only the first 12 rows are shown.'});
-  const confirmed=await mdrrmoExcelPreview({
-    total:selected.length,valid:selected.filter(x=>x.status==='Ready').length,
-    invalid,duplicates,ready:prepared.length,previewRows
-  });
+  const confirmed=typeof mdrrmoImportConfirm==='function' ? await mdrrmoImportConfirm(selected.length) : confirm(`Import ${selected.length} record(s)?`);
   if(!confirmed) return;
-  if(!prepared.length) throw new Error('There are no valid, non-duplicate records ready to import.');
 
-  mdrrmoImportLoading(prepared.length);
-  let added=[],failed=0;
-  for(let i=0;i<prepared.length;i++){
-    const record=prepared[i];
-    const response=await fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)});
-    if(!response.ok){failed++;throw new Error(`Failed to import Excel row ${selected.find(x=>x.mapped===record)?.rowNumber||'?'} (HTTP ${response.status}).`);}
-    added.push(await response.json());
+  const existing=new Set((Array.isArray(records)?records:[]).map(r=>String(r.id))); let added=[],skipped=0;
+  for(let i=0;i<selected.length;i++){
+   const row=selected[i]; let id=pick(row,['ID','Id','id'])||generateID();
+   if(existing.has(String(id))){skipped++;continue;}
+   const record={id,type,date:excelDateToISO(pick(row,['Date','date','Incident Date','Record Date'])),time:pick(row,['Time','time','Incident Time','Record Time']),barangay:pick(row,['Barangay','barangay']),category:pick(row,['Category','category','Incident / Purpose','Purpose']),location:pick(row,['Location','location','Location / Destination','Destination']),rescued:Number(pick(row,['Rescued','rescued']))||0,ambulance:pick(row,['Ambulance','ambulance']),status:pick(row,['Status','status'])||'Completed',responders:pick(row,['Responders','responders','Responding Team / Personnel']),persons:pick(row,['Persons','persons','Person(s) Involved / Assisted']),age:Number(pick(row,['Age','age']))||0,remarks:pick(row,['Remarks','remarks','Notes']),updatedAt:new Date().toISOString()};
+   const response=await fetch('/api/records',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(record)});
+   if(!response.ok) throw new Error(`Failed to import Excel row ${i+2}.`);
+   added.push(await response.json()); existing.add(String(id));
   }
-  records=[...added,...(Array.isArray(records)?records:[])];
-  currentRecordsPage=1; updateAll(); closeExcelImport();
-  if(typeof mdrrmoImportResult==='function') mdrrmoImportResult('success','Import Successful',`${added.length} record${added.length===1?'':'s'} imported successfully.`,`Duplicates skipped: ${duplicates} · Invalid rows skipped: ${invalid}${failed?' · Failed: '+failed:''}\\nTotal records in database: ${records.length}`);
-  else alert(`Excel Import Completed!\\n\\nImported: ${added.length}\\nDuplicates skipped: ${duplicates}\\nInvalid: ${invalid}\\nTotal records: ${records.length}`);
+  records=[...added,...(Array.isArray(records)?records:[])]; currentRecordsPage=1; updateAll(); closeExcelImport();
+  if(typeof mdrrmoImportResult==='function') mdrrmoImportResult('success','Import Successful',`${added.length} record${added.length===1?'':'s'} imported successfully.`,`Duplicates skipped: ${skipped}\nTotal records in database: ${records.length}`);
+  else alert(`Excel Import Completed!\n\nImported: ${added.length}\nDuplicates skipped: ${skipped}\nTotal records: ${records.length}`);
  }catch(error){
   console.error('Excel import error:',error);
   if(typeof mdrrmoImportResult==='function') mdrrmoImportResult('error','Excel Import Failed',error.message,'No more records will be processed.');
-  else alert('Excel Import Failed.\\n\\n'+error.message);
+  else alert('Excel Import Failed.\n\n'+error.message);
  }finally{input.value='';}
 }
 
@@ -3929,7 +3952,7 @@ function mdrrmoImportResult(kind,title,message,detail){const icon=kind==='succes
     </div>
     <div class="mdrrmo-delete-body">
       Are you sure you want to delete this record?
-      <div class="mdrrmo-delete-warning">This record will be moved to Trash and can be restored by an administrator.</div>
+      <div class="mdrrmo-delete-warning">This action cannot be undone.</div>
     </div>
     <div class="mdrrmo-delete-actions">
       <button type="button" id="mdrrmoDeleteCancel">Cancel</button>
@@ -4040,72 +4063,6 @@ function mdrrmoDeleteConfirm(){
 <style>
 .outside-binangonan-row td{background:#f8fbff;transition:.15s}.outside-binangonan-row:hover td{background:#eef6ff}.outside-binangonan-list{margin-top:14px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden}.outside-binangonan-list table{min-width:0}.outside-binangonan-list th,.outside-binangonan-list td{padding:11px 13px}.outside-binangonan-total{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;background:#f8fafc;border-radius:10px;margin-top:12px;color:#334155}.outside-binangonan-total strong{font-size:20px;color:#173d79}.outside-binangonan-empty{text-align:center;padding:24px;color:#94a3b8}
 </style>
-
-<div id="mdrrmoTrashModal" role="dialog" aria-modal="true" aria-labelledby="mdrrmoTrashTitle">
-  <div class="mdrrmo-trash-box">
-    <div class="mdrrmo-trash-head"><h3 id="mdrrmoTrashTitle">🗑️ Trash / Recovery</h3><button type="button" onclick="closeTrashModal()" aria-label="Close">×</button></div>
-    <div class="mdrrmo-trash-body" id="mdrrmoTrashBody"><div class="mdrrmo-trash-empty">Loading...</div></div>
-    <div class="mdrrmo-trash-actions">
-      <button type="button" class="btn btn-light" onclick="closeTrashModal()">Close</button>
-      <button type="button" class="btn btn-light" id="trashRestoreAllBtn" onclick="restoreAllTrash()">♻️ Restore All</button>
-      <button type="button" class="btn btn-danger" id="trashPermanentAllBtn" onclick="permanentlyDeleteAllTrash()">Delete Trash Permanently</button>
-    </div>
-  </div>
-</div>
-<script id="mdrrmoTrashScript">
-function openTrashModal(){
-  if(typeof requireAdmin==='function'){requireAdmin().then(ok=>{if(ok)loadTrashRecords();});return;}
-  loadTrashRecords();
-}
-function closeTrashModal(){document.getElementById('mdrrmoTrashModal')?.classList.remove('show');}
-async function loadTrashRecords(){
-  const modal=document.getElementById('mdrrmoTrashModal'),body=document.getElementById('mdrrmoTrashBody');
-  if(!modal||!body)return;
-  modal.classList.add('show'); body.innerHTML='<div class="mdrrmo-trash-empty">Loading deleted records...</div>';
-  try{
-    const r=await fetch('/api/trash',{cache:'no-store'});
-    if(!r.ok)throw new Error(await r.text());
-    const items=await r.json();
-    if(!items.length){body.innerHTML='<div class="mdrrmo-trash-empty">Trash is empty.</div>';return;}
-    body.innerHTML=`<table class="mdrrmo-trash-table"><thead><tr><th>Person(s)</th><th>Date</th><th>Barangay</th><th>Incident</th><th>Deleted</th><th>Action</th></tr></thead><tbody>
-      ${items.map(x=>`<tr><td>${escapeHTML(x.persons||'-')}</td><td>${escapeHTML(x.date||'-')}</td><td>${escapeHTML(x.barangay||'-')}</td><td>${escapeHTML(getRecordTypeLabel(x.type))}</td><td>${escapeHTML(x.deletedAt?new Date(x.deletedAt).toLocaleString():'-')}</td><td><button class="btn btn-light" type="button" onclick="restoreTrashRecord('${escapeHTML(String(x.id))}')">Restore</button></td></tr>`).join('')}
-    </tbody></table>`;
-  }catch(e){body.innerHTML=`<div class="mdrrmo-trash-empty">Unable to load Trash.<br><small>${escapeHTML(e.message)}</small></div>`;}
-}
-async function restoreTrashRecord(id){
-  if(!(await requireAdmin()))return;
-  try{
-    const r=await fetch('/api/trash',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:[id],action:'restore'})});
-    if(!r.ok)throw new Error(await r.text());
-    await loadRecordsFromDatabase(); await loadTrashRecords();
-    showMDRRMOToast('Record restored successfully.','success');
-  }catch(e){showMDRRMOToast('Unable to restore record: '+e.message,'error');}
-}
-async function restoreAllTrash(){
-  if(!(await requireAdmin()))return;
-  try{
-    const r=await fetch('/api/trash',{method:'GET',cache:'no-store'}); if(!r.ok)throw new Error(await r.text());
-    const items=await r.json(); if(!items.length)return showMDRRMOToast('Trash is already empty.','info');
-    if(!confirm(`Restore all ${items.length} trashed records?`))return;
-    const rr=await fetch('/api/trash',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:items.map(x=>x.id),action:'restore'})});
-    if(!rr.ok)throw new Error(await rr.text());
-    await loadRecordsFromDatabase(); await loadTrashRecords(); showMDRRMOToast(`${items.length} records restored.`,'success');
-  }catch(e){showMDRRMOToast('Unable to restore all records: '+e.message,'error');}
-}
-async function permanentlyDeleteAllTrash(){
-  if(!(await requireAdmin()))return;
-  try{
-    const r=await fetch('/api/trash',{method:'GET',cache:'no-store'}); if(!r.ok)throw new Error(await r.text());
-    const items=await r.json(); if(!items.length)return showMDRRMOToast('Trash is already empty.','info');
-    if(!confirm(`Permanently delete ${items.length} trashed records? This cannot be undone.`))return;
-    const rr=await fetch('/api/trash',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids:items.map(x=>x.id)})});
-    if(!rr.ok)throw new Error(await rr.text());
-    await loadTrashRecords(); showMDRRMOToast(`${items.length} records permanently deleted.`,'success');
-  }catch(e){showMDRRMOToast('Unable to permanently delete Trash: '+e.message,'error');}
-}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTrashModal();});
-</script>
-
 <div id="outsideBinangonanModal" class="mdrrmo-import-modal" role="dialog" aria-modal="true" aria-labelledby="outsideBinangonanTitle">
   <div class="mdrrmo-import-box" style="max-width:620px">
     <div class="mdrrmo-import-head"><h3 id="outsideBinangonanTitle">📍 OUTSIDE BINANGONAN</h3><p>Responses for persons/incidents from places outside the official Binangonan barangay list.</p></div>
@@ -4176,12 +4133,5 @@ function closeOutsideBinangonanModal(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeOutsideBinangonanModal();});
 </script>
-<script id="mdrrmoBulkDeleteProgressLock">
-document.addEventListener("keydown", function(event){
-  const modal=document.getElementById("mdrrmoBulkDeleteProgressModal");
-  if(modal && modal.classList.contains("show") && event.key === "Escape") event.preventDefault();
-});
-</script>
-
 </body>
 </html>
