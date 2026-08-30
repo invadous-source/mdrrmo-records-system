@@ -2393,12 +2393,34 @@ function applyRoleUI() {
   const badge=document.getElementById('userRoleBadge');
   if(badge) badge.textContent=currentUser ? `${currentUser.username} (${isAdmin?'Admin':'Viewer'})` : '';
 }
+function mdrrmoActionConfirm({title='Please confirm',message='',warning='',confirmText='Confirm',danger=false,icon='⚠️',singleButton=false}={}) {
+  return new Promise(resolve=>{
+    const modal=document.getElementById('mdrrmoActionModal');
+    if(!modal){ resolve(false); return; }
+    modal.querySelector('#mdrrmoActionTitle').textContent=title;
+    modal.querySelector('#mdrrmoActionMessage').textContent=message;
+    const warningEl=modal.querySelector('#mdrrmoActionWarning');
+    warningEl.textContent=warning; warningEl.style.display=warning?'block':'none';
+    modal.querySelector('#mdrrmoActionIcon').textContent=icon;
+    const confirmBtn=modal.querySelector('#mdrrmoActionConfirm');
+    const cancelBtn=modal.querySelector('#mdrrmoActionCancel');
+    confirmBtn.textContent=confirmText;
+    confirmBtn.className=danger?'mdrrmo-action-danger':'';
+    cancelBtn.style.display=singleButton?'none':'inline-flex';
+    const close=v=>{modal.classList.remove('show');confirmBtn.onclick=null;cancelBtn.onclick=null;resolve(v)};
+    confirmBtn.onclick=()=>close(true); cancelBtn.onclick=()=>close(false);
+    modal.classList.add('show'); setTimeout(()=>singleButton?confirmBtn.focus():cancelBtn.focus(),30);
+  });
+}
 async function requireAdmin() {
-  if (!currentUser || currentUser.role !== 'admin') { alert('You have view-only access.'); return false; }
+  if (!currentUser || currentUser.role !== 'admin') {
+    await mdrrmoActionConfirm({title:'View-only access',message:'Your account is a Viewer and cannot edit, delete, or import records.',icon:'🔒',confirmText:'OK',singleButton:true});
+    return false;
+  }
   return true;
 }
 function protectAdminFunctions(){
- ['saveRecord','deleteRecord','deleteSelectedRecords','importDatabaseBackup','importExcelRecords','openDatabaseImport','openExcelImport'].forEach(name=>{
+ ['saveRecord','deleteRecord','deleteSelectedRecords','importDatabaseBackup','importExcelRecords','openDatabaseImport','openExcelImport','editRecord'].forEach(name=>{
    const original=window[name]; if(typeof original==='function' && !original.__protected){
      const wrapped=async function(...args){ if(!(await requireAdmin())) return; return original.apply(this,args); }; wrapped.__protected=true; window[name]=wrapped;
    }
@@ -4781,44 +4803,6 @@ body.mdrrmo-dark .modal-content,body.mdrrmo-dark .modal-body{background:#182235!
 @media(max-width:700px){.topbar-actions{gap:7px}.mdrrmo-header-theme-toggle span{display:none}.mdrrmo-header-theme-toggle{padding:8px 10px}#userControls.mdrrmo-user-controls{padding:5px 6px!important}#userControls.mdrrmo-user-controls #userRoleBadge{display:none}}
 @media(max-width:460px){.mdrrmo-logout-btn{font-size:0!important}.mdrrmo-logout-btn::before{content:'🚪';font-size:14px}.date-display{font-size:11px!important}}
 
-
-/* Notification Center dark-mode polish */
-body.mdrrmo-dark .notification-panel{
-  background:#182235!important;
-  color:#e5e7eb!important;
-  border:1px solid #334155!important;
-  box-shadow:0 24px 70px rgba(0,0,0,.55)!important;
-}
-body.mdrrmo-dark .notification-head strong{color:#f8fafc!important}
-body.mdrrmo-dark .notification-actions button{
-  background:#273449!important;
-  color:#f8fafc!important;
-  border-color:#475569!important;
-}
-body.mdrrmo-dark .notification-actions button:hover{background:#334155!important}
-body.mdrrmo-dark .notification-actions .notification-clear{
-  background:#3a2228!important;
-  color:#fecaca!important;
-  border-color:#6b2f3a!important;
-}
-body.mdrrmo-dark .notification-actions .notification-clear:hover{background:#4a2730!important}
-body.mdrrmo-dark .notification-item{
-  background:#111a2b!important;
-  color:#e5e7eb!important;
-  border-color:#334155!important;
-}
-body.mdrrmo-dark .notification-item.unread{border-left-color:#60a5fa!important}
-body.mdrrmo-dark .notification-item:hover{background:#1d293d!important;border-color:#475569!important}
-body.mdrrmo-dark .notification-time{color:#94a3b8!important;opacity:1!important}
-body.mdrrmo-dark .notification-empty{color:#94a3b8!important;opacity:1!important}
-body.mdrrmo-dark .notification-pagination button{
-  background:#273449!important;
-  color:#f8fafc!important;
-  border-color:#475569!important;
-}
-body.mdrrmo-dark .notification-pagination button:hover:not(:disabled){background:#334155!important}
-body.mdrrmo-dark .notification-page-info{color:#94a3b8!important}
-
 /* Dark-mode correction: keep the login screen in its original light design,
    while fully adapting the Outside Binangonan popup. */
 body.mdrrmo-dark #loginOverlay .login-card{
@@ -5269,6 +5253,23 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
 })();
 </script>
 
+<div id="mdrrmoActionModal" class="mdrrmo-action-modal" role="dialog" aria-modal="true" aria-labelledby="mdrrmoActionTitle">
+  <div class="mdrrmo-action-box">
+    <div class="mdrrmo-action-top">
+      <div id="mdrrmoActionIcon" class="mdrrmo-action-icon">⚠️</div>
+      <div><h3 id="mdrrmoActionTitle">Please confirm</h3><p id="mdrrmoActionMessage"></p></div>
+    </div>
+    <div id="mdrrmoActionWarning" class="mdrrmo-action-warning"></div>
+    <div class="mdrrmo-action-actions">
+      <button type="button" id="mdrrmoActionCancel" class="mdrrmo-action-cancel">Cancel</button>
+      <button type="button" id="mdrrmoActionConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+<style id="mdrrmoActionModalStyles">
+.mdrrmo-action-modal{position:fixed;inset:0;background:rgba(5,20,35,.55);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;padding:20px;z-index:100010}.mdrrmo-action-modal.show{display:flex}.mdrrmo-action-box{width:min(470px,100%);background:#fff;border:1px solid #d7e6f2;border-radius:20px;box-shadow:0 24px 70px rgba(3,30,55,.28);overflow:hidden;animation:mdrrmoActionPop .22s ease-out}@keyframes mdrrmoActionPop{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}.mdrrmo-action-top{display:flex;gap:14px;align-items:flex-start;padding:23px 24px 18px}.mdrrmo-action-icon{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:#eaf4ff;font-size:1.4rem;flex:0 0 auto}.mdrrmo-action-top h3{margin:2px 0 5px;color:#06345f;font-size:1.12rem}.mdrrmo-action-top p{margin:0;color:#5b7081;line-height:1.45}.mdrrmo-action-warning{margin:0 24px 18px;padding:11px 13px;background:#fff7f7;border:1px solid #f1d2d2;border-radius:11px;color:#8a3a3a;font-size:.88rem}.mdrrmo-action-actions{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;background:#f5f9fd;border-top:1px solid #dce9f3}.mdrrmo-action-actions button{border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font:inherit}.mdrrmo-action-cancel{background:#e8f0f7;color:#244761}.mdrrmo-action-actions #mdrrmoActionConfirm{background:linear-gradient(135deg,#0b5fa5,#1784d1);color:#fff;box-shadow:0 5px 13px rgba(11,95,165,.18)}.mdrrmo-action-actions #mdrrmoActionConfirm.mdrrmo-action-danger{background:linear-gradient(135deg,#b42318,#dc2626)}html.dark .mdrrmo-action-box{background:#101a29;border-color:#27384b;box-shadow:0 26px 80px rgba(0,0,0,.45)}html.dark .mdrrmo-action-top h3{color:#f5f9ff}html.dark .mdrrmo-action-top p{color:#b9c7d6}html.dark .mdrrmo-action-actions{background:#0d1521;border-color:#27384b}html.dark .mdrrmo-action-cancel{background:#1b2a3b;color:#d7e5f2}html.dark .mdrrmo-action-warning{background:#281b1d;border-color:#5a3034;color:#ffb8ba}html.dark .mdrrmo-action-icon{background:#16283a}
+</style>
+
 <div id="notificationCenter" class="notification-panel hidden" aria-live="polite">
   <div class="notification-head">
     <strong>Notifications</strong>
@@ -5308,7 +5309,10 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
    if(!bell){const host=document.querySelector('.topbar-actions');if(host){bell=document.createElement('button');bell.id='notificationBell';bell.type='button';bell.title='Notifications';bell.setAttribute('aria-label','Notifications');bell.innerHTML='🔔<span id="notificationBadge"></span>';const userControls=document.getElementById('userControls');if(userControls){host.insertBefore(bell,userControls)}else{host.appendChild(bell)}}}
    if(bell)bell.addEventListener('click',()=>document.getElementById('notificationCenter')?.classList.toggle('hidden'));
    document.getElementById('markNotificationsRead')?.addEventListener('click',()=>{save(load().map(x=>({...x,read:true})));render()});
-   document.getElementById('clearNotifications')?.addEventListener('click',()=>{if(confirm('Clear all notifications?')){save([]);currentPage=1;render()}});
+   document.getElementById('clearNotifications')?.addEventListener('click',async()=>{
+   const ok=await mdrrmoActionConfirm({title:'Clear all notifications?',message:'This will remove every notification from your notification center.',warning:'This action cannot be undone.',confirmText:'Clear notifications',danger:true,icon:'🗑️'});
+   if(ok){save([]);currentPage=1;render()}
+ });
    document.getElementById('notificationPrev')?.addEventListener('click',()=>{currentPage--;render()});
    document.getElementById('notificationNext')?.addEventListener('click',()=>{currentPage++;render()});
    render();
