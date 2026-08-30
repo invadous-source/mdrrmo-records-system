@@ -4781,6 +4781,44 @@ body.mdrrmo-dark .modal-content,body.mdrrmo-dark .modal-body{background:#182235!
 @media(max-width:700px){.topbar-actions{gap:7px}.mdrrmo-header-theme-toggle span{display:none}.mdrrmo-header-theme-toggle{padding:8px 10px}#userControls.mdrrmo-user-controls{padding:5px 6px!important}#userControls.mdrrmo-user-controls #userRoleBadge{display:none}}
 @media(max-width:460px){.mdrrmo-logout-btn{font-size:0!important}.mdrrmo-logout-btn::before{content:'🚪';font-size:14px}.date-display{font-size:11px!important}}
 
+
+/* Notification Center dark-mode polish */
+body.mdrrmo-dark .notification-panel{
+  background:#182235!important;
+  color:#e5e7eb!important;
+  border:1px solid #334155!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.55)!important;
+}
+body.mdrrmo-dark .notification-head strong{color:#f8fafc!important}
+body.mdrrmo-dark .notification-actions button{
+  background:#273449!important;
+  color:#f8fafc!important;
+  border-color:#475569!important;
+}
+body.mdrrmo-dark .notification-actions button:hover{background:#334155!important}
+body.mdrrmo-dark .notification-actions .notification-clear{
+  background:#3a2228!important;
+  color:#fecaca!important;
+  border-color:#6b2f3a!important;
+}
+body.mdrrmo-dark .notification-actions .notification-clear:hover{background:#4a2730!important}
+body.mdrrmo-dark .notification-item{
+  background:#111a2b!important;
+  color:#e5e7eb!important;
+  border-color:#334155!important;
+}
+body.mdrrmo-dark .notification-item.unread{border-left-color:#60a5fa!important}
+body.mdrrmo-dark .notification-item:hover{background:#1d293d!important;border-color:#475569!important}
+body.mdrrmo-dark .notification-time{color:#94a3b8!important;opacity:1!important}
+body.mdrrmo-dark .notification-empty{color:#94a3b8!important;opacity:1!important}
+body.mdrrmo-dark .notification-pagination button{
+  background:#273449!important;
+  color:#f8fafc!important;
+  border-color:#475569!important;
+}
+body.mdrrmo-dark .notification-pagination button:hover:not(:disabled){background:#334155!important}
+body.mdrrmo-dark .notification-page-info{color:#94a3b8!important}
+
 /* Dark-mode correction: keep the login screen in its original light design,
    while fully adapting the Outside Binangonan popup. */
 body.mdrrmo-dark #loginOverlay .login-card{
@@ -5372,7 +5410,7 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
     return `<div class="mdrrmo-view-field${full?' full':''}"><div class="mdrrmo-view-label">${esc(name)}</div><div class="mdrrmo-view-value">${esc(label(value))}</div></div>`;
   }
   window.viewRecord=function(id){
-    const list=Array.isArray(records)?records:[];
+    const list=Array.isArray(window.records)?window.records:[];
     const record=list.find(r=>String(r.id)===String(id));
     if(!record) return;
     const modal=document.getElementById('viewRecordModal');
