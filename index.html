@@ -1609,7 +1609,7 @@ body.auth-scroll-lock { overflow:hidden !important; }
 </style>
 
 <style id="notificationCenterStyles">
-#notificationBell{position:relative;flex:0 0 auto;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.14);color:#fff;cursor:pointer;font-size:18px;padding:8px 10px;border-radius:9px;line-height:1}#notificationBell:hover{background:rgba(255,255,255,.24)}#notificationBadge{position:absolute;top:2px;right:2px;min-width:18px;height:18px;border-radius:999px;background:#dc2626;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0 4px}.notification-panel{position:fixed;top:72px;right:24px;width:min(380px,calc(100vw - 32px));max-height:70vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18);padding:12px;z-index:99999}.notification-panel.hidden{display:none}.notification-head{display:flex;justify-content:space-between;align-items:center;padding:8px 8px 12px}.notification-item{padding:12px;border-radius:12px;margin:6px 0;background:#f8fafc;border:1px solid #e5e7eb}.notification-item.unread{border-left:4px solid #2563eb}.notification-time{font-size:12px;opacity:.65;margin-top:4px}.notification-empty{padding:24px;text-align:center;opacity:.65}
+#notificationBell{position:relative;flex:0 0 auto;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.14);color:#fff;cursor:pointer;font-size:18px;padding:8px 10px;border-radius:9px;line-height:1}#notificationBell:hover{background:rgba(255,255,255,.24)}#notificationBadge{position:absolute;top:2px;right:2px;min-width:18px;height:18px;border-radius:999px;background:#dc2626;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0 4px}.notification-panel{position:fixed;top:72px;right:24px;width:min(400px,calc(100vw - 32px));max-height:70vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18);padding:12px;z-index:99999}.notification-panel.hidden{display:none}.notification-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 8px 12px}.notification-head strong{font-size:16px}.notification-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.notification-actions button{border:1px solid #dbe3ee;background:#f8fafc;color:#334155;border-radius:8px;padding:6px 9px;font-size:12px;font-weight:700;cursor:pointer}.notification-actions button:hover{background:#eef4fb}.notification-actions .notification-clear{color:#b91c1c;border-color:#fecaca;background:#fff7f7}.notification-actions .notification-clear:hover{background:#fee2e2}.notification-item{padding:12px;border-radius:12px;margin:6px 0;background:#f8fafc;border:1px solid #e5e7eb}.notification-item.unread{border-left:4px solid #2563eb}.notification-time{font-size:12px;opacity:.65;margin-top:4px}.notification-empty{padding:24px;text-align:center;opacity:.65}.notification-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px 2px}.notification-pagination button{border:1px solid #dbe3ee;background:#fff;color:#334155;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}.notification-pagination button:hover:not(:disabled){background:#f1f5f9}.notification-pagination button:disabled{opacity:.45;cursor:not-allowed}.notification-page-info{font-size:12px;color:#64748b;white-space:nowrap}@media(max-width:480px){.notification-panel{right:12px;top:64px}.notification-head{flex-direction:column}.notification-actions{justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -4956,62 +4956,53 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
 </script>
 
 <div id="notificationCenter" class="notification-panel hidden" aria-live="polite">
-  <div class="notification-head"><strong>Notifications</strong><button type="button" id="markNotificationsRead" title="Mark all notifications as read"><span aria-hidden="true">✓</span><span>Mark all read</span></button></div>
+  <div class="notification-head">
+    <strong>Notifications</strong>
+    <div class="notification-actions">
+      <button type="button" id="markNotificationsRead" title="Mark all notifications as read">✓ Mark all read</button>
+      <button type="button" id="clearNotifications" class="notification-clear" title="Clear all notifications">🗑 Clear</button>
+    </div>
+  </div>
   <div id="notificationList"></div>
+  <div id="notificationPagination" class="notification-pagination" style="display:none">
+    <button type="button" id="notificationPrev">← Previous</button>
+    <span id="notificationPageInfo" class="notification-page-info"></span>
+    <button type="button" id="notificationNext">Next →</button>
+  </div>
 </div>
 
 <script id="notificationCenterScript">
 (function(){
- const KEY='mdrrmo_notifications';
+ const KEY='mdrrmo_notifications', PAGE_SIZE=5;
+ let currentPage=1;
  const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}};
  const save=x=>localStorage.setItem(KEY,JSON.stringify(x.slice(0,50)));
- function render(){const list=document.getElementById('notificationList'); const badge=document.getElementById('notificationBadge'); if(!list)return; const n=load(); const unread=n.filter(x=>!x.read).length; if(badge){badge.textContent=unread; badge.style.display=unread?'flex':'none'} list.innerHTML=n.length?n.map(x=>`<div class="notification-item ${x.read?'':'unread'}"><div>${x.text}</div><div class="notification-time">${x.time||''}</div></div>`).join(''):'<div class="notification-empty">No notifications yet</div>';}
- window.addMDRRMONotification=function(text){const n=load();n.unshift({text:String(text),time:new Date().toLocaleString(),read:false});save(n);render()};
- function setup(){let bell=document.getElementById('notificationBell'); if(!bell){const host=document.querySelector('.topbar-actions'); if(host){bell=document.createElement('button');bell.id='notificationBell';bell.type='button';bell.title='Notifications';bell.setAttribute('aria-label','Notifications');bell.innerHTML='🔔<span id="notificationBadge"></span>'; const userControls=document.getElementById('userControls'); if(userControls){host.insertBefore(bell,userControls)}else{host.appendChild(bell)}}} if(bell){bell.addEventListener('click',()=>document.getElementById('notificationCenter')?.classList.toggle('hidden'));} document.getElementById('markNotificationsRead')?.addEventListener('click',()=>{const n=load().map(x=>({...x,read:true}));save(n);render()}); render();}
+ function render(){
+   const list=document.getElementById('notificationList'), badge=document.getElementById('notificationBadge'), pager=document.getElementById('notificationPagination');
+   if(!list)return;
+   const n=load(), unread=n.filter(x=>!x.read).length, totalPages=Math.max(1,Math.ceil(n.length/PAGE_SIZE));
+   currentPage=Math.min(Math.max(1,currentPage),totalPages);
+   if(badge){badge.textContent=unread;badge.style.display=unread?'flex':'none'}
+   if(!n.length){list.innerHTML='<div class="notification-empty">No notifications yet</div>';if(pager)pager.style.display='none';return}
+   const start=(currentPage-1)*PAGE_SIZE, items=n.slice(start,start+PAGE_SIZE);
+   list.innerHTML=items.map(x=>`<div class="notification-item ${x.read?'':'unread'}"><div>${x.text}</div><div class="notification-time">${x.time||''}</div></div>`).join('');
+   if(pager){pager.style.display=totalPages>1?'flex':'none';document.getElementById('notificationPrev').disabled=currentPage===1;document.getElementById('notificationNext').disabled=currentPage===totalPages;document.getElementById('notificationPageInfo').textContent=`Page ${currentPage} of ${totalPages}`}
+ }
+ window.addMDRRMONotification=function(text){const n=load();n.unshift({text:String(text),time:new Date().toLocaleString(),read:false});save(n);currentPage=1;render()};
+ function setup(){
+   let bell=document.getElementById('notificationBell');
+   if(!bell){const host=document.querySelector('.topbar-actions');if(host){bell=document.createElement('button');bell.id='notificationBell';bell.type='button';bell.title='Notifications';bell.setAttribute('aria-label','Notifications');bell.innerHTML='🔔<span id="notificationBadge"></span>';const userControls=document.getElementById('userControls');if(userControls){host.insertBefore(bell,userControls)}else{host.appendChild(bell)}}}
+   if(bell)bell.addEventListener('click',()=>document.getElementById('notificationCenter')?.classList.toggle('hidden'));
+   document.getElementById('markNotificationsRead')?.addEventListener('click',()=>{save(load().map(x=>({...x,read:true})));render()});
+   document.getElementById('clearNotifications')?.addEventListener('click',()=>{if(confirm('Clear all notifications?')){save([]);currentPage=1;render()}});
+   document.getElementById('notificationPrev')?.addEventListener('click',()=>{currentPage--;render()});
+   document.getElementById('notificationNext')?.addEventListener('click',()=>{currentPage++;render()});
+   render();
+ }
  document.addEventListener('DOMContentLoaded',setup);
- // Mirror MDRRMO success toasts into the notification center.
- const wrapMDRRMOToast=()=>{
-   const orig=window.showMDRRMOToast;
-   if(typeof orig==='function' && !orig.__mdrrmoNotificationWrapped){
-     function wrapped(message,type,duration){
-       const r=orig.apply(this,arguments);
-       const text=String(message||'');
-       if(type!=='error' && text) window.addMDRRMONotification(text);
-       return r;
-     }
-     wrapped.__mdrrmoNotificationWrapped=true;
-     window.showMDRRMOToast=wrapped;
-   }
- };
+ const wrapMDRRMOToast=()=>{const orig=window.showMDRRMOToast;if(typeof orig==='function'&&!orig.__mdrrmoNotificationWrapped){function wrapped(message,type,duration){const r=orig.apply(this,arguments);const text=String(message||'');if(type!=='error'&&text)window.addMDRRMONotification(text);return r}wrapped.__mdrrmoNotificationWrapped=true;window.showMDRRMOToast=wrapped;}};
  wrapMDRRMOToast();
-
- // Keep compatibility with any older generic toast calls.
- const orig=window.showToast;
- if(typeof orig==='function' && !orig.__mdrrmoNotificationWrapped){
-   function wrappedShowToast(){
-     const r=orig.apply(this,arguments);
-     const a=[...arguments].map(String).join(' ');
-     if(/success|added|updated|deleted|import|export|backup/i.test(a)) window.addMDRRMONotification(a);
-     return r;
-   }
-   wrappedShowToast.__mdrrmoNotificationWrapped=true;
-   window.showToast=wrappedShowToast;
- }
-
- // Import result modals are also real record activity, so successful imports appear in the bell.
- const origImportResult=window.mdrrmoImportResult;
- if(typeof origImportResult==='function' && !origImportResult.__mdrrmoNotificationWrapped){
-   function wrappedImportResult(kind,title,message,detail){
-     const r=origImportResult.apply(this,arguments);
-     if(kind==='success'){
-       const text=[title,message].filter(Boolean).join(' — ');
-       if(text) window.addMDRRMONotification(text);
-     }
-     return r;
-   }
-   wrappedImportResult.__mdrrmoNotificationWrapped=true;
-   window.mdrrmoImportResult=wrappedImportResult;
- }
+ const oldAlert=window.showToast;if(typeof oldAlert==='function'&&!oldAlert.__mdrrmoNotificationWrapped){function wrappedToast(message,type,duration){const r=oldAlert.apply(this,arguments);const text=String(message||'');if(type!=='error'&&text)window.addMDRRMONotification(text);return r}wrappedToast.__mdrrmoNotificationWrapped=true;window.showToast=wrappedToast;}
 })();
 </script>
 </body>
