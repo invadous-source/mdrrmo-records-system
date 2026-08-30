@@ -1054,6 +1054,20 @@ tr:hover td {
 /* Advanced records date filtering */
 .table-filters #datePreset{min-width:145px}
 .table-filters #dateFromFilter,.table-filters #dateToFilter{min-width:145px}
+
+/* Record list stability override: keep rows visually steady on hover */
+.records-table tbody tr, #recordsTable tbody tr, .record-list tbody tr, table tbody tr {
+  transform: none !important;
+  transition: background-color .15s ease, box-shadow .15s ease !important;
+  animation: none !important;
+}
+.records-table tbody tr:hover, #recordsTable tbody tr:hover, .record-list tbody tr:hover, table tbody tr:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+.records-table tbody tr td, #recordsTable tbody tr td, .record-list tbody tr td {
+  transform: none !important;
+}
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
