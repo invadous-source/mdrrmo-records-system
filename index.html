@@ -4901,3 +4901,16 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
 
 </body>
 </html>
+
+<style>
+/* Force success/toast notifications to lower-left */
+.toast-container, #toastContainer, #notificationContainer, .notification-container, .toast-wrapper {
+  top: auto !important;
+  right: auto !important;
+  bottom: 24px !important;
+  left: 24px !important;
+}
+.toast, .notification {
+  transform-origin: bottom left;
+}
+</style>
