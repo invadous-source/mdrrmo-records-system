@@ -1947,6 +1947,55 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
   }
 }
 </style>
+
+<style id="weather-conditions-card-style">
+#weatherConditionsCard{
+  min-width:220px;
+  padding:16px 18px;
+  border-radius:16px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.28);
+  box-shadow:0 8px 24px rgba(15,45,75,.12);
+  backdrop-filter:blur(10px);
+  color:inherit;
+  align-self:stretch;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:7px;
+}
+#weatherConditionsCard .weather-title{
+  font-weight:800;
+  font-size:13px;
+  letter-spacing:.7px;
+}
+#weatherConditionsCard .weather-location{
+  font-size:12px;
+  opacity:.8;
+}
+#weatherConditionsCard .weather-temp{
+  font-size:26px;
+  font-weight:800;
+  line-height:1.05;
+}
+#weatherConditionsCard .weather-condition{
+  font-size:14px;
+  font-weight:700;
+}
+.weather-greeting-wrap{
+  display:flex !important;
+  gap:18px;
+  align-items:stretch;
+}
+.weather-greeting-wrap > :first-child{
+  flex:1;
+}
+@media(max-width:850px){
+  .weather-greeting-wrap{flex-direction:column;}
+  #weatherConditionsCard{min-width:0;}
+}
+</style>
+
 </head>
 <body class="dashboard-polish">
 
@@ -5576,6 +5625,83 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
 </style>
 <script id="mdrrmo-premium-operations-script">
 (function(){function roleName(){try{var u=(typeof currentUser!=='undefined'&&currentUser)?currentUser:{};var r=String(u.role||'').toLowerCase();return r==='admin'?'MDRRMO':(u.username||u.name||'Viewer')}catch(e){return 'Viewer'}}function update(){var h=document.getElementById('dashboardGreeting'),t=document.getElementById('dashboardGreetingText'),d=document.getElementById('dashboardLiveDate');if(!h)return;var n=new Date(),hr=n.getHours(),g=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';var name=roleName();h.textContent=g+', '+name+' 👋';if(t){t.textContent='Emergency Operations Monitoring Center';t.classList.add('dashboardGreeting-subtitle')}if(d){var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];var months=['January','February','March','April','May','June','July','August','September','October','November','December'];var hh=n.getHours()%12||12,mm=String(n.getMinutes()).padStart(2,'0'),ss=String(n.getSeconds()).padStart(2,'0'),amp=n.getHours()>=12?'PM':'AM';d.innerHTML='<span class="mdrrmo-status-dot"></span> All Systems Operational <span class="sep">•</span> '+months[n.getMonth()]+' '+n.getDate()+', '+n.getFullYear()+' <span class="sep">•</span> '+hh+':'+mm+':'+ss+' '+amp+' <span class="sep">•</span> '+days[n.getDay()];d.className='mdrrmo-system-line'}}function setup(){update();setInterval(update,1000);}document.querySelectorAll('[class*="modal"]').forEach(function(m){m.classList.add('mdrrmo-modal-premium')})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();window.addEventListener('mdrrmo-login-success',function(){setTimeout(setup,0)})})();
+</script>
+
+
+<script id="weather-conditions-card-script">
+(function(){
+  var weatherCodes={
+    0:"Clear Sky",1:"Mainly Clear",2:"Partly Cloudy",3:"Overcast",
+    45:"Foggy",48:"Rime Fog",51:"Light Drizzle",53:"Drizzle",55:"Heavy Drizzle",
+    56:"Freezing Drizzle",57:"Heavy Freezing Drizzle",61:"Light Rain",63:"Rain",
+    65:"Heavy Rain",66:"Freezing Rain",67:"Heavy Freezing Rain",71:"Light Snow",
+    73:"Snow",75:"Heavy Snow",77:"Snow Grains",80:"Rain Showers",
+    81:"Moderate Rain Showers",82:"Heavy Rain Showers",85:"Snow Showers",
+    86:"Heavy Snow Showers",95:"Thunderstorm",96:"Thunderstorm with Hail",
+    99:"Severe Thunderstorm"
+  };
+
+  function createCard(){
+    var existing=document.getElementById("weatherConditionsCard");
+    if(existing) return existing;
+
+    var heading=document.getElementById("dashboardGreeting");
+    if(!heading) return null;
+
+    var panel=heading.closest(".greeting-card, .welcome-card, .dashboard-greeting, .hero-card");
+    if(!panel) panel=heading.parentElement;
+    if(!panel) return null;
+
+    if(!panel.parentElement.classList.contains("weather-greeting-wrap")){
+      var wrapper=document.createElement("div");
+      wrapper.className="weather-greeting-wrap";
+      panel.parentNode.insertBefore(wrapper,panel);
+      wrapper.appendChild(panel);
+      panel=wrapper;
+    } else {
+      panel=panel.parentElement;
+    }
+
+    var card=document.createElement("div");
+    card.id="weatherConditionsCard";
+    card.innerHTML=
+      '<div class="weather-title">🌦️ WEATHER &amp; CONDITIONS</div>'+
+      '<div class="weather-location">📍 Binangonan, Rizal</div>'+
+      '<div class="weather-temp" id="weatherTemperature">🌡️ Loading...</div>'+
+      '<div class="weather-condition" id="weatherCondition">🌧️ Updating weather...</div>';
+    panel.appendChild(card);
+    return card;
+  }
+
+  async function updateWeather(){
+    var card=createCard();
+    if(!card) return;
+    var temp=document.getElementById("weatherTemperature");
+    var condition=document.getElementById("weatherCondition");
+
+    try{
+      var url="https://api.open-meteo.com/v1/forecast?latitude=14.4647&longitude=121.1928&current=temperature_2m,weather_code&timezone=Asia%2FManila";
+      var response=await fetch(url,{cache:"no-store"});
+      if(!response.ok) throw new Error("Weather service unavailable");
+      var data=await response.json();
+      var current=data.current || {};
+      var c=Math.round(Number(current.temperature_2m));
+      var text=weatherCodes[current.weather_code] || "Current Conditions";
+      temp.textContent="🌡️ "+(Number.isFinite(c)?c+"°C":"—");
+      condition.textContent="🌧️ "+text;
+    }catch(error){
+      temp.textContent="🌡️ —";
+      condition.textContent="🌧️ Weather unavailable";
+    }
+  }
+
+  function start(){
+    updateWeather();
+    setInterval(updateWeather,15*60*1000);
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",start);
+  else start();
+})();
 </script>
 
 </body>
