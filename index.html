@@ -1079,6 +1079,43 @@ tr:hover td {
 @keyframes authCardIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes authPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .login-overlay{background:radial-gradient(circle at 15% 15%,rgba(39,196,184,.18),transparent 28%),radial-gradient(circle at 85% 80%,rgba(240,180,76,.14),transparent 30%),linear-gradient(135deg,#061724,#0a3247 55%,#075d5b)!important}
 .login-card{box-shadow:0 30px 90px rgba(0,0,0,.38),0 0 0 1px rgba(255,255,255,.28)!important}.login-mark{animation:authPulse 2.2s ease-in-out infinite!important}.login-button{position:relative!important;overflow:hidden!important}.login-button:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-120%);transition:transform .55s ease}.login-button:hover:before{transform:translateX(120%)}.login-button:hover{box-shadow:0 14px 30px rgba(18,72,106,.32)!important}
+
+/* Polished Mark All Read button */
+.notification-head { gap: 12px; }
+#markNotificationsRead {
+  appearance: none;
+  border: 1px solid rgba(37,99,235,.22);
+  background: #eff6ff;
+  color: #2563eb;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 8px 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+#markNotificationsRead span:first-child {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  background: rgba(37,99,235,.12);
+  font-size: 11px;
+}
+#markNotificationsRead:hover {
+  background: #dbeafe;
+  border-color: rgba(37,99,235,.35);
+  transform: translateY(-1px);
+}
+#markNotificationsRead:active { transform: translateY(0); }
+#markNotificationsRead:focus-visible { outline: 3px solid rgba(37,99,235,.22); outline-offset: 2px; }
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
@@ -4919,7 +4956,7 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
 </script>
 
 <div id="notificationCenter" class="notification-panel hidden" aria-live="polite">
-  <div class="notification-head"><strong>Notifications</strong><button type="button" id="markNotificationsRead">Mark all as read</button></div>
+  <div class="notification-head"><strong>Notifications</strong><button type="button" id="markNotificationsRead" title="Mark all notifications as read"><span aria-hidden="true">✓</span><span>Mark all read</span></button></div>
   <div id="notificationList"></div>
 </div>
 
