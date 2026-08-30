@@ -1440,6 +1440,12 @@ textarea::placeholder {
 .mdrrmo-status p{margin:0;color:#667e91;line-height:1.55}
 .mdrrmo-progress{height:7px;border-radius:999px;background:#e4edf4;overflow:hidden;margin:21px auto 0;max-width:310px}
 .mdrrmo-progress>span{display:block;height:100%;width:30%;border-radius:inherit;background:linear-gradient(90deg,#0b5fa5,#1784d1);animation:mdrrmoProgress 1.15s ease-in-out infinite}
+.mdrrmo-progress-determinate{position:relative}
+.mdrrmo-progress-determinate>span{width:0;animation:none!important;transition:width .18s ease}
+.mdrrmo-progress-percent{margin-top:8px;font-size:.78rem;color:#6b8296;font-weight:700}
+.mdrrmo-progress-note{margin-top:18px!important}
+body.mdrrmo-dark .mdrrmo-progress-percent{color:#9fb2c5}
+
 @keyframes mdrrmoSpin{to{transform:rotate(360deg)}}@keyframes mdrrmoFade{from{opacity:0}to{opacity:1}}@keyframes mdrrmoPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}@keyframes mdrrmoProgress{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
 </style>
 
@@ -3880,30 +3886,20 @@ function openDatabaseImport() {
 async function importDatabaseBackup(event) {
     const input = event.target;
     const file = input.files && input.files[0];
-
     if (!file) return;
 
     try {
         const text = await file.text();
         const parsed = JSON.parse(text);
 
-        // Accept both backup formats:
-        // { records: [...] } or just [...]
-        const incoming = Array.isArray(parsed)
-            ? parsed
-            : parsed.records;
-
+        const incoming = Array.isArray(parsed) ? parsed : parsed.records;
         if (!Array.isArray(incoming)) {
-            throw new Error(
-                "The selected JSON file is not a valid MDRRMO database backup."
-            );
+            throw new Error("The selected JSON file is not a valid MDRRMO database backup.");
         }
 
         const cleaned = incoming.map((record, index) => {
             if (!record || typeof record !== "object") {
-                throw new Error(
-                    `Invalid record at item ${index + 1}.`
-                );
+                throw new Error(`Invalid record at item ${index + 1}.`);
             }
 
             const rawBarangay = String(record.barangay ?? record.otherBarangay ?? record.outsideBarangay ?? "").trim();
@@ -3941,71 +3937,66 @@ async function importDatabaseBackup(event) {
             return;
         }
 
-        // Get all current IDs to avoid duplicates
         const existingIds = new Set(
-            Array.isArray(records)
-                ? records.map(record => String(record.id))
-                : []
+            Array.isArray(records) ? records.map(record => String(record.id)) : []
         );
 
         let importedCount = 0;
         let skippedCount = 0;
+        let errorCount = 0;
         const importedRecords = [];
+        const total = cleaned.length;
 
-        // ADD incoming records without deleting current records
-        for (const record of cleaned) {
+        // Show progress immediately, before the first database request.
+        mdrrmoDatabaseProgress(0, total, 0, 0);
 
-            // Skip record if ID already exists
+        for (let i = 0; i < cleaned.length; i++) {
+            const record = cleaned[i];
+
             if (existingIds.has(String(record.id))) {
                 skippedCount++;
+                mdrrmoDatabaseProgress(i + 1, total, skippedCount, errorCount);
                 continue;
             }
 
-            const response = await fetch("/api/records", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(record)
-            });
+            try {
+                const response = await fetch("/api/records", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(record)
+                });
 
-            if (!response.ok) {
-                throw new Error(
-                    `Unable to import record ${record.id} ` +
-                    `(HTTP ${response.status}).`
-                );
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const savedRecord = await response.json();
+                importedRecords.push(savedRecord);
+                existingIds.add(String(record.id));
+                importedCount++;
+            } catch (recordError) {
+                console.error(`Database import failed for record ${record.id}:`, recordError);
+                errorCount++;
             }
 
-            const savedRecord = await response.json();
-
-            importedRecords.push(savedRecord);
-
-            // Add ID so duplicate IDs inside the JSON
-            // are also skipped
-            existingIds.add(String(record.id));
-
-            importedCount++;
+            mdrrmoDatabaseProgress(i + 1, total, skippedCount, errorCount);
         }
 
-        // Add imported records to current records
         records = [
             ...importedRecords,
             ...(Array.isArray(records) ? records : [])
         ];
 
         currentRecordsPage = 1;
-
         updateAll();
 
         mdrrmoImportResult(
-            "success",
-            "Import Successful!",
+            errorCount > 0 ? "error" : "success",
+            errorCount > 0 ? "Import Completed with Errors" : "Import Successful!",
             `${importedCount} new record${importedCount === 1 ? "" : "s"} imported successfully.`,
-            `Duplicates skipped: ${skippedCount} · Total records now: ${records.length}`
+            `Duplicates skipped: ${skippedCount} · Errors: ${errorCount} · Total records now: ${records.length}`
         );
-
     } catch (error) {
-
         console.error("Database import failed:", error);
 
         mdrrmoImportResult(
@@ -4014,11 +4005,8 @@ async function importDatabaseBackup(event) {
             "The import could not be completed.",
             error.message
         );
-
     } finally {
-
         input.value = "";
-
     }
 }
 
@@ -4611,6 +4599,27 @@ function mdrrmoImportConfirm(count){return new Promise(resolve=>{mdrrmoImportMod
  document.getElementById('mdrrmoImportConfirm').onclick=()=>{resolve(true);mdrrmoImportLoading(count)};
 });}
 function mdrrmoImportLoading(count){mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>📥 Importing Records</h3><p>Please wait while we save your records</p></div><div class="mdrrmo-status"><div class="mdrrmo-spinner"></div><h3>Importing ${count} record${count===1?'':'s'}...</h3><p>Please do not close or refresh the page.</p><div class="mdrrmo-progress"><span></span></div></div>`);}
+function mdrrmoDatabaseProgress(current,total,skipped,errors){
+  const pct = total ? Math.min(100, Math.round((current/total)*100)) : 0;
+  const m = document.getElementById('mdrrmoImportModal');
+  if(!m) return;
+  mdrrmoImportModalShow(`
+    <div class="mdrrmo-import-head">
+      <h3>📥 Importing Database Records</h3>
+      <p>Please wait while records are saved to the database</p>
+    </div>
+    <div class="mdrrmo-status mdrrmo-db-progress">
+      <div class="mdrrmo-spinner"></div>
+      <h3>Processing ${current} of ${total}...</h3>
+      <p><b>${skipped}</b> duplicates skipped&nbsp;&nbsp;·&nbsp;&nbsp;<b>${errors}</b> errors</p>
+      <p class="mdrrmo-progress-note">Please do not close, navigate away, or refresh the page.</p>
+      <div class="mdrrmo-progress mdrrmo-progress-determinate">
+        <span style="width:${pct}%"></span>
+      </div>
+      <div class="mdrrmo-progress-percent">${pct}%</div>
+    </div>
+  `);
+}
 function mdrrmoImportResult(kind,title,message,detail){const icon=kind==='success'?'✓':'!'; const bg=kind==='success'?'#e5f5eb':'#fff0f0'; const color=kind==='success'?'#17804b':'#c0392b';mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>${kind==='success'?'Import Complete':'Import Failed'}</h3><p>${kind==='success'?'Your database has been updated':'No more records will be processed'}</p></div><div class="mdrrmo-status"><div class="mdrrmo-status-icon" style="background:${bg};color:${color}">${icon}</div><h3>${title}</h3><p>${message}${detail?`<br><br><b>${detail}</b>`:''}</p></div><div class="mdrrmo-import-actions"><button class="mdrrmo-primary" id="mdrrmoImportOk">OK</button></div>`);document.getElementById('mdrrmoImportOk').onclick=mdrrmoImportModalHide;}
 </script>
 
