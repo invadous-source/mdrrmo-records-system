@@ -1570,6 +1570,10 @@ body.auth-scroll-lock { overflow:hidden !important; }
   #loginOverlay, #authTransition { height:100vh !important; min-height:100vh !important; max-height:100vh !important; }
 }
 </style>
+
+<style id="notificationCenterStyles">
+#notificationBell{position:relative;border:0;background:transparent;cursor:pointer;font-size:20px;padding:8px;border-radius:12px}#notificationBell:hover{background:rgba(0,0,0,.06)}#notificationBadge{position:absolute;top:2px;right:2px;min-width:18px;height:18px;border-radius:999px;background:#dc2626;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0 4px}.notification-panel{position:fixed;top:72px;right:24px;width:min(380px,calc(100vw - 32px));max-height:70vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18);padding:12px;z-index:99999}.notification-panel.hidden{display:none}.notification-head{display:flex;justify-content:space-between;align-items:center;padding:8px 8px 12px}.notification-item{padding:12px;border-radius:12px;margin:6px 0;background:#f8fafc;border:1px solid #e5e7eb}.notification-item.unread{border-left:4px solid #2563eb}.notification-time{font-size:12px;opacity:.65;margin-top:4px}.notification-empty{padding:24px;text-align:center;opacity:.65}
+</style>
 </head>
 <body>
 
@@ -4911,6 +4915,25 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateDashboardGreeting);else updateDashboardGreeting();
  setInterval(updateDashboardGreeting,60000);
+})();
+</script>
+
+<div id="notificationCenter" class="notification-panel hidden" aria-live="polite">
+  <div class="notification-head"><strong>Notifications</strong><button type="button" id="markNotificationsRead">Mark all as read</button></div>
+  <div id="notificationList"></div>
+</div>
+
+<script id="notificationCenterScript">
+(function(){
+ const KEY='mdrrmo_notifications';
+ const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}};
+ const save=x=>localStorage.setItem(KEY,JSON.stringify(x.slice(0,50)));
+ function render(){const list=document.getElementById('notificationList'); const badge=document.getElementById('notificationBadge'); if(!list)return; const n=load(); const unread=n.filter(x=>!x.read).length; if(badge){badge.textContent=unread; badge.style.display=unread?'flex':'none'} list.innerHTML=n.length?n.map(x=>`<div class="notification-item ${x.read?'':'unread'}"><div>${x.text}</div><div class="notification-time">${x.time||''}</div></div>`).join(''):'<div class="notification-empty">No notifications yet</div>';}
+ window.addMDRRMONotification=function(text){const n=load();n.unshift({text:String(text),time:new Date().toLocaleString(),read:false});save(n);render()};
+ function setup(){let bell=document.getElementById('notificationBell'); if(!bell){const host=document.querySelector('.dashboard-header, .topbar, header, .header'); if(host){bell=document.createElement('button');bell.id='notificationBell';bell.type='button';bell.title='Notifications';bell.innerHTML='🔔<span id="notificationBadge"></span>';host.appendChild(bell)}} if(bell){bell.addEventListener('click',()=>document.getElementById('notificationCenter')?.classList.toggle('hidden'));} document.getElementById('markNotificationsRead')?.addEventListener('click',()=>{const n=load().map(x=>({...x,read:true}));save(n);render()}); render();}
+ document.addEventListener('DOMContentLoaded',setup);
+ // Observe common success messages and mirror them into notification center.
+ const orig=window.showToast; if(typeof orig==='function'){window.showToast=function(){const r=orig.apply(this,arguments);const a=[...arguments].map(String).join(' ');if(/success|added|updated|import|export|backup/i.test(a))window.addMDRRMONotification(a);return r}}
 })();
 </script>
 </body>
