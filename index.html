@@ -2200,6 +2200,26 @@ document.addEventListener('DOMContentLoaded',function(){
 </div>
 </main>
 <!-- =================================
+     VIEW RECORD MODAL
+================================= -->
+<div class="modal" id="viewRecordModal" aria-hidden="true">
+  <div class="modal-box mdrrmo-view-modal-box">
+    <div class="modal-header">
+      <div>
+        <h2 id="viewRecordTitle" style="margin:0">Record Details</h2>
+        <div id="viewRecordSubtitle" class="mdrrmo-view-subtitle"></div>
+      </div>
+      <button class="close-btn" type="button" onclick="closeViewRecordModal()">×</button>
+    </div>
+    <div id="viewRecordBody" class="mdrrmo-view-body"></div>
+    <div class="mdrrmo-view-footer">
+      <button type="button" class="btn btn-secondary btn-small" onclick="closeViewRecordModal()">Close</button>
+      <button type="button" class="btn btn-primary btn-small" id="viewRecordEditBtn">Edit Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================================
      ADD / EDIT MODAL
 ================================= -->
 <div class="modal" id="recordModal">
@@ -3550,6 +3570,7 @@ function renderTable() {
             <td>${record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-"}</td>
             <td>${escapeHTML(record.status || "")}</td>
             <td>
+                <button class="btn btn-info btn-small mdrrmo-view-btn" onclick="viewRecord('${record.id}')" title="View record">View</button>
                 <button class="btn btn-primary btn-small" onclick="editRecord('${record.id}')">Edit</button>
                 <button class="btn btn-danger btn-small" onclick="deleteRecord('${record.id}')">Delete</button>
             </td>
@@ -5317,6 +5338,84 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
   clear.addEventListener('click',()=>{input.value='';renderResults();input.focus();});
   results.addEventListener('click',e=>{const btn=e.target.closest('.mdrrmo-search-result');if(btn)openRecord(btn.dataset.recordId);});
   document.addEventListener('click',e=>{if(!wrap.contains(e.target))results.hidden=true;});
+})();
+</script>
+<style id="mdrrmo-view-record-style">
+.mdrrmo-view-modal-box{max-width:780px;width:min(780px,calc(100vw - 32px));max-height:min(88vh,900px);display:flex;flex-direction:column;overflow:hidden}
+.mdrrmo-view-subtitle{font-size:12px;color:#64748b;margin-top:3px}
+.mdrrmo-view-body{padding:18px 20px;overflow:auto}
+.mdrrmo-view-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mdrrmo-view-field{background:#f7fafc;border:1px solid #dbe5ef;border-radius:12px;padding:12px 13px;min-width:0}
+.mdrrmo-view-field.full{grid-column:1/-1}
+.mdrrmo-view-label{font-size:11px;font-weight:800;letter-spacing:.45px;text-transform:uppercase;color:#718096;margin-bottom:5px}
+.mdrrmo-view-value{font-size:14px;color:#18324b;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.mdrrmo-view-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid #dbe5ef;background:rgba(248,250,252,.75)}
+.mdrrmo-view-btn{background:#0c78c9!important;border-color:#0c78c9!important;color:#fff!important}
+.mdrrmo-view-btn:hover{background:#0869ae!important;border-color:#0869ae!important}
+body.mdrrmo-dark .mdrrmo-view-subtitle{color:#9fb0c4}
+body.mdrrmo-dark .mdrrmo-view-field{background:#111a2b;border-color:#334155}
+body.mdrrmo-dark .mdrrmo-view-label{color:#91a3b8}
+body.mdrrmo-dark .mdrrmo-view-value{color:#e8eef7}
+body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
+@media(max-width:640px){.mdrrmo-view-grid{grid-template-columns:1fr}.mdrrmo-view-field.full{grid-column:auto}.mdrrmo-view-modal-box{width:calc(100vw - 20px)}.mdrrmo-view-body{padding:14px}.mdrrmo-view-footer{padding:12px 14px}}
+</style>
+<script id="mdrrmo-view-record-script">
+(function(){
+  function esc(v){
+    if(typeof escapeHTML==='function') return escapeHTML(String(v ?? ''));
+    return String(v ?? '').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  }
+  function label(v){
+    return String(v ?? '').trim() || '—';
+  }
+  function field(name,value,full){
+    return `<div class="mdrrmo-view-field${full?' full':''}"><div class="mdrrmo-view-label">${esc(name)}</div><div class="mdrrmo-view-value">${esc(label(value))}</div></div>`;
+  }
+  window.viewRecord=function(id){
+    const list=Array.isArray(records)?records:[];
+    const record=list.find(r=>String(r.id)===String(id));
+    if(!record) return;
+    const modal=document.getElementById('viewRecordModal');
+    const body=document.getElementById('viewRecordBody');
+    const title=document.getElementById('viewRecordTitle');
+    const subtitle=document.getElementById('viewRecordSubtitle');
+    const editBtn=document.getElementById('viewRecordEditBtn');
+    if(!modal||!body) return;
+    const type=typeof getRecordTypeLabel==='function'?getRecordTypeLabel(record.type):String(record.type||'RECORD').replaceAll('_',' ').toUpperCase();
+    title.textContent=`${type} Details`;
+    subtitle.textContent=`Record ID: ${record.id || '—'}`;
+    let html='<div class="mdrrmo-view-grid">';
+    html += field('Date', typeof formatDate==='function'?formatDate(record.date):record.date);
+    html += field('Time',record.time);
+    html += field('Record Type',type);
+    html += field('Barangay / Area',record.barangay);
+    html += field('Incident / Category',record.category);
+    html += field('Location',record.location);
+    html += field('Person(s) Involved / Assisted',record.persons,true);
+    html += field('Age',record.type==='accident' && record.age!==undefined && record.age!==''?record.age:'—');
+    html += field('Status',record.status);
+    html += field('Responders',record.responders,true);
+    if(record.type==='conduction'){
+      html += field('Ambulance',record.ambulance);
+      html += field('People Rescued / Assisted',record.rescued);
+    }
+    html += field('Remarks',record.remarks,true);
+    if(record.createdAt) html += field('Created',new Date(record.createdAt).toLocaleString());
+    if(record.updatedAt) html += field('Last Updated',new Date(record.updatedAt).toLocaleString());
+    html += '</div>';
+    body.innerHTML=html;
+    editBtn.onclick=function(){closeViewRecordModal();editRecord(record.id);};
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+  };
+  window.closeViewRecordModal=function(){
+    const modal=document.getElementById('viewRecordModal');
+    if(!modal) return;
+    modal.classList.remove('show');
+    modal.setAttribute('aria-hidden','true');
+  };
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeViewRecordModal();});
+  document.getElementById('viewRecordModal')?.addEventListener('click',function(e){if(e.target===this)closeViewRecordModal();});
 })();
 </script>
 </body>
