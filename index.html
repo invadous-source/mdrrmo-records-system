@@ -1996,6 +1996,62 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
 }
 </style>
 
+
+<style id="weather-combined-panel-override">
+.weather-greeting-wrap{
+  display:block !important;
+}
+.weather-greeting-wrap > :first-child{
+  width:100%;
+}
+#weatherConditionsCard{
+  position:absolute;
+  right:26px;
+  top:50%;
+  transform:translateY(-50%);
+  min-width:220px;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  backdrop-filter:none !important;
+  padding:0 0 0 24px !important;
+  border-left:1px solid rgba(255,255,255,.28) !important;
+  color:inherit;
+}
+.weather-greeting-wrap > :first-child{
+  position:relative;
+  padding-right:275px !important;
+}
+@media(max-width:850px){
+  #weatherConditionsCard{
+    position:static;
+    transform:none;
+    margin-top:14px;
+    padding:14px 0 0 !important;
+    border-left:0 !important;
+    border-top:1px solid rgba(255,255,255,.28) !important;
+  }
+  .weather-greeting-wrap > :first-child{padding-right:initial !important;}
+}
+</style>
+<script id="weather-combined-panel-script">
+(function(){
+ function mergeWeather(){
+   var card=document.getElementById('weatherConditionsCard');
+   var wrap=document.querySelector('.weather-greeting-wrap');
+   if(!card||!wrap)return false;
+   var panel=wrap.querySelector(':scope > :first-child');
+   if(!panel)return false;
+   if(card.parentElement!==panel) panel.appendChild(card);
+   return true;
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mergeWeather);
+ else mergeWeather();
+ setTimeout(mergeWeather,500);
+ setTimeout(mergeWeather,1500);
+})();
+</script>
+
 </head>
 <body class="dashboard-polish">
 
