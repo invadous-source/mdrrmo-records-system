@@ -1860,6 +1860,51 @@ document.addEventListener('DOMContentLoaded',function(){
   .main{margin-left:58px!important;width:calc(100% - 58px)!important;}
 }
 </style>
+
+<style id="mdrrmo-complete-dark-popups">
+/* Unified popup + dark mode pass */
+body.mdrrmo-dark .mdrrmo-import-modal{background:rgba(2,8,20,.72)!important}
+body.mdrrmo-dark .mdrrmo-import-box{background:#101a29!important;border-color:#334155!important;box-shadow:0 28px 90px rgba(0,0,0,.6)!important}
+body.mdrrmo-dark .mdrrmo-import-head{background:linear-gradient(135deg,#0b355f,#0b5fa5)!important}
+body.mdrrmo-dark .mdrrmo-import-body{background:#101a29!important;color:#dbe7f3!important}
+body.mdrrmo-dark .mdrrmo-import-count{background:#16283a!important;border-color:#2d4a66!important}
+body.mdrrmo-dark .mdrrmo-import-count b{color:#eaf4ff!important}
+body.mdrrmo-dark .mdrrmo-import-count span{color:#9fb2c5!important}
+body.mdrrmo-dark .mdrrmo-import-notes{color:#c5d2df!important}
+body.mdrrmo-dark .mdrrmo-import-actions{background:#0d1521!important;border-color:#2b3b50!important}
+body.mdrrmo-dark .mdrrmo-cancel{background:#1b2a3b!important;color:#dbe7f3!important;border-color:#3b4b63!important}
+body.mdrrmo-dark .mdrrmo-status h3{color:#f8fafc!important}
+body.mdrrmo-dark .mdrrmo-status p{color:#aebbd0!important}
+body.mdrrmo-dark .mdrrmo-progress{background:#27364b!important}
+body.mdrrmo-dark #mdrrmoDeleteModal{background:rgba(2,8,20,.72)!important}
+body.mdrrmo-dark .mdrrmo-delete-box{background:#101a29!important;border:1px solid #334155!important;box-shadow:0 28px 90px rgba(0,0,0,.6)!important}
+body.mdrrmo-dark .mdrrmo-delete-top h3{color:#f8fafc!important}
+body.mdrrmo-dark .mdrrmo-delete-body{color:#c5d2df!important}
+body.mdrrmo-dark .mdrrmo-delete-icon{background:#2b1d21!important}
+body.mdrrmo-dark .mdrrmo-delete-warning{background:#281b1d!important;border-color:#5a3034!important;color:#ffb8ba!important}
+body.mdrrmo-dark .mdrrmo-delete-actions{background:#0d1521!important;border-color:#27384b!important}
+body.mdrrmo-dark #mdrrmoDeleteCancel{background:#1b2a3b!important;color:#d7e5f2!important}
+body.mdrrmo-dark .mdrrmo-action-modal{background:rgba(2,8,20,.72)!important}
+body.mdrrmo-dark .mdrrmo-action-box{background:#101a29!important;border-color:#334155!important;box-shadow:0 28px 90px rgba(0,0,0,.6)!important}
+body.mdrrmo-dark .mdrrmo-action-icon{background:#16283a!important}
+body.mdrrmo-dark .mdrrmo-action-top h3{color:#f8fafc!important}
+body.mdrrmo-dark .mdrrmo-action-top p{color:#c5d2df!important}
+body.mdrrmo-dark .mdrrmo-action-warning{background:#281b1d!important;border-color:#5a3034!important;color:#ffb8ba!important}
+body.mdrrmo-dark .mdrrmo-action-actions{background:#0d1521!important;border-color:#27384b!important}
+body.mdrrmo-dark .mdrrmo-action-cancel{background:#1b2a3b!important;color:#d7e5f2!important}
+body.mdrrmo-dark #viewRecordModal{background:rgba(2,8,20,.72)!important}
+body.mdrrmo-dark #viewRecordModal .modal-box{background:#101a29!important;border-color:#334155!important}
+body.mdrrmo-dark #mdrrmoPageLoader{background:rgba(2,8,20,.96)!important}
+body.mdrrmo-dark .mdrrmo-loader-card{background:#101a29!important;border:1px solid #334155!important;color:#cfe7ff!important}
+/* Native form controls / popovers */
+body.mdrrmo-dark select,body.mdrrmo-dark option{color-scheme:dark}
+body.mdrrmo-dark input[type="date"],body.mdrrmo-dark input[type="time"],body.mdrrmo-dark input[type="number"]{color-scheme:dark}
+/* Better dark focus states */
+body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.mdrrmo-dark input:focus-visible,body.mdrrmo-dark select:focus-visible,body.mdrrmo-dark textarea:focus-visible{outline:3px solid rgba(96,165,250,.35)!important;outline-offset:2px}
+/* Shared popup motion */
+.mdrrmo-import-modal .mdrrmo-import-box,.mdrrmo-delete-box,.mdrrmo-action-box,.modal .modal-box{will-change:transform,opacity}
+@media (prefers-reduced-motion:reduce){.mdrrmo-import-modal,.mdrrmo-import-box,.mdrrmo-delete-box,.mdrrmo-action-box,.notification-panel,.modal .modal-box{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body class="dashboard-polish">
 
@@ -2873,7 +2918,7 @@ async function saveRecord(event) {
     const barangaySelect = document.getElementById("barangay");
     const otherBarangayInput = document.getElementById("otherBarangay");
     if (barangaySelect && barangaySelect.value === "__other__" && otherBarangayInput && !otherBarangayInput.value.trim()) {
-        alert("Please specify the barangay or outside area.");
+        await mdrrmoActionConfirm({title:"Barangay or outside area required",message:"Please specify the barangay or outside area before saving this record.",icon:"📍",confirmText:"OK",singleButton:true});
         isSavingRecord = false;
         if (saveButton) { saveButton.disabled = false; saveButton.removeAttribute("aria-busy"); saveButton.innerHTML = originalSaveText; saveButton.style.opacity = ""; saveButton.style.cursor = ""; }
         otherBarangayInput.focus();
@@ -2922,7 +2967,7 @@ async function saveRecord(event) {
         if (typeof showMDRRMOToast === 'function') showMDRRMOToast(editId ? 'Record updated successfully.' : 'Record added successfully.', 'success');
     } catch (error) {
         console.error("Unable to save record:", error);
-        alert("Unable to save to the local database. Please make sure start.bat is running.\n\n" + error.message);
+        await mdrrmoActionConfirm({title:"Unable to save record",message:"The record could not be saved to the database.",warning:"Please make sure the database/API is available.\n\n" + error.message,icon:"⚠️",confirmText:"OK",singleButton:true});
     } finally {
         isSavingRecord = false;
         if (saveButton) {
@@ -3138,7 +3183,7 @@ async function deleteSelectedRecords() {
         if (typeof showMDRRMOToast === "function") showMDRRMOToast(`${deletedIds.size} record${deletedIds.size === 1 ? "" : "s"} deleted successfully.`, "success");
     } catch (error) {
         console.error("Unable to bulk delete records:", error);
-        alert("Unable to delete the selected records. Please make sure the database/API is available.\n\n" + error.message);
+        await mdrrmoActionConfirm({title:"Unable to delete records",message:"The selected records could not be deleted.",warning:"Please make sure the database/API is available.\n\n" + error.message,icon:"⚠️",confirmText:"OK",singleButton:true});
     }
 }
 
@@ -3155,7 +3200,7 @@ function mdrrmoBulkDeleteConfirm(count) {
             if (body) body.innerHTML = original;
             resolve(value);
         };
-        if (!modal || !cancel || !confirmBtn) return resolve(confirm(`Delete ${count} selected record${count === 1 ? "" : "s"}?\n\nThis action cannot be undone.`));
+        if (!modal || !cancel || !confirmBtn) if (typeof mdrrmoActionConfirm === "function") { mdrrmoActionConfirm({title:`Delete ${count} selected record${count === 1 ? "" : "s"}?`,message:"This action will permanently remove the selected records.",warning:"This action cannot be undone.",confirmText:"Delete records",danger:true,icon:"🗑️"}).then(resolve); } else { resolve(false); }
         if (body) body.innerHTML = `Are you sure you want to delete <b>${count} selected record${count === 1 ? "" : "s"}</b>?<div class="mdrrmo-delete-warning">This action cannot be undone.</div>`;
         modal.classList.add("show");
         cancel.onclick = () => close(false);
@@ -3179,7 +3224,7 @@ async function deleteRecord(id) {
         if (typeof showMDRRMOToast === 'function') showMDRRMOToast('Record deleted successfully.', 'success');
     } catch (error) {
         console.error("Unable to delete record:", error);
-        alert("Unable to delete from the local database. Please make sure start.bat is running.\n\n" + error.message);
+        await mdrrmoActionConfirm({title:"Unable to delete record",message:"The record could not be deleted from the database.",warning:"Please make sure the database/API is available.\n\n" + error.message,icon:"⚠️",confirmText:"OK",singleButton:true});
     }
 }
 
@@ -4319,11 +4364,11 @@ function getExcelExportFilteredRecords() {
    EXPORT EXCEL (EXCEL-COMPATIBLE XLS)
 ================================ */
 
-function exportExcel() {
+async function exportExcel() {
     try {
         const source = getExcelExportFilteredRecords();
         if (!source.length) {
-            alert('There are no records matching the selected record type and date filter.');
+            await mdrrmoActionConfirm({title:'No matching records',message:'There are no records matching the selected record type and date filter.',icon:'🔎',confirmText:'OK',singleButton:true});
             return;
         }
 
@@ -4418,7 +4463,7 @@ function exportExcel() {
         closeExcelExport();
     } catch (error) {
         console.error('Excel export failed:', error);
-        alert('Excel export failed. Please try again.');
+        await mdrrmoActionConfirm({title:'Excel export failed',message:'The Excel file could not be generated.',icon:'📄',confirmText:'OK',singleButton:true});
     }
 }
 
