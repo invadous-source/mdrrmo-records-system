@@ -1611,6 +1611,27 @@ body.auth-scroll-lock { overflow:hidden !important; }
 <style id="notificationCenterStyles">
 #notificationBell{position:relative;flex:0 0 auto;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.14);color:#fff;cursor:pointer;font-size:18px;padding:8px 10px;border-radius:9px;line-height:1}#notificationBell:hover{background:rgba(255,255,255,.24)}#notificationBadge{position:absolute;top:2px;right:2px;min-width:18px;height:18px;border-radius:999px;background:#dc2626;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0 4px}.notification-panel{position:fixed;top:72px;right:24px;width:min(400px,calc(100vw - 32px));max-height:70vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.18);padding:12px;z-index:99999}.notification-panel.hidden{display:none}.notification-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:8px 8px 12px}.notification-head strong{font-size:16px}.notification-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.notification-actions button{border:1px solid #dbe3ee;background:#f8fafc;color:#334155;border-radius:8px;padding:6px 9px;font-size:12px;font-weight:700;cursor:pointer}.notification-actions button:hover{background:#eef4fb}.notification-actions .notification-clear{color:#b91c1c;border-color:#fecaca;background:#fff7f7}.notification-actions .notification-clear:hover{background:#fee2e2}.notification-item{padding:12px;border-radius:12px;margin:6px 0;background:#f8fafc;border:1px solid #e5e7eb}.notification-item.unread{border-left:4px solid #2563eb}.notification-time{font-size:12px;opacity:.65;margin-top:4px}.notification-empty{padding:24px;text-align:center;opacity:.65}.notification-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px 2px}.notification-pagination button{border:1px solid #dbe3ee;background:#fff;color:#334155;border-radius:8px;padding:7px 11px;font-size:12px;font-weight:700;cursor:pointer}.notification-pagination button:hover:not(:disabled){background:#f1f5f9}.notification-pagination button:disabled{opacity:.45;cursor:not-allowed}.notification-page-info{font-size:12px;color:#64748b;white-space:nowrap}@media(max-width:480px){.notification-panel{right:12px;top:64px}.notification-head{flex-direction:column}.notification-actions{justify-content:flex-start}}
 </style>
+
+<style id="mdrrmo-global-search-style">
+.mdrrmo-global-search{position:relative;display:flex;align-items:center;width:min(290px,32vw);height:42px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:12px;transition:.2s ease;box-sizing:border-box}
+.mdrrmo-global-search:focus-within{background:#fff;border-color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.mdrrmo-global-search-icon{margin-left:12px;font-size:14px;opacity:.9}
+#globalSearchInput{width:100%;min-width:0;border:0!important;outline:0!important;background:transparent!important;color:#fff!important;padding:10px 6px;font:inherit;box-shadow:none!important}
+#globalSearchInput::placeholder{color:rgba(255,255,255,.78)}
+.mdrrmo-global-search:focus-within #globalSearchInput{color:#1e293b!important}
+.mdrrmo-global-search:focus-within #globalSearchInput::placeholder{color:#94a3b8}
+.mdrrmo-global-search-clear{display:none;border:0;background:transparent;color:#64748b;font-size:22px;line-height:1;cursor:pointer;padding:0 11px}
+.mdrrmo-global-search.has-value .mdrrmo-global-search-clear{display:block}
+.mdrrmo-global-search-results{position:absolute;top:calc(100% + 8px);right:0;width:min(430px,calc(100vw - 32px));max-height:420px;overflow:auto;background:#fff;color:#1e293b;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 18px 45px rgba(15,23,42,.22);z-index:10050;padding:8px}
+.mdrrmo-search-result{display:block;width:100%;text-align:left;border:0;background:#fff;border-radius:10px;padding:11px 12px;cursor:pointer;color:#334155;transition:background .15s ease}
+.mdrrmo-search-result:hover{background:#f1f5f9}
+.mdrrmo-search-result-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+.mdrrmo-search-result-meta{margin-top:4px;color:#64748b;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mdrrmo-search-empty{padding:18px 14px;text-align:center;color:#64748b;font-size:13px}
+.mdrrmo-search-footer{padding:9px 12px 5px;color:#94a3b8;font-size:11px;border-top:1px solid #f1f5f9;margin-top:4px}
+@media(max-width:900px){.mdrrmo-global-search{width:190px}.date-display{display:none}}
+@media(max-width:680px){.mdrrmo-global-search{width:42px;border-radius:50%;justify-content:center}.mdrrmo-global-search-icon{margin:0}.mdrrmo-global-search input,.mdrrmo-global-search-clear{display:none!important}.mdrrmo-global-search:focus-within{width:min(290px,calc(100vw - 24px));position:absolute;right:12px}.mdrrmo-global-search:focus-within input{display:block!important}.mdrrmo-global-search:focus-within .mdrrmo-global-search-icon{margin-left:12px}}
+</style>
 </head>
 <body>
 
@@ -1673,6 +1694,12 @@ body.auth-scroll-lock { overflow:hidden !important; }
 </div>
 <div class="topbar-actions">
   <div class="date-display" id="currentDate"></div>
+  <div class="mdrrmo-global-search" id="mdrrmoGlobalSearch">
+    <span class="mdrrmo-global-search-icon">🔎</span>
+    <input id="globalSearchInput" type="search" autocomplete="off" placeholder="Search records..." aria-label="Search all records">
+    <button type="button" id="globalSearchClear" class="mdrrmo-global-search-clear" aria-label="Clear search">×</button>
+    <div id="globalSearchResults" class="mdrrmo-global-search-results" hidden></div>
+  </div>
   <button id="mdrrmoThemeToggle" class="mdrrmo-header-theme-toggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">🌙 <span>Dark Mode</span></button>
   <div id="userControls" class="mdrrmo-user-controls">
     <span id="userRoleBadge"></span>
@@ -5003,6 +5030,65 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
  const wrapMDRRMOToast=()=>{const orig=window.showMDRRMOToast;if(typeof orig==='function'&&!orig.__mdrrmoNotificationWrapped){function wrapped(message,type,duration){const r=orig.apply(this,arguments);const text=String(message||'');if(type!=='error'&&text)window.addMDRRMONotification(text);return r}wrapped.__mdrrmoNotificationWrapped=true;window.showMDRRMOToast=wrapped;}};
  wrapMDRRMOToast();
  const oldAlert=window.showToast;if(typeof oldAlert==='function'&&!oldAlert.__mdrrmoNotificationWrapped){function wrappedToast(message,type,duration){const r=oldAlert.apply(this,arguments);const text=String(message||'');if(type!=='error'&&text)window.addMDRRMONotification(text);return r}wrappedToast.__mdrrmoNotificationWrapped=true;window.showToast=wrappedToast;}
+})();
+</script>
+
+<script id="mdrrmo-global-search-script">
+(function(){
+  const input=document.getElementById('globalSearchInput');
+  const results=document.getElementById('globalSearchResults');
+  const wrap=document.getElementById('mdrrmoGlobalSearch');
+  const clear=document.getElementById('globalSearchClear');
+  if(!input||!results||!wrap) return;
+
+  function textFor(r){
+    return [r.id,r.date,r.time,r.type,r.barangay,r.category,r.location,r.persons,r.status,r.ambulance,r.age].filter(v=>v!==undefined&&v!==null).join(' ').toLowerCase();
+  }
+  function typeLabel(type){
+    if(typeof getRecordTypeLabel==='function') return getRecordTypeLabel(type);
+    return String(type||'Record').replace(/_/g,' ');
+  }
+  function renderResults(){
+    const q=input.value.trim().toLowerCase();
+    wrap.classList.toggle('has-value',!!q);
+    if(!q){results.hidden=true;results.innerHTML='';return;}
+    const list=(Array.isArray(records)?records:[]).filter(r=>textFor(r).includes(q)).slice(0,6);
+    if(!list.length){
+      results.innerHTML='<div class="mdrrmo-search-empty">No matching records found.</div>';
+      results.hidden=false; return;
+    }
+    results.innerHTML=list.map(r=>{
+      const title=`${escapeHTML(r.category||typeLabel(r.type)||'Record')}`;
+      const meta=[formatDate(r.date),r.barangay||'',r.location||'',r.persons||''].filter(Boolean).join(' • ');
+      return `<button type="button" class="mdrrmo-search-result" data-record-id="${escapeHTML(String(r.id))}">
+        <div class="mdrrmo-search-result-title">📄 <span>${title}</span></div>
+        <div class="mdrrmo-search-result-meta">${escapeHTML(meta)}</div>
+      </button>`;
+    }).join('')+`<div class="mdrrmo-search-footer">${(Array.isArray(records)?records:[]).filter(r=>textFor(r).includes(q)).length} matching record(s) • Select one to view it</div>`;
+    results.hidden=false;
+  }
+  function openRecord(id){
+    const r=(Array.isArray(records)?records:[]).find(x=>String(x.id)===String(id));
+    if(!r) return;
+    const q=input.value.trim();
+    const tableSearch=document.getElementById('searchInput');
+    if(tableSearch){tableSearch.value=q;currentRecordsPage=1;renderTable();}
+    results.hidden=true;
+    input.value='';wrap.classList.remove('has-value');
+    setTimeout(()=>scrollToSection('records'),30);
+  }
+  input.addEventListener('input',renderResults);
+  input.addEventListener('focus',renderResults);
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){input.value='';renderResults();input.blur();}
+    if(e.key==='Enter'){
+      const first=results.querySelector('.mdrrmo-search-result');
+      if(first){e.preventDefault();openRecord(first.dataset.recordId);}
+    }
+  });
+  clear.addEventListener('click',()=>{input.value='';renderResults();input.focus();});
+  results.addEventListener('click',e=>{const btn=e.target.closest('.mdrrmo-search-result');if(btn)openRecord(btn.dataset.recordId);});
+  document.addEventListener('click',e=>{if(!wrap.contains(e.target))results.hidden=true;});
 })();
 </script>
 </body>
