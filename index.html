@@ -2456,7 +2456,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } finally {btn.disabled=false; btn.classList.remove('loading');}
   });
   currentUser=await getSession();
-  if(currentUser){document.getElementById('loginOverlay').style.display='none'; document.documentElement.classList.remove('auth-scroll-lock'); document.body.classList.remove('auth-scroll-lock'); applyRoleUI(); protectAdminFunctions();}
+  if(currentUser){document.getElementById('loginOverlay').style.display='none'; document.documentElement.classList.remove('auth-scroll-lock'); document.body.classList.remove('auth-scroll-lock'); applyRoleUI(); protectAdminFunctions(); if(typeof window.updateDashboardGreeting==='function') window.updateDashboardGreeting();}
 });
 
 let records = [];
@@ -5245,7 +5245,7 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
   var h=document.getElementById('dashboardGreeting'), d=document.getElementById('dashboardLiveDate');
   if(!h)return; var now=new Date(), hour=now.getHours();
   var greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
-  h.textContent=greeting+', Admin 👋';
+  var user=(typeof currentUser==='object' && currentUser) ? currentUser : null; var name=user && (user.username || user.name) ? (user.username || user.name) : 'User'; h.textContent=greeting+', '+name+' 👋';
   if(d)d.textContent=now.toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' • '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateDashboardGreeting);else updateDashboardGreeting();
