@@ -2135,7 +2135,6 @@ async function loadRecordsFromDatabase() {
         records = [];
         updateAll();
         console.error("Local database server unavailable:", e);
-        alert("Unable to load the shared MDRRMO database. Please check your connection and try again.");
         return false;
     }
 }
