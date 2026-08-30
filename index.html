@@ -1068,6 +1068,17 @@ tr:hover td {
 .records-table tbody tr td, #recordsTable tbody tr td, .record-list tbody tr td {
   transform: none !important;
 }
+
+/* Premium authentication polish and reliable sign-out visibility */
+.auth-transition{background:radial-gradient(circle at 20% 15%,rgba(39,196,184,.20),transparent 28%),radial-gradient(circle at 85% 85%,rgba(240,180,76,.16),transparent 30%),linear-gradient(135deg,#061724,#0a3247 55%,#075d5b)!important;backdrop-filter:blur(8px)!important}
+.auth-transition .transition-card{position:relative!important;padding:44px 34px!important;border-radius:30px!important;background:rgba(7,27,43,.46)!important;border:1px solid rgba(255,255,255,.18)!important;box-shadow:0 28px 80px rgba(0,0,0,.34)!important;animation:authCardIn .42s ease both!important}
+.auth-transition .transition-icon{color:#fff!important;background:linear-gradient(135deg,rgba(39,196,184,.34),rgba(255,255,255,.12))!important;box-shadow:0 12px 34px rgba(0,0,0,.22)!important;animation:authPulse 1.4s ease-in-out infinite!important}
+.auth-transition .transition-card h2,#transitionTitle{color:#fff!important;opacity:1!important;text-shadow:0 2px 14px rgba(0,0,0,.28)!important}
+.auth-transition .transition-card p,#transitionText{color:rgba(255,255,255,.88)!important;opacity:1!important;text-shadow:0 1px 8px rgba(0,0,0,.25)!important}
+.auth-transition .transition-bar{background:rgba(255,255,255,.18)!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.15)!important}.auth-transition .transition-bar i{background:linear-gradient(90deg,#27c4b8,#fff,#f0b44c)!important}
+@keyframes authCardIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes authPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.login-overlay{background:radial-gradient(circle at 15% 15%,rgba(39,196,184,.18),transparent 28%),radial-gradient(circle at 85% 80%,rgba(240,180,76,.14),transparent 30%),linear-gradient(135deg,#061724,#0a3247 55%,#075d5b)!important}
+.login-card{box-shadow:0 30px 90px rgba(0,0,0,.38),0 0 0 1px rgba(255,255,255,.28)!important}.login-mark{animation:authPulse 2.2s ease-in-out infinite!important}.login-button{position:relative!important;overflow:hidden!important}.login-button:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);transform:translateX(-120%);transition:transform .55s ease}.login-button:hover:before{transform:translateX(120%)}.login-button:hover{box-shadow:0 14px 30px rgba(18,72,106,.32)!important}
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
@@ -4851,3 +4862,18 @@ tbody tr:hover{transform:translateX(2px);box-shadow:inset 3px 0 0 rgba(23,76,148
 
 </body>
 </html>
+<style>
+/* Prevent login/logout screens from creating page scrollbars */
+html, body { width:100%; min-height:100%; margin:0; }
+body:has(#loginScreen:not([style*="display: none"])),
+body:has(#logoutScreen:not([style*="display: none"])) { overflow:hidden; }
+#loginScreen, #logoutScreen {
+  width:100vw;
+  height:100vh;
+  min-height:100vh;
+  max-height:100vh;
+  overflow:hidden;
+  box-sizing:border-box;
+}
+#loginScreen *, #logoutScreen * { box-sizing:border-box; }
+</style>
