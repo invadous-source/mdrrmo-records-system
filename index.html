@@ -5343,10 +5343,11 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
   var h=document.getElementById('dashboardGreeting'), d=document.getElementById('dashboardLiveDate');
   if(!h)return;
   var now=new Date(), hour=now.getHours();
-  var greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
+  var greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
   var user=(typeof currentUser==='object' && currentUser) ? currentUser : null;
-  var isAdmin=!!(user && String(user.role).toLowerCase()==='admin');
-  var displayName=isAdmin ? 'MDRRMO' : ((user && user.username) ? user.username : 'User');
+  var role=user && user.role ? String(user.role).toLowerCase() : '';
+  var isAdmin=role==='admin';
+  var displayName=isAdmin ? 'MDRRMO' : (role==='viewer' ? 'Viewer' : ((user && user.username) ? user.username : 'User'));
   h.textContent=greeting+', '+displayName+' 👋';
   if(d)d.textContent=now.toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' • '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
  }
