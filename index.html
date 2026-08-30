@@ -2516,11 +2516,23 @@ function protectAdminFunctions(){
  });
 }
 async function logout(){
+  const confirmed = await mdrrmoActionConfirm({
+    title:'Sign out of MDRRMO?',
+    message:'Are you sure you want to sign out?',
+    warning:'You will need to log in again to access the MDRRMO Records & Incident Management System.',
+    confirmText:'Sign Out',
+    danger:true,
+    icon:'🛡️'
+  });
+  if(!confirmed) return;
   document.documentElement.classList.add('auth-scroll-lock'); document.body.classList.add('auth-scroll-lock');
   const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
-  const t=document.getElementById('authTransition'); document.getElementById('transitionTitle').textContent='Signing out'; document.getElementById('transitionText').textContent='Securing your session...'; t.style.display='flex';
-  await fetch('/api/auth/logout',{method:'POST'});
-  await new Promise(r=>setTimeout(r,3000)); location.reload();
+  const t=document.getElementById('authTransition');
+  document.getElementById('transitionTitle').textContent='Thank You for Your Service 👋';
+  document.getElementById('transitionText').textContent='You have successfully logged out. Your MDRRMO session has been securely ended.';
+  t.style.display='flex';
+  try { await fetch('/api/auth/logout',{method:'POST'}); } catch(e) { console.error('Logout error:',e); }
+  await new Promise(r=>setTimeout(r,3500)); location.reload();
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
