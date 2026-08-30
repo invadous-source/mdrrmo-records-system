@@ -4932,8 +4932,49 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
  window.addMDRRMONotification=function(text){const n=load();n.unshift({text:String(text),time:new Date().toLocaleString(),read:false});save(n);render()};
  function setup(){let bell=document.getElementById('notificationBell'); if(!bell){const host=document.querySelector('.topbar-actions'); if(host){bell=document.createElement('button');bell.id='notificationBell';bell.type='button';bell.title='Notifications';bell.setAttribute('aria-label','Notifications');bell.innerHTML='🔔<span id="notificationBadge"></span>'; const userControls=document.getElementById('userControls'); if(userControls){host.insertBefore(bell,userControls)}else{host.appendChild(bell)}}} if(bell){bell.addEventListener('click',()=>document.getElementById('notificationCenter')?.classList.toggle('hidden'));} document.getElementById('markNotificationsRead')?.addEventListener('click',()=>{const n=load().map(x=>({...x,read:true}));save(n);render()}); render();}
  document.addEventListener('DOMContentLoaded',setup);
- // Observe common success messages and mirror them into notification center.
- const orig=window.showToast; if(typeof orig==='function'){window.showToast=function(){const r=orig.apply(this,arguments);const a=[...arguments].map(String).join(' ');if(/success|added|updated|import|export|backup/i.test(a))window.addMDRRMONotification(a);return r}}
+ // Mirror MDRRMO success toasts into the notification center.
+ const wrapMDRRMOToast=()=>{
+   const orig=window.showMDRRMOToast;
+   if(typeof orig==='function' && !orig.__mdrrmoNotificationWrapped){
+     function wrapped(message,type,duration){
+       const r=orig.apply(this,arguments);
+       const text=String(message||'');
+       if(type!=='error' && text) window.addMDRRMONotification(text);
+       return r;
+     }
+     wrapped.__mdrrmoNotificationWrapped=true;
+     window.showMDRRMOToast=wrapped;
+   }
+ };
+ wrapMDRRMOToast();
+
+ // Keep compatibility with any older generic toast calls.
+ const orig=window.showToast;
+ if(typeof orig==='function' && !orig.__mdrrmoNotificationWrapped){
+   function wrappedShowToast(){
+     const r=orig.apply(this,arguments);
+     const a=[...arguments].map(String).join(' ');
+     if(/success|added|updated|deleted|import|export|backup/i.test(a)) window.addMDRRMONotification(a);
+     return r;
+   }
+   wrappedShowToast.__mdrrmoNotificationWrapped=true;
+   window.showToast=wrappedShowToast;
+ }
+
+ // Import result modals are also real record activity, so successful imports appear in the bell.
+ const origImportResult=window.mdrrmoImportResult;
+ if(typeof origImportResult==='function' && !origImportResult.__mdrrmoNotificationWrapped){
+   function wrappedImportResult(kind,title,message,detail){
+     const r=origImportResult.apply(this,arguments);
+     if(kind==='success'){
+       const text=[title,message].filter(Boolean).join(' — ');
+       if(text) window.addMDRRMONotification(text);
+     }
+     return r;
+   }
+   wrappedImportResult.__mdrrmoNotificationWrapped=true;
+   window.mdrrmoImportResult=wrappedImportResult;
+ }
 })();
 </script>
 </body>
