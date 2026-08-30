@@ -1050,7 +1050,7 @@ tr:hover td {
 .login-error{min-height:22px;margin-top:11px;color:#b42318;font-size:13px;text-align:center}.login-button{width:100%;border:0;border-radius:13px;padding:15px;background:linear-gradient(135deg,#0b6a68,#12486a);color:white;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 22px rgba(18,72,106,.24);transition:.2s}.login-button:hover{transform:translateY(-1px)}.login-button:disabled{cursor:not-allowed;opacity:.85;transform:none}.btn-loader{display:none}.login-button.loading .btn-text{display:none}.login-button.loading .btn-loader{display:inline}.login-footer{text-align:center;color:#8a99a1;font-size:11px;margin-top:19px}
 
 /* Enhanced emergency operations login */
-.login-overlay{background:radial-gradient(circle at 20% 15%,rgba(39,196,184,.20),transparent 28%),radial-gradient(circle at 85% 85%,rgba(240,180,76,.16),transparent 30%),linear-gradient(135deg,#061724,#0a3247 55%,#075d5b)!important}.login-emergency-pattern{display:none!important}.login-glow{display:none!important}
+.login-overlay{background:linear-gradient(135deg,rgba(3,19,31,.96),rgba(9,53,68,.93) 55%,rgba(8,103,98,.90)),url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1800&q=80") center/cover!important}
 .login-emergency-pattern{position:absolute;inset:0;opacity:.12;background-image:linear-gradient(30deg,transparent 48%,#fff 49%,#fff 51%,transparent 52%),linear-gradient(-30deg,transparent 48%,#fff 49%,#fff 51%,transparent 52%);background-size:70px 70px;pointer-events:none}
 .login-card{backdrop-filter:blur(18px)!important;background:rgba(255,255,255,.88)!important;border:1px solid rgba(255,255,255,.55)!important;max-height:94vh;overflow:auto}
 .login-mark{overflow:hidden;background:linear-gradient(135deg,#0b6a68,#12486a)!important}.login-mark img{width:58px;height:58px;object-fit:contain}.login-mark.seal-fallback:after{content:'🛡️';font-size:31px}
@@ -1920,6 +1920,33 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
 .mdrrmo-import-modal .mdrrmo-import-box,.mdrrmo-delete-box,.mdrrmo-action-box,.modal .modal-box{will-change:transform,opacity}
 @media (prefers-reduced-motion:reduce){.mdrrmo-import-modal,.mdrrmo-import-box,.mdrrmo-delete-box,.mdrrmo-action-box,.notification-panel,.modal .modal-box{animation:none!important;transition:none!important}}
 </style>
+
+<!-- Calm login background override -->
+<style id="calm-login-background-fix">
+/* Match the logout/transition background while removing visually busy elements. */
+#loginOverlay.login-overlay{
+  background:linear-gradient(135deg,#061724 0%,#0a3247 55%,#075d5b 100%)!important;
+}
+#loginOverlay.login-overlay::before{display:none!important;}
+#loginOverlay .login-emergency-pattern,
+#loginOverlay .login-glow{display:none!important;}
+#loginOverlay .login-card{
+  animation:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  background:rgba(255,255,255,.98)!important;
+}
+#loginOverlay .login-mark,
+#loginOverlay .login-status span{animation:none!important;}
+#loginOverlay *{
+  scroll-behavior:auto!important;
+}
+@media (prefers-reduced-motion:reduce){
+  #loginOverlay *,#loginOverlay *::before,#loginOverlay *::after{
+    animation:none!important;transition:none!important;
+  }
+}
+</style>
 </head>
 <body class="dashboard-polish">
 
@@ -2515,7 +2542,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});
       if(!r.ok){err.textContent='Invalid username or password.'; return;} currentUser=await r.json();
       const remaining=Math.max(0,3000-(Date.now()-started)); await new Promise(r=>setTimeout(r,remaining));
-      document.getElementById('loginOverlay').style.display='none'; document.documentElement.classList.remove('auth-scroll-lock'); document.body.classList.remove('auth-scroll-lock'); applyRoleUI(); protectAdminFunctions(); await loadRecordsFromDatabase();
+      document.getElementById('loginOverlay').style.display='none'; document.documentElement.classList.remove('auth-scroll-lock'); document.body.classList.remove('auth-scroll-lock'); applyRoleUI(); protectAdminFunctions(); if(typeof window.updateDashboardGreeting==='function') window.updateDashboardGreeting(); await loadRecordsFromDatabase();
     } catch(error) {
       console.error('Login error:', error);
       err.textContent='Unable to complete sign in. Please try again.';
@@ -5314,11 +5341,16 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
 (function(){
  function updateDashboardGreeting(){
   var h=document.getElementById('dashboardGreeting'), d=document.getElementById('dashboardLiveDate');
-  if(!h)return; var now=new Date(), hour=now.getHours();
+  if(!h)return;
+  var now=new Date(), hour=now.getHours();
   var greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
-  var user=(typeof currentUser==='object' && currentUser) ? currentUser : null; var displayName=(user && user.username) ? user.username : ((user && user.role==='admin') ? 'Admin' : 'User'); h.textContent=greeting+', '+displayName+' 👋';
+  var user=(typeof currentUser==='object' && currentUser) ? currentUser : null;
+  var isAdmin=!!(user && String(user.role).toLowerCase()==='admin');
+  var displayName=isAdmin ? 'MDRRMO' : ((user && user.username) ? user.username : 'User');
+  h.textContent=greeting+', '+displayName+' 👋';
   if(d)d.textContent=now.toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' • '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
  }
+ window.updateDashboardGreeting=updateDashboardGreeting;
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateDashboardGreeting);else updateDashboardGreeting();
  setInterval(updateDashboardGreeting,60000);
 })();
