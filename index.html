@@ -1833,6 +1833,33 @@ document.addEventListener('DOMContentLoaded',function(){
   });
 });
 </script>
+
+<style id="final-mobile-sidebar-position-fix">
+/* Keep the compact sidebar fixed on narrow windows so it never pushes the main content downward. */
+@media (max-width:700px){
+  .sidebar{
+    position:fixed!important;
+    left:0!important;
+    top:0!important;
+    bottom:0!important;
+    height:100vh!important;
+    min-height:100vh!important;
+    width:64px!important;
+    padding:14px 7px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+  }
+  .main{
+    margin-left:64px!important;
+    width:calc(100% - 64px)!important;
+    min-width:0!important;
+  }
+}
+@media (max-width:480px){
+  .sidebar{width:58px!important;padding:12px 5px!important;}
+  .main{margin-left:58px!important;width:calc(100% - 58px)!important;}
+}
+</style>
 </head>
 <body class="dashboard-polish">
 
@@ -5293,65 +5320,6 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
 })();
 </script>
 </body>
-
-<style id="compact-header-layout-fix">
-/* Keep the header at the top on narrow screens; do not let mobile wrapping turn it into a tall column. */
-@media (max-width: 700px){
-  .main{
-    min-height:100vh!important;
-    width:calc(100% - 58px)!important;
-    margin-left:58px!important;
-    overflow-x:hidden!important;
-  }
-  .topbar{
-    display:flex!important;
-    flex-direction:row!important;
-    flex-wrap:wrap!important;
-    align-items:center!important;
-    justify-content:space-between!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    padding:12px 14px!important;
-    gap:8px!important;
-  }
-  .topbar .page-title{
-    flex:1 1 180px!important;
-    min-width:0!important;
-  }
-  .topbar .page-title h1{font-size:18px!important;line-height:1.2!important}
-  .topbar .page-title p{font-size:11px!important;line-height:1.3!important}
-  .topbar-actions{
-    width:auto!important;
-    flex:0 1 auto!important;
-    min-width:0!important;
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-end!important;
-    flex-wrap:wrap!important;
-    gap:7px!important;
-  }
-  .mdrrmo-global-search{
-    order:initial!important;
-    width:42px!important;
-    flex:0 0 42px!important;
-    max-width:42px!important;
-    height:42px!important;
-  }
-  .mdrrmo-global-search:focus-within{
-    position:absolute!important;
-    right:12px!important;
-    top:10px!important;
-    z-index:2000!important;
-    width:min(290px,calc(100vw - 80px))!important;
-    max-width:min(290px,calc(100vw - 80px))!important;
-  }
-  .mdrrmo-global-search input{display:none!important}
-  .mdrrmo-global-search:focus-within input{display:block!important}
-  #userControls{flex:0 0 auto!important}
-  .content{padding:14px!important; min-width:0!important}
-}
-</style>
 </html>
 
 <style>
