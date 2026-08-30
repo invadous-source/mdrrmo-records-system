@@ -2118,7 +2118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } finally {btn.disabled=false; btn.classList.remove('loading');}
   });
   currentUser=await getSession();
-  if(currentUser){document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions();}
+  if(currentUser){document.getElementById('loginOverlay').style.display='none'; document.documentElement.classList.remove('auth-scroll-lock'); document.body.classList.remove('auth-scroll-lock'); applyRoleUI(); protectAdminFunctions();}
 });
 
 let records = [];
@@ -4875,6 +4875,27 @@ tbody tr:hover{transform:translateX(2px);box-shadow:inset 3px 0 0 rgba(23,76,148
     els.forEach(e=>observer.observe(e));
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+})();
+</script>
+
+
+<style id="dashboard-scroll-restore-fix">
+/* Keep the authentication screens locked, but always allow the main application/dashboard to scroll. */
+body:not(.auth-scroll-lock){overflow-y:auto!important;overflow-x:hidden!important;}
+html:not(.auth-scroll-lock){overflow-y:auto!important;}
+</style>
+<script id="dashboard-scroll-restore-script">
+(function(){
+  function restoreMainScroll(){
+    var login=document.getElementById('loginOverlay');
+    var transition=document.getElementById('authTransition');
+    if(login && login.style.display==='none' && (!transition || transition.style.display==='none' || !transition.style.display)){
+      document.documentElement.classList.remove('auth-scroll-lock');
+      document.body.classList.remove('auth-scroll-lock');
+    }
+  }
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(restoreMainScroll,50);});
+  window.addEventListener('pageshow',restoreMainScroll);
 })();
 </script>
 
