@@ -1554,6 +1554,22 @@ textarea::placeholder {
     box-shadow: inset 3px 0 0 rgba(117, 197, 255, 0.78);
 }
 </style>
+
+<style id="auth-scroll-lock-fix">
+html.auth-scroll-lock, html.auth-scroll-lock body {
+  width:100%; height:100%; margin:0; overflow:hidden !important;
+}
+body.auth-scroll-lock { overflow:hidden !important; }
+#loginOverlay, #authTransition {
+  position:fixed !important; inset:0 !important;
+  width:100vw !important; height:100dvh !important; min-height:100dvh !important;
+  max-height:100dvh !important; overflow:hidden !important;
+  overscroll-behavior:none !important; box-sizing:border-box !important;
+}
+@supports not (height:100dvh) {
+  #loginOverlay, #authTransition { height:100vh !important; min-height:100vh !important; max-height:100vh !important; }
+}
+</style>
 </head>
 <body>
 
@@ -2073,6 +2089,7 @@ function protectAdminFunctions(){
  });
 }
 async function logout(){
+  document.documentElement.classList.add('auth-scroll-lock'); document.body.classList.add('auth-scroll-lock');
   const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
   const t=document.getElementById('authTransition'); document.getElementById('transitionTitle').textContent='Signing out'; document.getElementById('transitionText').textContent='Securing your session...'; t.style.display='flex';
   await fetch('/api/auth/logout',{method:'POST'});
@@ -2080,6 +2097,8 @@ async function logout(){
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  document.documentElement.classList.add('auth-scroll-lock');
+  document.body.classList.add('auth-scroll-lock');
   const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
   const form=document.getElementById('loginForm');
   form?.addEventListener('submit', async e=>{
@@ -2090,7 +2109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.getElementById('loginUsername').value,password:document.getElementById('loginPassword').value})});
       if(!r.ok){err.textContent='Invalid username or password.'; return;} currentUser=await r.json();
       const remaining=Math.max(0,3000-(Date.now()-started)); await new Promise(r=>setTimeout(r,remaining));
-      document.getElementById('loginOverlay').style.display='none'; applyRoleUI(); protectAdminFunctions(); await loadRecordsFromDatabase();
+      document.getElementById('loginOverlay').style.display='none'; document.documentElement.classList.remove('auth-scroll-lock'); document.body.classList.remove('auth-scroll-lock'); applyRoleUI(); protectAdminFunctions(); await loadRecordsFromDatabase();
     } catch(error) {
       console.error('Login error:', error);
       err.textContent='Unable to complete sign in. Please try again.';
@@ -4862,18 +4881,3 @@ tbody tr:hover{transform:translateX(2px);box-shadow:inset 3px 0 0 rgba(23,76,148
 
 </body>
 </html>
-<style>
-/* Prevent login/logout screens from creating page scrollbars */
-html, body { width:100%; min-height:100%; margin:0; }
-body:has(#loginScreen:not([style*="display: none"])),
-body:has(#logoutScreen:not([style*="display: none"])) { overflow:hidden; }
-#loginScreen, #logoutScreen {
-  width:100vw;
-  height:100vh;
-  min-height:100vh;
-  max-height:100vh;
-  overflow:hidden;
-  box-sizing:border-box;
-}
-#loginScreen *, #logoutScreen * { box-sizing:border-box; }
-</style>
