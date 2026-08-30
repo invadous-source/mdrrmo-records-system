@@ -5578,6 +5578,27 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
 (function(){function roleName(){try{var u=window.currentUser||{};return u.role==='admin'?'MDRRMO':(u.username||'Viewer')}catch(e){return 'Viewer'}}function update(){var h=document.getElementById('dashboardGreeting'),t=document.getElementById('dashboardGreetingText'),d=document.getElementById('dashboardLiveDate');if(!h)return;var n=new Date(),hr=n.getHours(),g=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';var name=roleName();h.textContent=g+', '+name+' 👋';if(t){t.textContent='Emergency Operations Monitoring Center';t.classList.add('dashboardGreeting-subtitle')}if(d){var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];var months=['January','February','March','April','May','June','July','August','September','October','November','December'];var hh=n.getHours()%12||12,mm=String(n.getMinutes()).padStart(2,'0'),ss=String(n.getSeconds()).padStart(2,'0'),amp=n.getHours()>=12?'PM':'AM';d.innerHTML='<span class="mdrrmo-status-dot"></span> All Systems Operational <span class="sep">•</span> '+months[n.getMonth()]+' '+n.getDate()+', '+n.getFullYear()+' <span class="sep">•</span> '+hh+':'+mm+':'+ss+' '+amp+' <span class="sep">•</span> '+days[n.getDay()];d.className='mdrrmo-system-line'}}function setup(){update();setInterval(update,1000);var sb=document.querySelector('.sidebar');if(sb&&!document.querySelector('.mdrrmo-sidebar-profile')){var p=document.createElement('div');p.className='mdrrmo-sidebar-profile';p.innerHTML='<div class="mdrrmo-avatar">🛡️</div><div><strong id="mdrrmoSidebarUser">MDRRMO</strong><span>Authorized Personnel</span></div>';sb.appendChild(p);var x=document.getElementById('mdrrmoSidebarUser');if(x)x.textContent=roleName()}document.querySelectorAll('[class*="modal"]').forEach(function(m){m.classList.add('mdrrmo-modal-premium')})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();window.addEventListener('mdrrmo-login-success',function(){setTimeout(setup,0)})})();
 </script>
 
+
+<script id="mdrrmo-greeting-role-fix">
+(function(){
+  function updateGreeting(){
+    var h=document.getElementById('dashboardGreeting');
+    if(!h)return;
+    var now=new Date(), hr=now.getHours();
+    var greeting=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+    var u=null;
+    try{if(typeof currentUser!=='undefined'&&currentUser)u=currentUser;}catch(e){}
+    if(!u){try{['currentUser','mdrrmoCurrentUser','loggedInUser','user'].some(function(k){var v=localStorage.getItem(k);if(v){try{u=JSON.parse(v)}catch(e){u={username:v}};return true}})}catch(e){}}
+    var role=String((u&&u.role)||'').toLowerCase();
+    var username=String((u&&(u.username||u.name||u.displayName))||'').trim();
+    var isAdmin=role==='admin'||username.toLowerCase()==='admin'||username.toLowerCase()==='mdrrmo';
+    h.textContent=greeting+', '+(isAdmin?'MDRRMO':(username||'Viewer'))+' 👋';
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateGreeting);else updateGreeting();
+  setInterval(updateGreeting,1000);
+})();
+</script>
+
 </body>
 </html>
 
