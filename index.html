@@ -1643,7 +1643,7 @@ body.auth-scroll-lock { overflow:hidden !important; }
 <!-- ============================
              DASHBOARD
         ============================= -->
-<section id="dashboard"><div class="dashboard-intro"><h2>MDRRMO Accident Monitoring Dashboard</h2><p>Track accident records, analytics, categories, barangays, and response activity.</p></div>
+<section id="dashboard"><div class="dashboard-intro"><h2 id="dashboardGreeting">Good day, Admin 👋</h2><p id="dashboardGreetingText">Here's an overview of your MDRRMO records.</p><p id="dashboardLiveDate" style="margin-top:8px;font-size:12px;opacity:.75;"></p></div>
 
 <!-- MAIN CARDS -->
 
@@ -4899,6 +4899,20 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
 })();
 </script>
 
+
+<script id="dashboard-greeting-script">
+(function(){
+ function updateDashboardGreeting(){
+  var h=document.getElementById('dashboardGreeting'), d=document.getElementById('dashboardLiveDate');
+  if(!h)return; var now=new Date(), hour=now.getHours();
+  var greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
+  h.textContent=greeting+', Admin 👋';
+  if(d)d.textContent=now.toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' • '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateDashboardGreeting);else updateDashboardGreeting();
+ setInterval(updateDashboardGreeting,60000);
+})();
+</script>
 </body>
 </html>
 
