@@ -4777,5 +4777,63 @@ body.mdrrmo-dark .mdrrmo-toast-close{color:#b9c7d9!important}
 })();
 </script>
 
+
+<!-- Professional motion and visual enhancement: functionality unchanged -->
+<style id="mdrrmo-motion-design-upgrade">
+:root{--mdrrmo-ease:cubic-bezier(.2,.8,.2,1)}
+html{scroll-behavior:smooth}
+body{overflow-x:hidden}
+/* Smooth navigation */
+.sidebar{transition:width .32s var(--mdrrmo-ease),transform .32s var(--mdrrmo-ease),box-shadow .32s ease}
+.nav-item,.sidebar a{transition:transform .2s var(--mdrrmo-ease),background .2s ease,color .2s ease,box-shadow .2s ease!important}
+.nav-item:hover,.sidebar a:hover{transform:translateX(4px)}
+.nav-item:active{transform:translateX(2px) scale(.985)}
+/* Main content entrance */
+main,.main-content,.content{animation:mdrrmoPageIn .5s var(--mdrrmo-ease) both}
+@keyframes mdrrmoPageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* Dashboard cards and common panels */
+.card,.stat-card,.dashboard-card,.summary-card,.chart-card,.record-card{transition:transform .22s var(--mdrrmo-ease),box-shadow .22s ease,border-color .22s ease}
+.card:hover,.stat-card:hover,.dashboard-card:hover,.summary-card:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(15,23,42,.10)}
+/* Buttons */
+button,.btn,.action-btn{transition:transform .18s var(--mdrrmo-ease),box-shadow .18s ease,filter .18s ease!important}
+button:hover,.btn:hover,.action-btn:hover{filter:brightness(1.025)}
+button:active,.btn:active,.action-btn:active{transform:translateY(1px) scale(.985)}
+/* Form focus */
+input,select,textarea{transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease!important}
+input:focus,select:focus,textarea:focus{transform:translateY(-1px)}
+/* Tables */
+tbody tr{transition:background .16s ease,transform .16s ease,box-shadow .16s ease}
+tbody tr:hover{transform:translateX(2px);box-shadow:inset 3px 0 0 rgba(23,76,148,.28)}
+/* Modal entrance */
+.modal.show,.mdrrmo-import-modal.show{animation:mdrrmoOverlayIn .22s ease both!important}
+.modal.show .modal-box,.modal.show .modal-content,.mdrrmo-import-modal.show>div{animation:mdrrmoModalIn .28s var(--mdrrmo-ease) both}
+@keyframes mdrrmoOverlayIn{from{opacity:0}to{opacity:1}}
+@keyframes mdrrmoModalIn{from{opacity:0;transform:translateY(18px) scale(.975)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* Loading screen refinement */
+.mdrrmo-loader-card{animation:mdrrmoLoaderPop .55s var(--mdrrmo-ease) both}
+.mdrrmo-spinner{box-shadow:0 0 0 8px rgba(23,76,148,.035)}
+@keyframes mdrrmoLoaderPop{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+/* Reveal animation, applied by script */
+.mdrrmo-reveal{opacity:0;transform:translateY(18px);transition:opacity .5s var(--mdrrmo-ease),transform .5s var(--mdrrmo-ease)}
+.mdrrmo-reveal.is-visible{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.mdrrmo-reveal{opacity:1;transform:none}}
+@media(max-width:768px){.card:hover,.stat-card:hover,.dashboard-card:hover,.summary-card:hover{transform:none}.nav-item:hover,.sidebar a:hover{transform:none}}
+</style>
+<script id="mdrrmo-motion-design-upgrade-script">
+(function(){
+  function setup(){
+    const selector='.card,.stat-card,.dashboard-card,.summary-card,.chart-card,.record-card,.section-card';
+    const els=[...document.querySelectorAll(selector)].slice(0,80);
+    if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('is-visible'));return;}
+    els.forEach(e=>e.classList.add('mdrrmo-reveal'));
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}
+    }),{threshold:.08});
+    els.forEach(e=>observer.observe(e));
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+})();
+</script>
+
 </body>
 </html>
