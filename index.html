@@ -5420,7 +5420,7 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
     return `<div class="mdrrmo-view-field${full?' full':''}"><div class="mdrrmo-view-label">${esc(name)}</div><div class="mdrrmo-view-value">${esc(label(value))}</div></div>`;
   }
   window.viewRecord=function(id){
-    const list=Array.isArray(window.records)?window.records:[];
+    const list=Array.isArray(records)?records:[];
     const record=list.find(r=>String(r.id)===String(id));
     if(!record) return;
     const modal=document.getElementById('viewRecordModal');
