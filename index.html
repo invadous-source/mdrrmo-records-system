@@ -2177,18 +2177,11 @@ function optionHTML(value, label = value) {
 
 function populateBarangaySelect(selectEl, selectedValue = "") {
     if (!selectEl) return;
-    const known = new Set(BINANGONAN_BARANGAYS);
-    const extras = records.map(r => (r.barangay || "").trim()).filter(v => v && !known.has(v)).sort();
-    const options = [...BINANGONAN_BARANGAYS, ...extras]
-        .filter((v, i, arr) => arr.indexOf(v) === i)
-        .map(v => optionHTML(v));
+    const isKnown = BINANGONAN_BARANGAYS.includes(selectedValue);
     selectEl.innerHTML = optionHTML("", "Select barangay / area")
-        + options.join("")
+        + BINANGONAN_BARANGAYS.map(v => optionHTML(v)).join("")
         + optionHTML("__other__", "Other (Please Specify)");
-    if (selectedValue && ![...selectEl.options].some(o => o.value === selectedValue)) {
-        selectEl.insertAdjacentHTML("beforeend", optionHTML(selectedValue, `${selectedValue} (Existing)`));
-    }
-    selectEl.value = selectedValue || "";
+    selectEl.value = selectedValue ? (isKnown ? selectedValue : "__other__") : "";
     toggleOtherBarangay();
 }
 
@@ -2206,21 +2199,11 @@ function toggleOtherBarangay() {
 function populateCategorySelect(selectEl, type, selectedValue = "") {
     if (!selectEl) return;
     const base = INCIDENT_CATEGORIES[type] || [];
-    const existingForType = records
-        .filter(r => r.type === type)
-        .map(r => (r.category || "").trim())
-        .filter(Boolean);
-    const extras = existingForType.filter(v => !base.includes(v)).sort();
-    const all = [...base, ...extras].filter((v, i, arr) => arr.indexOf(v) === i);
+    const isKnown = base.includes(selectedValue);
     selectEl.innerHTML = optionHTML("", "Select category / purpose")
-        + all.map(v => optionHTML(v)).join("")
+        + base.map(v => optionHTML(v)).join("")
         + optionHTML("__other__", "Other (Please Specify)");
-
-    if (selectedValue && ![...selectEl.options].some(o => o.value === selectedValue)) {
-        selectEl.insertAdjacentHTML("beforeend", optionHTML(selectedValue, `${selectedValue} (Existing)`));
-    }
-
-    selectEl.value = selectedValue || "";
+    selectEl.value = selectedValue ? (isKnown ? selectedValue : "__other__") : "";
     toggleOtherCategory();
 }
 
@@ -2998,9 +2981,7 @@ function updateFilterOptions() {
     const currentBarangay = barangaySelect.value;
     const currentStatus = statusSelect.value;
 
-    const knownBarangays = new Set(BINANGONAN_BARANGAYS);
-    const extraBarangays = records.map(r => (r.barangay || "").trim()).filter(v => v && !knownBarangays.has(v)).sort();
-    const allBarangays = [...BINANGONAN_BARANGAYS, ...extraBarangays].filter((v, i, a) => a.indexOf(v) === i);
+    const allBarangays = [...BINANGONAN_BARANGAYS];
 
     const statusOptions = [
         ["Completed", "Completed"],
@@ -3498,14 +3479,23 @@ async function importDatabaseBackup(event) {
                 );
             }
 
+            const rawBarangay = String(record.barangay ?? record.otherBarangay ?? record.outsideBarangay ?? "").trim();
+            const rawCategory = String(record.category ?? record.otherCategory ?? record.otherIncident ?? "").trim();
+            const normalizedBarangay = (rawBarangay === "__other__" || /^other\s*\(please specify\)$/i.test(rawBarangay))
+                ? String(record.otherBarangay ?? record.outsideBarangay ?? "").trim()
+                : rawBarangay;
+            const normalizedCategory = (rawCategory === "__other__" || /^other\s*\(please specify\)$/i.test(rawCategory))
+                ? String(record.otherCategory ?? record.otherIncident ?? "").trim()
+                : rawCategory;
+
             return {
                 ...record,
                 id: record.id || generateID(),
                 type: record.type || "accident",
                 date: record.date || "",
                 time: record.time || "",
-                barangay: record.barangay || "",
-                category: record.category || "",
+                barangay: normalizedBarangay,
+                category: normalizedCategory,
                 location: record.location || "",
                 rescued: Number(record.rescued) || 0,
                 ambulance: record.ambulance || "",
@@ -3754,12 +3744,22 @@ function mdrrmoExcelPick(o,names){
     return '';
 }
 
+function mdrrmoImportedCustomValue(row, primaryNames, otherNames){
+    const value=String(mdrrmoExcelPick(row,primaryNames)||'').trim();
+    const other=String(mdrrmoExcelPick(row,otherNames)||'').trim();
+    // Accept older imports that used the UI placeholder, but never save the placeholder itself.
+    if(value==='__other__' || /^other\s*\(please specify\)$/i.test(value) || /^outside binangonan$/i.test(value)) return other;
+    return value;
+}
+
 function mdrrmoExcelBuildRecord(row,type){
     const date=excelDateToISO(mdrrmoExcelPick(row,['Date','date','Incident Date','Record Date']));
     const time=mdrrmoExcelPick(row,['Time','time','Incident Time','Record Time']);
     const persons=mdrrmoExcelPick(row,['Persons','persons','Person(s) Involved / Assisted','Name','name']);
-    const barangay=mdrrmoExcelPick(row,['Barangay','barangay']);
-    const category=mdrrmoExcelPick(row,['Category','category','Incident / Purpose','Purpose']);
+    // Keep the actual imported value. The form automatically shows non-Binangonan barangays as Other/Outside Binangonan.
+    const barangay=mdrrmoImportedCustomValue(row,['Barangay','barangay'],['Other Barangay','Other Barangay / Outside Area','Outside Binangonan','Barangay (Please Specify)']);
+    // Keep the actual custom incident/category value; it will reopen under Other (Please Specify).
+    const category=mdrrmoImportedCustomValue(row,['Category','category','Incident / Purpose','Purpose'],['Other Category','Other Incident','Other Incident / Purpose','Category (Please Specify)','Incident (Please Specify)']);
     const location=mdrrmoExcelPick(row,['Location','location','Location / Destination','Destination']);
     const ageRaw=mdrrmoExcelPick(row,['Age','age']);
     const age=ageRaw===''?0:Number(ageRaw);
