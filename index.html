@@ -1048,6 +1048,15 @@ tr:hover td {
 .login-eyebrow{text-align:center;font-size:10px;font-weight:800;letter-spacing:1.4px;color:#0b6a68}.login-card h1{text-align:center;margin:7px 0 3px;font-size:29px;color:#102b3b}.login-subtitle{text-align:center;margin:0;color:#60717b;font-size:14px}.login-divider{height:1px;background:#e7edf0;margin:25px 0 21px}
 .login-label{display:block;margin:14px 0 7px;font-size:11px;font-weight:800;letter-spacing:1px;color:#48616f}.login-input-wrap{display:flex;align-items:center;gap:9px;border:1px solid #d8e1e5;border-radius:13px;padding:0 13px;background:#fbfcfd;transition:.2s}.login-input-wrap:focus-within{border-color:#0b8a85;box-shadow:0 0 0 4px rgba(11,138,133,.1);background:#fff}.login-input-wrap span{font-size:16px}.login-input-wrap input{border:0!important;outline:0!important;background:transparent!important;width:100%;padding:14px 0!important;margin:0!important;font-size:15px;box-sizing:border-box}
 .login-error{min-height:22px;margin-top:11px;color:#b42318;font-size:13px;text-align:center}.login-button{width:100%;border:0;border-radius:13px;padding:15px;background:linear-gradient(135deg,#0b6a68,#12486a);color:white;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 22px rgba(18,72,106,.24);transition:.2s}.login-button:hover{transform:translateY(-1px)}.login-button:disabled{cursor:not-allowed;opacity:.85;transform:none}.btn-loader{display:none}.login-button.loading .btn-text{display:none}.login-button.loading .btn-loader{display:inline}.login-footer{text-align:center;color:#8a99a1;font-size:11px;margin-top:19px}
+
+/* Enhanced emergency operations login */
+.login-overlay{background:linear-gradient(135deg,rgba(3,19,31,.96),rgba(9,53,68,.93) 55%,rgba(8,103,98,.90)),url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1800&q=80") center/cover!important}
+.login-emergency-pattern{position:absolute;inset:0;opacity:.12;background-image:linear-gradient(30deg,transparent 48%,#fff 49%,#fff 51%,transparent 52%),linear-gradient(-30deg,transparent 48%,#fff 49%,#fff 51%,transparent 52%);background-size:70px 70px;pointer-events:none}
+.login-card{backdrop-filter:blur(18px)!important;background:rgba(255,255,255,.88)!important;border:1px solid rgba(255,255,255,.55)!important;max-height:94vh;overflow:auto}
+.login-mark{overflow:hidden;background:linear-gradient(135deg,#0b6a68,#12486a)!important}.login-mark img{width:58px;height:58px;object-fit:contain}.login-mark.seal-fallback:after{content:'🛡️';font-size:31px}
+.login-status{display:flex;align-items:center;justify-content:center;gap:7px;margin:-12px 0 16px;font-size:10px;font-weight:900;letter-spacing:1.2px;color:#137a57}.login-status span{width:8px;height:8px;border-radius:50%;background:#20b26b;box-shadow:0 0 0 4px rgba(32,178,107,.14);animation:statusPulse 1.7s infinite}@keyframes statusPulse{50%{box-shadow:0 0 0 8px rgba(32,178,107,0)}}
+.login-clock{text-align:center;margin:10px 0 -5px;color:#52707d;font-size:11px;font-weight:700}.password-toggle{border:0;background:transparent;cursor:pointer;font-size:16px;padding:4px}.password-toggle:hover{transform:scale(1.08)}
+@media(max-width:520px){.login-card{padding:30px 22px 24px;border-radius:22px}.login-card h1{font-size:24px}.login-eyebrow{font-size:8px}}
 .auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
 
 
@@ -2398,20 +2407,22 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
 
 <!-- Online login overlay -->
 <div id="loginOverlay" class="login-overlay">
-  <div class="login-glow glow-one"></div><div class="login-glow glow-two"></div>
+  <div class="login-emergency-pattern"></div><div class="login-glow glow-one"></div><div class="login-glow glow-two"></div>
   <form id="loginForm" class="login-card">
-    <div class="login-mark">🛡️</div>
-    <div class="login-eyebrow">MUNICIPAL DISASTER RISK REDUCTION</div>
+    <div class="login-status"><span></span>SYSTEM ONLINE</div>
+    <div class="login-mark"><img src="logo.png" alt="MDRRMO Seal" onerror="this.style.display='none';this.parentElement.classList.add('seal-fallback')"></div>
+    <div class="login-eyebrow">MUNICIPAL DISASTER RISK REDUCTION &amp; MANAGEMENT OFFICE</div>
     <h1>MDRRMO Binangonan</h1>
     <p class="login-subtitle">Records Management System</p>
+    <div class="login-clock" id="loginClock"></div>
     <div class="login-divider"></div>
     <label class="login-label" for="loginUsername">USERNAME</label>
     <div class="login-input-wrap"><span>👤</span><input id="loginUsername" required autocomplete="username" value="MDRRMO"></div>
     <label class="login-label" for="loginPassword">PASSWORD</label>
-    <div class="login-input-wrap"><span>🔒</span><input id="loginPassword" type="password" required autocomplete="current-password"></div>
+    <div class="login-input-wrap"><span>🔒</span><input id="loginPassword" type="password" required autocomplete="current-password"><button type="button" id="togglePassword" class="password-toggle" aria-label="Show password" title="Show password">👁️</button></div>
     <div id="loginError" class="login-error"></div>
     <button id="loginSubmit" class="login-button" type="submit"><span class="btn-text">Sign In</span><span class="btn-loader">⏳ Signing in...</span></button>
-    <div class="login-footer">Secure access • Authorized personnel only</div>
+    <div class="login-footer">🔒 Secure access • <strong>AUTHORIZED PERSONNEL ONLY</strong></div>
   </form>
 </div>
 <div id="authTransition" class="auth-transition"><div class="transition-card"><div class="transition-icon">✓</div><h2 id="transitionTitle">Welcome</h2><p id="transitionText">Preparing your secure workspace...</p><div class="transition-bar"><i></i></div></div></div>
@@ -2490,6 +2501,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.body.classList.add('auth-scroll-lock');
   const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
   const form=document.getElementById('loginForm');
+  const passwordInput=document.getElementById('loginPassword');
+  const passwordToggle=document.getElementById('togglePassword');
+  passwordToggle?.addEventListener('click',()=>{ const show=passwordInput.type==='password'; passwordInput.type=show?'text':'password'; passwordToggle.textContent=show?'🙈':'👁️'; passwordToggle.setAttribute('aria-label',show?'Hide password':'Show password'); passwordToggle.title=show?'Hide password':'Show password'; });
+  const loginClock=document.getElementById('loginClock');
+  const updateLoginClock=()=>{ if(loginClock){ const now=new Date(); loginClock.textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' • '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'}); }};
+  updateLoginClock(); setInterval(updateLoginClock,1000);
   form?.addEventListener('submit', async e=>{
     e.preventDefault(); const err=document.getElementById('loginError'); const btn=document.getElementById('loginSubmit'); err.textContent='';
     btn.disabled=true; btn.classList.add('loading');
@@ -5299,7 +5316,7 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
   var h=document.getElementById('dashboardGreeting'), d=document.getElementById('dashboardLiveDate');
   if(!h)return; var now=new Date(), hour=now.getHours();
   var greeting=hour<12?'Good morning':hour<18?'Good afternoon':'Good evening';
-  var user=(typeof currentUser==='object' && currentUser) ? currentUser : null; var role=(user && user.role==='admin') ? 'Admin' : 'Viewer'; h.textContent=greeting+', '+role+' 👋';
+  var user=(typeof currentUser==='object' && currentUser) ? currentUser : null; var displayName=(user && user.username) ? user.username : ((user && user.role==='admin') ? 'Admin' : 'User'); h.textContent=greeting+', '+displayName+' 👋';
   if(d)d.textContent=now.toLocaleDateString(undefined,{weekday:'long',year:'numeric',month:'long',day:'numeric'})+' • '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',updateDashboardGreeting);else updateDashboardGreeting();
