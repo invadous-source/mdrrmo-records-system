@@ -1947,6 +1947,79 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
   }
 }
 </style>
+<style id="premium-logout-redesign">
+/* ============================================================
+   PREMIUM SECURE LOGOUT EXPERIENCE
+   ============================================================ */
+#authTransition.auth-transition.logout-mode{
+  background:
+    radial-gradient(circle at 15% 20%,rgba(37,211,190,.18),transparent 32%),
+    radial-gradient(circle at 85% 78%,rgba(51,140,255,.18),transparent 34%),
+    linear-gradient(135deg,#061724 0%,#0a2b42 52%,#064d57 100%)!important;
+}
+#authTransition.logout-mode .transition-card{
+  width:min(620px,calc(100vw - 40px))!important;
+  min-height:430px!important;
+  padding:42px 54px 38px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  border-radius:28px!important;
+  background:linear-gradient(145deg,rgba(11,38,55,.86),rgba(8,31,45,.72))!important;
+  border:1px solid rgba(154,205,222,.24)!important;
+  box-shadow:0 34px 100px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.05)!important;
+}
+#authTransition .logout-shield{display:none}
+#authTransition.logout-mode .transition-icon{display:none!important}
+#authTransition.logout-mode .logout-shield{
+  display:flex!important;width:76px;height:76px;border-radius:24px;align-items:center;justify-content:center;
+  color:#dffcf6;font-size:39px;font-weight:500;line-height:1;
+  background:linear-gradient(145deg,rgba(43,207,185,.32),rgba(73,150,187,.18));
+  border:1px solid rgba(111,232,212,.34);
+  box-shadow:0 14px 40px rgba(0,0,0,.25),0 0 0 7px rgba(57,210,190,.055);
+  animation:logoutIconIn .55s cubic-bezier(.2,.8,.2,1) both!important;
+}
+#authTransition .transition-kicker{display:none}
+#authTransition.logout-mode .transition-kicker{
+  display:block!important;margin:23px 0 10px;color:#70dfd1;font-size:11px;font-weight:800;
+  letter-spacing:2.4px;text-transform:uppercase;
+}
+#authTransition.logout-mode #transitionTitle{
+  margin:0!important;max-width:100%!important;color:#fff!important;font-size:31px!important;
+  line-height:1.18!important;letter-spacing:-.5px!important;white-space:normal!important;
+}
+#authTransition.logout-mode #transitionText{
+  margin:14px auto 0!important;max-width:480px!important;color:rgba(229,241,245,.78)!important;
+  font-size:15px!important;line-height:1.65!important;
+}
+#authTransition .logout-security,#authTransition .logout-return,#authTransition .return-login-now{display:none}
+#authTransition.logout-mode .logout-security{
+  display:flex!important;align-items:center;justify-content:center;gap:8px;margin-top:22px;
+  padding:10px 15px;border-radius:999px;background:rgba(39,196,184,.08);
+  border:1px solid rgba(76,220,202,.16);color:#a9d8d3;font-size:12px;
+}
+#authTransition.logout-mode .transition-bar{width:min(100%,390px)!important;height:5px!important;margin:26px auto 0!important;border-radius:99px!important;background:rgba(255,255,255,.10)!important;overflow:hidden!important}
+#authTransition.logout-mode .transition-bar i{width:28%!important;background:linear-gradient(90deg,#28c6b8,#78e5d8,#ffffff)!important;box-shadow:0 0 18px rgba(77,218,203,.55)!important;animation:logoutProgress 3.5s linear forwards!important}
+#authTransition.logout-mode .logout-return{display:block!important;margin-top:13px;color:rgba(220,237,241,.58);font-size:12px}
+#authTransition.logout-mode .logout-return strong{color:#dffcf6;font-weight:800}
+#authTransition.logout-mode .return-login-now{
+  display:inline-flex!important;align-items:center;justify-content:center;gap:12px;margin-top:22px;
+  padding:12px 21px;border-radius:12px;border:1px solid rgba(115,235,218,.35);
+  background:linear-gradient(135deg,#159f98,#147b8f);color:#fff;font:inherit;font-size:13px;font-weight:800;
+  cursor:pointer;box-shadow:0 12px 28px rgba(0,0,0,.2);transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+#authTransition.logout-mode .return-login-now:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 16px 32px rgba(0,0,0,.28)}
+#authTransition.logout-mode .return-login-now span{font-size:18px;line-height:1}
+@keyframes logoutIconIn{from{opacity:0;transform:translateY(-12px) scale(.78)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes logoutProgress{from{transform:translateX(-110%)}to{transform:translateX(360%)}}
+@media(max-width:560px){
+  #authTransition.logout-mode .transition-card{width:calc(100vw - 28px)!important;min-height:400px!important;padding:34px 25px 30px!important;border-radius:24px!important}
+  #authTransition.logout-mode #transitionTitle{font-size:26px!important}
+  #authTransition.logout-mode .logout-shield{width:68px;height:68px;font-size:34px;border-radius:21px}
+}
+</style>
 </head>
 <body class="dashboard-polish">
 
@@ -2452,7 +2525,18 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
     <div class="login-footer">🔒 Secure access • <strong>AUTHORIZED PERSONNEL ONLY</strong></div>
   </form>
 </div>
-<div id="authTransition" class="auth-transition"><div class="transition-card"><div class="transition-icon">✓</div><h2 id="transitionTitle">Welcome</h2><p id="transitionText">Preparing your secure workspace...</p><div class="transition-bar"><i></i></div></div></div>
+<div id="authTransition" class="auth-transition" aria-live="polite">
+  <div class="transition-card">
+    <div class="logout-shield">✓</div>
+    <div class="transition-kicker" id="transitionKicker">SECURE SESSION</div>
+    <h2 id="transitionTitle">Welcome</h2>
+    <p id="transitionText">Preparing your secure workspace...</p>
+    <div class="logout-security" id="logoutSecurity"><span>🔒</span><span>Your session has been securely ended</span></div>
+    <div class="transition-bar" id="transitionBar"><i></i></div>
+    <div class="logout-return" id="logoutReturn">Returning to login in <strong id="logoutCountdown">4</strong>s</div>
+    <button type="button" id="returnLoginNow" class="return-login-now">Return to Login Now <span>→</span></button>
+  </div>
+</div>
 
 <!-- =================================
      JAVASCRIPT
@@ -2528,11 +2612,25 @@ async function logout(){
   document.documentElement.classList.add('auth-scroll-lock'); document.body.classList.add('auth-scroll-lock');
   const controls=document.getElementById('userControls'); if(controls) controls.style.display='none';
   const t=document.getElementById('authTransition');
-  document.getElementById('transitionTitle').textContent='Thank You for Your Service 👋';
-  document.getElementById('transitionText').textContent='You have successfully logged out. Your MDRRMO session has been securely ended.';
+  const title=document.getElementById('transitionTitle');
+  const text=document.getElementById('transitionText');
+  const kicker=document.getElementById('transitionKicker');
+  const countdown=document.getElementById('logoutCountdown');
+  const returnBtn=document.getElementById('returnLoginNow');
+  let logoutFinished=false;
+  const finishLogout=()=>{ if(logoutFinished) return; logoutFinished=true; location.reload(); };
+  t.classList.add('logout-mode');
+  if(kicker) kicker.textContent='SECURE LOGOUT COMPLETE';
+  if(title) title.textContent='Thank You for Your Service';
+  if(text) text.textContent='You have successfully signed out of the MDRRMO Records & Incident Management System.';
   t.style.display='flex';
+  if(returnBtn){ returnBtn.onclick=finishLogout; }
+  let seconds=4;
+  if(countdown) countdown.textContent=seconds;
+  const timer=setInterval(()=>{ seconds--; if(countdown) countdown.textContent=Math.max(0,seconds); if(seconds<=0){clearInterval(timer); finishLogout();}},1000);
   try { await fetch('/api/auth/logout',{method:'POST'}); } catch(e) { console.error('Logout error:',e); }
-  await new Promise(r=>setTimeout(r,3500)); location.reload();
+  await new Promise(r=>setTimeout(r,4500));
+  clearInterval(timer); finishLogout();
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -2547,7 +2645,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const updateLoginClock=()=>{ if(loginClock){ const now=new Date(); loginClock.textContent=now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'})+' • '+now.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit',second:'2-digit'}); }};
   updateLoginClock(); setInterval(updateLoginClock,1000);
   form?.addEventListener('submit', async e=>{
-    e.preventDefault(); const err=document.getElementById('loginError'); const btn=document.getElementById('loginSubmit'); err.textContent='';
+    e.preventDefault(); const transitionReset=document.getElementById('authTransition'); if(transitionReset) transitionReset.classList.remove('logout-mode'); const err=document.getElementById('loginError'); const btn=document.getElementById('loginSubmit'); err.textContent='';
     btn.disabled=true; btn.classList.add('loading');
     const started=Date.now();
     try{
