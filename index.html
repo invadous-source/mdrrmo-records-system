@@ -2549,6 +2549,9 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
 ================================ */
 
 let currentUser = null;
+const MDRRMO_PROTECTED_TEXT = "PERSONAL INFORMATION PROTECTED";
+function isViewer(){ return !currentUser || currentUser.role !== "admin"; }
+function protectedPersons(value){ return isViewer() ? MDRRMO_PROTECTED_TEXT : (value || "-"); }
 
 async function getSession() {
   const r = await fetch('/api/auth/me', {cache:'no-store'});
@@ -2561,8 +2564,10 @@ function applyRoleUI() {
   const isAdmin = currentUser && currentUser.role === 'admin';
   document.querySelectorAll('[onclick]').forEach(el => {
     const a = el.getAttribute('onclick') || '';
-    if (/saveRecord|deleteRecord|openDatabaseImport|importDatabaseBackup|importExcelRecords|openExcelImport|addPerson|removePerson|editRecord|openAdd/i.test(a)) el.style.display = isAdmin ? '' : 'none';
+    if (/saveRecord|deleteRecord|openDatabaseImport|importDatabaseBackup|importExcelRecords|openExcelImport|addPerson|removePerson|editRecord|openAdd|exportDatabaseBackup|openExcelExport|exportExcel|window\.print/i.test(a)) el.style.display = isAdmin ? '' : 'none';
   });
+  document.querySelectorAll('.record-select-cell,.record-checkbox').forEach(el=>{ if(!isAdmin) el.style.display='none'; });
+  if(typeof renderTable==='function') renderTable();
   const badge=document.getElementById('userRoleBadge');
   if(badge) badge.textContent=currentUser ? `${currentUser.username} (${isAdmin?'Admin':'Viewer'})` : '';
 }
@@ -2592,8 +2597,17 @@ async function requireAdmin() {
   }
   return true;
 }
+
+// Privacy controls for Viewer accounts: no printing and no personal names.
+document.addEventListener('keydown',function(e){
+  if(isViewer() && (e.ctrlKey||e.metaKey) && String(e.key).toLowerCase()==='p'){
+    e.preventDefault();
+    mdrrmoActionConfirm({title:'Restricted action',message:'Printing is available to Admin accounts only.',icon:'🔒',confirmText:'OK',singleButton:true});
+  }
+});
+
 function protectAdminFunctions(){
- ['saveRecord','deleteRecord','deleteSelectedRecords','importDatabaseBackup','importExcelRecords','openDatabaseImport','openExcelImport','editRecord'].forEach(name=>{
+ ['saveRecord','deleteRecord','deleteSelectedRecords','importDatabaseBackup','importExcelRecords','openDatabaseImport','openExcelImport','editRecord','exportDatabaseBackup','openExcelExport','exportExcel'].forEach(name=>{
    const original=window[name]; if(typeof original==='function' && !original.__protected){
      const wrapped=async function(...args){ if(!(await requireAdmin())) return; return original.apply(this,args); }; wrapped.__protected=true; window[name]=wrapped;
    }
@@ -3663,8 +3677,7 @@ function getFilteredRecordsForTable() {
             record.status,
             record.remarks,
             record.ambulance,
-            record.persons,
-            record.age,
+            ...(isViewer() ? [] : [record.persons, record.age]),
             record.responders
         ].join(" ").toLowerCase();
 
@@ -3793,7 +3806,7 @@ function renderTable() {
                 ${record.type === "conduction" && record.ambulance
                     ? `<br><small>🚑 ${escapeHTML(record.ambulance)}</small>` : ""}
             </td>
-            <td>${escapeHTML(record.persons || "-").replace(/\n/g, "<br>")}</td>
+            <td>${escapeHTML(protectedPersons(record.persons)).replace(/\n/g, "<br>")}</td>
             <td>${record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-"}</td>
             <td>${escapeHTML(record.status || "")}</td>
             <td>
@@ -5553,7 +5566,7 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
   if(!input||!results||!wrap) return;
 
   function textFor(r){
-    return [r.id,r.date,r.time,r.type,r.barangay,r.category,r.location,r.persons,r.status,r.ambulance,r.age].filter(v=>v!==undefined&&v!==null).join(' ').toLowerCase();
+    return [r.id,r.date,r.time,r.type,r.barangay,r.category,r.location,...(isViewer()?[]:[r.persons]),r.status,r.ambulance,r.age].filter(v=>v!==undefined&&v!==null).join(' ').toLowerCase();
   }
   function typeLabel(type){
     if(typeof getRecordTypeLabel==='function') return getRecordTypeLabel(type);
@@ -5570,7 +5583,7 @@ html:not(.auth-scroll-lock){overflow-y:auto!important;}
     }
     results.innerHTML=list.map(r=>{
       const title=`${escapeHTML(r.category||typeLabel(r.type)||'Record')}`;
-      const meta=[formatDate(r.date),r.barangay||'',r.location||'',r.persons||''].filter(Boolean).join(' • ');
+      const meta=[formatDate(r.date),r.barangay||'',r.location||'',isViewer()?MDRRMO_PROTECTED_TEXT:(r.persons||'')].filter(Boolean).join(' • ');
       return `<button type="button" class="mdrrmo-search-result" data-record-id="${escapeHTML(String(r.id))}">
         <div class="mdrrmo-search-result-title">📄 <span>${title}</span></div>
         <div class="mdrrmo-search-result-meta">${escapeHTML(meta)}</div>
@@ -5653,7 +5666,7 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
     html += field('Barangay / Area',record.barangay);
     html += field('Incident / Category',record.category);
     html += field('Location',record.location);
-    html += field('Person(s) Involved / Assisted',record.persons,true);
+    html += field('Person(s) Involved / Assisted',protectedPersons(record.persons),true);
     html += field('Age',record.type==='accident' && record.age!==undefined && record.age!==''?record.age:'—');
     html += field('Status',record.status);
     html += field('Responders',record.responders,true);
