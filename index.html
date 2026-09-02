@@ -2239,7 +2239,7 @@ body.viewer-role .records-panel th,.viewer-role .records-panel td{padding-top:9p
   <div class="report-two-col mdrrmo-stat-charts">
     <div class="panel report-chart-panel">
       <div class="panel-header"><div><h3>Incident Statistics</h3><p>Record count and percentage by incident type</p></div></div>
-      <div class="mdrrmo-chart-wrap"><canvas id="incidentStatsChart"></canvas></div>
+      <div class="mdrrmo-chart-wrap" style="height:310px; padding:6px 0;"><canvas id="incidentStatsChart"></canvas></div>
     </div>
     <div class="panel report-chart-panel">
       <div class="panel-header"><div><h3>Monthly Trend</h3><p>Select incident types to display from January to December</p></div></div>
@@ -4036,14 +4036,14 @@ function updateMDRRMOStatisticCharts(typeCounts, monthlyCounts) {
       };
       mdrrmoIncidentStatsChart=new Chart(typeCanvas,{
         type:"bar",
-        data:{labels:labels,datasets:[{data:incidentRows.map(row=>row.value),borderRadius:7,borderSkipped:false,backgroundColor:incidentRows.map(row=>row.color),barThickness:22}]},
+        data:{labels:labels,datasets:[{data:incidentRows.map(row=>row.value),borderRadius:7,borderSkipped:false,backgroundColor:incidentRows.map(row=>row.color),barThickness:18,categoryPercentage:0.72,barPercentage:0.78}]},
         plugins:[valueLabels],
         options:{
           responsive:true,
           maintainAspectRatio:false,
           indexAxis:"y",
           animation:{duration:450},
-          layout:{padding:{right:72}},
+          layout:{padding:{top:6,bottom:6,right:72,left:0}},
           plugins:{legend:{display:false},tooltip:{callbacks:{label:(context)=>{
             const value=context.raw||0;
             const percent=totalIncidents?((value/totalIncidents)*100).toFixed(1):"0.0";
@@ -4051,7 +4051,7 @@ function updateMDRRMOStatisticCharts(typeCounts, monthlyCounts) {
           }}}},
           scales:{
             x:{beginAtZero:true,ticks:{color:textColor,precision:0},grid:{color:gridColor},title:{display:true,text:"Number of records",color:textColor,font:{weight:"600"}}},
-            y:{ticks:{color:textColor,font:{size:11}},grid:{display:false}}
+            y:{ticks:{color:textColor,font:{size:11},autoSkip:false,padding:8},grid:{display:false}}
           }
         }
       });
