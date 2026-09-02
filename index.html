@@ -4008,7 +4008,7 @@ function updateMDRRMOStatisticCharts(typeCounts, monthlyCounts) {
     const monthCanvas=document.getElementById("monthlyTrendChart");
     if(monthCanvas){
       if(mdrrmoMonthlyTrendChart) mdrrmoMonthlyTrendChart.destroy();
-      const datasets = Array.isArray(monthlyCounts) && Array.isArray(monthlyCounts[0]) ? monthlyCounts : [{label:"Records",data:monthlyCounts,borderColor:"#174c94",backgroundColor:"rgba(23,76,148,.12)"}];
+      const datasets = Array.isArray(monthlyCounts) && monthlyCounts.length && typeof monthlyCounts[0] === "object" && Array.isArray(monthlyCounts[0].data) ? monthlyCounts : [{label:"Records",data:Array.isArray(monthlyCounts) ? monthlyCounts : [],borderColor:"#174c94",backgroundColor:"rgba(23,76,148,.12)"}];
       mdrrmoMonthlyTrendChart=new Chart(monthCanvas,{type:"line",data:{labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],datasets:datasets.map(d=>({...d,fill:false,tension:.35,pointRadius:3,pointHoverRadius:5}))},options:{...common,plugins:{...common.plugins,legend:{display:true,labels:{color:textColor}}}}});
     }
 }
