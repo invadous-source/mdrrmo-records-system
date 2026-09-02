@@ -5869,6 +5869,34 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
   window.addEventListener('load',refreshChartsForTheme);
 })();
 </script>
+
+<style id="dark-mode-final-report-viewer-fix">
+/* Final dark-mode support for newer Reports controls and Viewer privacy labels */
+body.dark-mode .monthly-trend-filters label, body.dark .monthly-trend-filters label,
+html.dark-mode .monthly-trend-filters label, html.dark .monthly-trend-filters label {
+  background:#16283d !important; border-color:#35506f !important; color:#dbeafe !important;
+  box-shadow:none !important;
+}
+body.dark-mode .monthly-trend-filters label:hover, body.dark .monthly-trend-filters label:hover,
+html.dark-mode .monthly-trend-filters label:hover, html.dark .monthly-trend-filters label:hover {
+  background:#1b314a !important; border-color:#4b6f96 !important;
+}
+body.dark-mode .monthly-trend-filters input, body.dark .monthly-trend-filters input,
+html.dark-mode .monthly-trend-filters input, html.dark .monthly-trend-filters input { accent-color:#4f8cff !important; }
+body.dark-mode .privacy-protected-label, body.dark .privacy-protected-label,
+html.dark-mode .privacy-protected-label, html.dark .privacy-protected-label {
+  background:#172a40 !important; color:#b9cbe0 !important; border-color:#3a5470 !important;
+  box-shadow:none !important;
+}
+body.dark-mode .records-panel .table-filters input, body.dark .records-panel .table-filters input,
+html.dark-mode .records-panel .table-filters input, html.dark .records-panel .table-filters input,
+body.dark-mode .records-panel .table-filters select, body.dark .records-panel .table-filters select,
+html.dark-mode .records-panel .table-filters select, html.dark .records-panel .table-filters select {
+  background:#16283d !important; color:#dbeafe !important; border-color:#35506f !important;
+}
+body.dark-mode .records-panel .table-filters input::placeholder, body.dark .records-panel .table-filters input::placeholder,
+html.dark-mode .records-panel .table-filters input::placeholder, html.dark .records-panel .table-filters input::placeholder { color:#91a8c1 !important; }
+</style>
 </body>
 </html>
 
