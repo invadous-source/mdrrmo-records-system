@@ -1159,7 +1159,7 @@ tr:hover td {
 .login-error{min-height:22px;margin-top:11px;color:#b42318;font-size:13px;text-align:center}.login-button{width:100%;border:0;border-radius:13px;padding:15px;background:linear-gradient(135deg,#0b6a68,#12486a);color:white;font-size:15px;font-weight:800;letter-spacing:.3px;cursor:pointer;box-shadow:0 10px 22px rgba(18,72,106,.24);transition:.2s}.login-button:hover{transform:translateY(-1px)}.login-button:disabled{cursor:not-allowed;opacity:.85;transform:none}.btn-loader{display:none}.login-button.loading .btn-text{display:none}.login-button.loading .btn-loader{display:inline}.login-footer{text-align:center;color:#8a99a1;font-size:11px;margin-top:19px}
 .auth-transition{display:none;position:fixed;inset:0;z-index:100000;align-items:center;justify-content:center;background:linear-gradient(135deg,#071b2b,#0d3850 55%,#0b6a68);color:white}.transition-card{text-align:center;width:min(370px,90%);padding:38px 28px}.transition-icon{width:74px;height:74px;margin:auto auto 18px;display:grid;place-items:center;border-radius:50%;font-size:34px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2)}.transition-card h2{margin:0 0 8px;font-size:27px}.transition-card p{margin:0;color:rgba(255,255,255,.72)}.transition-bar{height:5px;margin-top:28px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.transition-bar i{display:block;height:100%;width:35%;border-radius:inherit;background:#fff;animation:progress 3s linear forwards}@keyframes progress{from{transform:translateX(-110%)}to{transform:translateX(310%)}}
 
-</style><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</style><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <!-- MDRRMO BLUE DASHBOARD THEME: design-only overrides -->
 <style id="mdrrmoBlueTheme">
@@ -2232,6 +2232,17 @@ body.viewer-role .records-panel th,.viewer-role .records-panel td{padding-top:9p
     <div class="report-stat"><span>CUTTING TREES</span><strong id="reportCutting">0</strong></div>
     <div class="report-stat"><span>FIRE RESPONSES</span><strong id="reportFire">0</strong></div>
     <div class="report-stat"><span>CLEARING OPS</span><strong id="reportClearing">0</strong></div>
+  </div>
+
+  <div class="report-two-col mdrrmo-stat-charts">
+    <div class="panel report-chart-panel">
+      <div class="panel-header"><div><h3>Incident Statistics</h3><p>Record count by incident type</p></div></div>
+      <div class="mdrrmo-chart-wrap"><canvas id="incidentStatsChart"></canvas></div>
+    </div>
+    <div class="panel report-chart-panel">
+      <div class="panel-header"><div><h3>Monthly Trend</h3><p>Records from January to December</p></div></div>
+      <div class="mdrrmo-chart-wrap"><canvas id="monthlyTrendChart"></canvas></div>
+    </div>
   </div>
 
   <div class="report-two-col">
@@ -3970,6 +3981,27 @@ function getReportFilteredRecords() {
 
 function countByType(list, type) { return list.filter(r => r.type === type).length; }
 
+let mdrrmoIncidentStatsChart = null;
+let mdrrmoMonthlyTrendChart = null;
+
+function updateMDRRMOStatisticCharts(typeCounts, monthlyCounts) {
+    if (typeof Chart === "undefined") return;
+    const isDark = document.body.classList.contains("mdrrmo-dark");
+    const textColor = isDark ? "#dbeafe" : "#334155";
+    const gridColor = isDark ? "rgba(148,163,184,.18)" : "rgba(100,116,139,.12)";
+    const common = { responsive:true, maintainAspectRatio:false, animation:{duration:450}, plugins:{legend:{display:false}, tooltip:{displayMode:"index",intersect:false}}, scales:{x:{ticks:{color:textColor},grid:{display:false}},y:{beginAtZero:true,ticks:{color:textColor,precision:0},grid:{color:gridColor}}} };
+    const typeCanvas=document.getElementById("incidentStatsChart");
+    if(typeCanvas){
+      if(mdrrmoIncidentStatsChart) mdrrmoIncidentStatsChart.destroy();
+      mdrrmoIncidentStatsChart=new Chart(typeCanvas,{type:"bar",data:{labels:["Accident","Conduction","Training","Cutting Trees","Fire","Clearing"],datasets:[{data:[typeCounts.accident,typeCounts.conduction,typeCounts.training,typeCounts.cutting_trees,typeCounts.fire_incident,typeCounts.clearing_operation],borderRadius:8,borderSkipped:false,backgroundColor:["#2563eb","#0ea5e9","#14b8a6","#f59e0b","#ef4444","#8b5cf6"]}]},options:common});
+    }
+    const monthCanvas=document.getElementById("monthlyTrendChart");
+    if(monthCanvas){
+      if(mdrrmoMonthlyTrendChart) mdrrmoMonthlyTrendChart.destroy();
+      mdrrmoMonthlyTrendChart=new Chart(monthCanvas,{type:"line",data:{labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],datasets:[{data:monthlyCounts,label:"Records",borderColor:"#174c94",backgroundColor:"rgba(23,76,148,.12)",fill:true,tension:.35,pointRadius:3,pointHoverRadius:5}]},options:{...common,plugins:{...common.plugins,legend:{display:true,labels:{color:textColor}}}}});
+    }
+}
+
 function updateReportTables() {
     const filtered = getReportFilteredRecords();
     const monthSelect = document.getElementById("chartMonth");
@@ -3981,11 +4013,13 @@ function updateReportTables() {
     const map = { reportTotal: filtered.length, reportAccidents:typeCounts.accident, reportConductions:typeCounts.conduction, reportTrainings:typeCounts.training,
         reportCutting:typeCounts.cutting_trees, reportFire:typeCounts.fire_incident, reportClearing:typeCounts.clearing_operation };
     Object.entries(map).forEach(([id,val]) => { const el=document.getElementById(id); if(el) el.textContent=String(val); });
+    const monthlyCounts = Array.from({length:12},(_,m)=>filtered.filter(r=>{const d=new Date(r.date+"T12:00:00"); return d.getFullYear()===year && d.getMonth()===m;}).length);
+    updateMDRRMOStatisticCharts(typeCounts, monthlyCounts);
 
     const monthlyBody=document.getElementById("monthlySummaryBody");
     if (monthlyBody) {
         monthlyBody.innerHTML = Array.from({length:12},(_,m)=>{
-            const c=filtered.filter(r=>{const d=new Date(r.date+"T12:00:00"); return d.getFullYear()===year && d.getMonth()===m;}).length;
+            const c=monthlyCounts[m];
             return `<tr><td>${new Date(year,m,1).toLocaleString("en-US",{month:"long"})}</td><td>${c}</td></tr>`;
         }).join("");
     }
