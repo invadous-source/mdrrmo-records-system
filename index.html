@@ -1125,6 +1125,8 @@ tr:hover td {
 }
 #markNotificationsRead:active { transform: translateY(0); }
 #markNotificationsRead:focus-visible { outline: 3px solid rgba(37,99,235,.22); outline-offset: 2px; }
+
+.monthly-trend-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;padding:0 2px}.monthly-trend-filters label{display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid rgba(37,99,235,.18);border-radius:8px;background:#f8fbff;color:#334155;font-size:12px;font-weight:600;cursor:pointer}.monthly-trend-filters input{accent-color:#2563eb}@media(max-width:700px){.monthly-trend-filters{gap:6px}.monthly-trend-filters label{font-size:11px;padding:5px 7px}}
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
@@ -2240,7 +2242,15 @@ body.viewer-role .records-panel th,.viewer-role .records-panel td{padding-top:9p
       <div class="mdrrmo-chart-wrap"><canvas id="incidentStatsChart"></canvas></div>
     </div>
     <div class="panel report-chart-panel">
-      <div class="panel-header"><div><h3>Monthly Trend</h3><p>Records from January to December</p></div></div>
+      <div class="panel-header"><div><h3>Monthly Trend</h3><p>Select incident types to display from January to December</p></div></div>
+      <div class="monthly-trend-filters" id="monthlyTrendFilters">
+        <label><input type="checkbox" value="accident" checked onchange="updateReportTables()"> Accident</label>
+        <label><input type="checkbox" value="conduction" checked onchange="updateReportTables()"> Conduction</label>
+        <label><input type="checkbox" value="training" checked onchange="updateReportTables()"> Training</label>
+        <label><input type="checkbox" value="cutting_trees" checked onchange="updateReportTables()"> Cutting Trees</label>
+        <label><input type="checkbox" value="fire_incident" checked onchange="updateReportTables()"> Fire</label>
+        <label><input type="checkbox" value="clearing_operation" checked onchange="updateReportTables()"> Clearing</label>
+      </div>
       <div class="mdrrmo-chart-wrap"><canvas id="monthlyTrendChart"></canvas></div>
     </div>
   </div>
@@ -3998,7 +4008,8 @@ function updateMDRRMOStatisticCharts(typeCounts, monthlyCounts) {
     const monthCanvas=document.getElementById("monthlyTrendChart");
     if(monthCanvas){
       if(mdrrmoMonthlyTrendChart) mdrrmoMonthlyTrendChart.destroy();
-      mdrrmoMonthlyTrendChart=new Chart(monthCanvas,{type:"line",data:{labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],datasets:[{data:monthlyCounts,label:"Records",borderColor:"#174c94",backgroundColor:"rgba(23,76,148,.12)",fill:true,tension:.35,pointRadius:3,pointHoverRadius:5}]},options:{...common,plugins:{...common.plugins,legend:{display:true,labels:{color:textColor}}}}});
+      const datasets = Array.isArray(monthlyCounts) && Array.isArray(monthlyCounts[0]) ? monthlyCounts : [{label:"Records",data:monthlyCounts,borderColor:"#174c94",backgroundColor:"rgba(23,76,148,.12)"}];
+      mdrrmoMonthlyTrendChart=new Chart(monthCanvas,{type:"line",data:{labels:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],datasets:datasets.map(d=>({...d,fill:false,tension:.35,pointRadius:3,pointHoverRadius:5}))},options:{...common,plugins:{...common.plugins,legend:{display:true,labels:{color:textColor}}}}});
     }
 }
 
@@ -4014,7 +4025,17 @@ function updateReportTables() {
         reportCutting:typeCounts.cutting_trees, reportFire:typeCounts.fire_incident, reportClearing:typeCounts.clearing_operation };
     Object.entries(map).forEach(([id,val]) => { const el=document.getElementById(id); if(el) el.textContent=String(val); });
     const monthlyCounts = Array.from({length:12},(_,m)=>filtered.filter(r=>{const d=new Date(r.date+"T12:00:00"); return d.getFullYear()===year && d.getMonth()===m;}).length);
-    updateMDRRMOStatisticCharts(typeCounts, monthlyCounts);
+    const selectedTypes = Array.from(document.querySelectorAll('#monthlyTrendFilters input[type="checkbox"]:checked')).map(cb=>cb.value);
+    const trendConfig = [
+      {type:'accident',label:'Accident',borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.12)'},
+      {type:'conduction',label:'Conduction',borderColor:'#0ea5e9',backgroundColor:'rgba(14,165,233,.12)'},
+      {type:'training',label:'Training',borderColor:'#14b8a6',backgroundColor:'rgba(20,184,166,.12)'},
+      {type:'cutting_trees',label:'Cutting Trees',borderColor:'#f59e0b',backgroundColor:'rgba(245,158,11,.12)'},
+      {type:'fire_incident',label:'Fire',borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,.12)'},
+      {type:'clearing_operation',label:'Clearing',borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,.12)'}
+    ];
+    const trendDatasets = trendConfig.filter(x=>selectedTypes.includes(x.type)).map(x=>({label:x.label,borderColor:x.borderColor,backgroundColor:x.backgroundColor,data:Array.from({length:12},(_,m)=>filtered.filter(r=>{const d=new Date(r.date+"T12:00:00"); return r.type===x.type && d.getFullYear()===year && d.getMonth()===m;}).length)}));
+    updateMDRRMOStatisticCharts(typeCounts, trendDatasets);
 
     const monthlyBody=document.getElementById("monthlySummaryBody");
     if (monthlyBody) {
