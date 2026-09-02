@@ -5860,7 +5860,7 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
   let lastTheme='';
   function refreshChartsForTheme(){
     const root=document.body;
-    const theme=(root.classList.contains('dark-mode')||root.classList.contains('dark'))?'dark':'light';
+    const theme=(root.classList.contains('mdrrmo-dark')||root.classList.contains('dark-mode')||root.classList.contains('dark'))?'dark':'light';
     if(theme!==lastTheme){ lastTheme=theme; if(typeof updateReportTables==='function') setTimeout(updateReportTables,0); }
   }
   const observer=new MutationObserver(refreshChartsForTheme);
@@ -5896,6 +5896,29 @@ html.dark-mode .records-panel .table-filters select, html.dark .records-panel .t
 }
 body.dark-mode .records-panel .table-filters input::placeholder, body.dark .records-panel .table-filters input::placeholder,
 html.dark-mode .records-panel .table-filters input::placeholder, html.dark .records-panel .table-filters input::placeholder { color:#91a8c1 !important; }
+</style>
+
+<style id="mdrrmo-dark-report-controls-final">
+/* Actual theme class used by this project is .mdrrmo-dark */
+body.mdrrmo-dark .monthly-trend-filters label{
+  background:#263244 !important;
+  color:#dce7f5 !important;
+  border-color:#46556a !important;
+  box-shadow:none !important;
+}
+body.mdrrmo-dark .monthly-trend-filters label:hover{
+  background:#303d51 !important;
+  border-color:#60718a !important;
+}
+body.mdrrmo-dark .monthly-trend-filters input{accent-color:#5b9cff !important;}
+body.mdrrmo-dark .privacy-protected-label{
+  background:#263244 !important;
+  color:#c9d6e5 !important;
+  border-color:#46556a !important;
+  box-shadow:none !important;
+}
+/* Keep disabled-looking text readable while preserving the protected status appearance */
+body.mdrrmo-dark .privacy-protected-label{opacity:1 !important;}
 </style>
 </body>
 </html>
