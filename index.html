@@ -1127,6 +1127,35 @@ tr:hover td {
 #markNotificationsRead:focus-visible { outline: 3px solid rgba(37,99,235,.22); outline-offset: 2px; }
 
 .monthly-trend-filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;padding:0 2px}.monthly-trend-filters label{display:flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid rgba(37,99,235,.18);border-radius:8px;background:#f8fbff;color:#334155;font-size:12px;font-weight:600;cursor:pointer}.monthly-trend-filters input{accent-color:#2563eb}@media(max-width:700px){.monthly-trend-filters{gap:6px}.monthly-trend-filters label{font-size:11px;padding:5px 7px}}
+
+/* Dark mode support for Reports & Analytics charts */
+body.dark-mode .report-chart-panel,
+body.dark .report-chart-panel,
+.dark-mode .report-chart-panel,
+.dark .report-chart-panel {
+  background:#0f1d2e !important;
+  border-color:#29415d !important;
+}
+body.dark-mode .report-chart-panel .panel-header h3,
+body.dark .report-chart-panel .panel-header h3,
+.dark-mode .report-chart-panel .panel-header h3,
+.dark .report-chart-panel .panel-header h3 { color:#e5f0ff !important; }
+body.dark-mode .report-chart-panel .panel-header p,
+body.dark .report-chart-panel .panel-header p,
+.dark-mode .report-chart-panel .panel-header p,
+.dark .report-chart-panel .panel-header p { color:#a9bdd3 !important; }
+body.dark-mode .monthly-trend-filters label,
+body.dark .monthly-trend-filters label,
+.dark-mode .monthly-trend-filters label,
+.dark .monthly-trend-filters label {
+  background:#16283d !important; border-color:#35506f !important; color:#dbeafe !important;
+}
+body.dark-mode .report-stat, body.dark .report-stat, .dark-mode .report-stat, .dark .report-stat {
+  background:#16283d !important; border-color:#35506f !important;
+}
+body.dark-mode .report-stat span, body.dark .report-stat span, .dark-mode .report-stat span, .dark .report-stat span { color:#9fb4ca !important; }
+body.dark-mode .report-stat strong, body.dark .report-stat strong, .dark-mode .report-stat strong, .dark .report-stat strong { color:#eef6ff !important; }
+
 </style>
 <style>
 .dashboard-intro{margin-bottom:18px;padding:20px 22px;border:1px solid #dbe5f0;border-radius:14px;background:linear-gradient(135deg,#f8fbff,#eef6ff);box-shadow:0 4px 14px rgba(15,39,71,.05)}
@@ -5825,6 +5854,21 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
 (function(){function roleName(){try{var u=(typeof currentUser!=='undefined'&&currentUser)?currentUser:{};var r=String(u.role||'').toLowerCase();return r==='admin'?'MDRRMO':(u.username||u.name||'Viewer')}catch(e){return 'Viewer'}}function update(){var h=document.getElementById('dashboardGreeting'),t=document.getElementById('dashboardGreetingText'),d=document.getElementById('dashboardLiveDate');if(!h)return;var n=new Date(),hr=n.getHours(),g=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';var name=roleName();h.textContent=g+', '+name+' ';if(t){t.textContent='Emergency Operations Monitoring Center';t.classList.add('dashboardGreeting-subtitle')}if(d){var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];var months=['January','February','March','April','May','June','July','August','September','October','November','December'];var hh=n.getHours()%12||12,mm=String(n.getMinutes()).padStart(2,'0'),ss=String(n.getSeconds()).padStart(2,'0'),amp=n.getHours()>=12?'PM':'AM';d.innerHTML='<span class="mdrrmo-status-dot"></span> All Systems Operational <span class="sep">•</span> '+months[n.getMonth()]+' '+n.getDate()+', '+n.getFullYear()+' <span class="sep">•</span> '+hh+':'+mm+':'+ss+' '+amp+' <span class="sep">•</span> '+days[n.getDay()];d.className='mdrrmo-system-line'}}function setup(){update();setInterval(update,1000);}document.querySelectorAll('[class*="modal"]').forEach(function(m){m.classList.add('mdrrmo-modal-premium')})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();window.addEventListener('mdrrmo-login-success',function(){setTimeout(setup,0)})})();
 </script>
 
+
+<script>
+(function(){
+  let lastTheme='';
+  function refreshChartsForTheme(){
+    const root=document.body;
+    const theme=(root.classList.contains('dark-mode')||root.classList.contains('dark'))?'dark':'light';
+    if(theme!==lastTheme){ lastTheme=theme; if(typeof updateReportTables==='function') setTimeout(updateReportTables,0); }
+  }
+  const observer=new MutationObserver(refreshChartsForTheme);
+  if(document.body) observer.observe(document.body,{attributes:true,attributeFilter:['class']});
+  document.addEventListener('DOMContentLoaded',refreshChartsForTheme);
+  window.addEventListener('load',refreshChartsForTheme);
+})();
+</script>
 </body>
 </html>
 
