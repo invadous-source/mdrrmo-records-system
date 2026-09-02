@@ -2238,7 +2238,7 @@ body.viewer-role .records-panel th,.viewer-role .records-panel td{padding-top:9p
 
   <div class="report-two-col mdrrmo-stat-charts">
     <div class="panel report-chart-panel">
-      <div class="panel-header"><div><h3>Incident Statistics</h3><p>Record count by incident type</p></div></div>
+      <div class="panel-header"><div><h3>Incident Statistics</h3><p>Record count and percentage by incident type</p></div></div>
       <div class="mdrrmo-chart-wrap"><canvas id="incidentStatsChart"></canvas></div>
     </div>
     <div class="panel report-chart-panel">
@@ -4003,7 +4003,58 @@ function updateMDRRMOStatisticCharts(typeCounts, monthlyCounts) {
     const typeCanvas=document.getElementById("incidentStatsChart");
     if(typeCanvas){
       if(mdrrmoIncidentStatsChart) mdrrmoIncidentStatsChart.destroy();
-      mdrrmoIncidentStatsChart=new Chart(typeCanvas,{type:"bar",data:{labels:["Accident","Conduction","Training","Cutting Trees","Fire","Clearing"],datasets:[{data:[typeCounts.accident,typeCounts.conduction,typeCounts.training,typeCounts.cutting_trees,typeCounts.fire_incident,typeCounts.clearing_operation],borderRadius:8,borderSkipped:false,backgroundColor:["#2563eb","#0ea5e9","#14b8a6","#f59e0b","#ef4444","#8b5cf6"]}]},options:common});
+      const incidentRows = [
+        {label:"Accident", value:Number(typeCounts.accident)||0, color:"#2563eb"},
+        {label:"Conduction", value:Number(typeCounts.conduction)||0, color:"#0ea5e9"},
+        {label:"Training", value:Number(typeCounts.training)||0, color:"#14b8a6"},
+        {label:"Cutting Trees", value:Number(typeCounts.cutting_trees)||0, color:"#f59e0b"},
+        {label:"Fire", value:Number(typeCounts.fire_incident)||0, color:"#ef4444"},
+        {label:"Clearing", value:Number(typeCounts.clearing_operation)||0, color:"#8b5cf6"}
+      ];
+      const totalIncidents = incidentRows.reduce((sum,row)=>sum+row.value,0);
+      const labels = incidentRows.map(row=>{
+        const percent = totalIncidents ? ((row.value/totalIncidents)*100).toFixed(1) : "0.0";
+        return `${row.label} (${percent}%)`;
+      });
+      const valueLabels = {
+        id:"mdrrmoIncidentValueLabels",
+        afterDatasetsDraw(chart){
+          const {ctx, chartArea:{right}} = chart;
+          const meta = chart.getDatasetMeta(0);
+          ctx.save();
+          ctx.fillStyle = textColor;
+          ctx.font = "600 11px Arial";
+          ctx.textAlign = "left";
+          ctx.textBaseline = "middle";
+          meta.data.forEach((bar,index)=>{
+            const value = incidentRows[index].value;
+            const text = `${value} record${value===1?"":"s"}`;
+            ctx.fillText(text, Math.min(bar.x + 8, right - 4), bar.y);
+          });
+          ctx.restore();
+        }
+      };
+      mdrrmoIncidentStatsChart=new Chart(typeCanvas,{
+        type:"bar",
+        data:{labels:labels,datasets:[{data:incidentRows.map(row=>row.value),borderRadius:7,borderSkipped:false,backgroundColor:incidentRows.map(row=>row.color),barThickness:22}]},
+        plugins:[valueLabels],
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          indexAxis:"y",
+          animation:{duration:450},
+          layout:{padding:{right:72}},
+          plugins:{legend:{display:false},tooltip:{callbacks:{label:(context)=>{
+            const value=context.raw||0;
+            const percent=totalIncidents?((value/totalIncidents)*100).toFixed(1):"0.0";
+            return `${value} record${value===1?"":"s"} (${percent}%)`;
+          }}}},
+          scales:{
+            x:{beginAtZero:true,ticks:{color:textColor,precision:0},grid:{color:gridColor},title:{display:true,text:"Number of records",color:textColor,font:{weight:"600"}}},
+            y:{ticks:{color:textColor,font:{size:11}},grid:{display:false}}
+          }
+        }
+      });
     }
     const monthCanvas=document.getElementById("monthlyTrendChart");
     if(monthCanvas){
