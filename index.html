@@ -2020,6 +2020,25 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
   #authTransition.logout-mode .logout-shield{width:68px;height:68px;font-size:34px;border-radius:21px}
 }
 </style>
+
+<style id="viewer-privacy-cleanup">
+/* Clean Viewer privacy layout */
+body.viewer-role .record-select-cell,
+body.viewer-role .record-checkbox,
+body.viewer-role #recordsTable tr > td:first-child,
+body.viewer-role .records-panel table thead th:first-child { display:none !important; }
+body.viewer-role .privacy-age-cell { display:none !important; }
+body.viewer-role .records-panel table thead th:nth-child(9) { display:none !important; }
+.privacy-protected-label{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:6px 10px;border-radius:8px;background:#eef4f8;color:#35506b;border:1px solid #d6e2ec;font-size:10px;font-weight:700;letter-spacing:.35px;text-align:center;line-height:1.25;white-space:normal;max-width:180px;}
+.records-panel .table-wrapper{overflow-x:auto;}
+.records-panel table{table-layout:auto;min-width:1180px;}
+.records-panel th,.records-panel td{vertical-align:middle;white-space:nowrap;}
+.records-panel .privacy-person-cell{min-width:190px;white-space:normal;}
+.records-panel .record-actions-cell{min-width:150px;}
+body.viewer-role .record-actions-cell{min-width:78px;}
+body.viewer-role .records-panel table{min-width:1020px;}
+body.viewer-role .records-panel th,.viewer-role .records-panel td{padding-top:9px;padding-bottom:9px;}
+</style>
 </head>
 <body class="dashboard-polish">
 
@@ -2550,7 +2569,7 @@ body.mdrrmo-dark .btn:focus-visible,body.mdrrmo-dark button:focus-visible,body.m
 
 let currentUser = null;
 const MDRRMO_PROTECTED_TEXT = "PERSONAL INFORMATION PROTECTED";
-function isViewer(){ return !currentUser || currentUser.role !== "admin"; }
+function isViewer(){ return !currentUser || String(currentUser.role || "").toLowerCase() !== "admin"; }
 function protectedPersons(value){ return isViewer() ? MDRRMO_PROTECTED_TEXT : (value || "-"); }
 
 async function getSession() {
@@ -2561,7 +2580,9 @@ async function getSession() {
 function applyRoleUI() {
   const controls=document.getElementById('userControls');
   if(controls) controls.style.display=currentUser ? 'flex' : 'none';
-  const isAdmin = currentUser && currentUser.role === 'admin';
+  const isAdmin = currentUser && String(currentUser.role || '').toLowerCase() === 'admin';
+  document.body.classList.toggle('viewer-role', !!currentUser && !isAdmin);
+  document.body.classList.toggle('admin-role', !!isAdmin);
   document.querySelectorAll('[onclick]').forEach(el => {
     const a = el.getAttribute('onclick') || '';
     if (/saveRecord|deleteRecord|openDatabaseImport|importDatabaseBackup|importExcelRecords|openExcelImport|addPerson|removePerson|editRecord|openAdd|exportDatabaseBackup|openExcelExport|exportExcel|window\.print/i.test(a)) el.style.display = isAdmin ? '' : 'none';
@@ -3773,18 +3794,15 @@ function getRecordTypeBadge(type) {
 
 function renderTable() {
     updateFilterOptions();
-
     const filtered = getFilteredRecordsForTable();
     const table = document.getElementById("recordsTable");
+    const viewer = isViewer();
 
     totalRecordsPages = Math.max(1, Math.ceil(filtered.length / RECORDS_PER_PAGE));
     currentRecordsPage = Math.min(Math.max(1, currentRecordsPage), totalRecordsPages);
 
     if (filtered.length === 0) {
-        table.innerHTML = `
-            <tr>
-                <td colspan="11" class="empty-row">No records found.</td>
-            </tr>`;
+        table.innerHTML = `<tr><td colspan="11" class="empty-row">No records found.</td></tr>`;
         renderPagination(0);
         updateBulkSelectionUI();
         return;
@@ -3793,33 +3811,35 @@ function renderTable() {
     const start = (currentRecordsPage - 1) * RECORDS_PER_PAGE;
     const pageRecords = filtered.slice(start, start + RECORDS_PER_PAGE);
 
-    table.innerHTML = pageRecords.map(record => `
-        <tr>
+    table.innerHTML = pageRecords.map(record => {
+        const personCell = viewer
+            ? `<span class="privacy-protected-label">${MDRRMO_PROTECTED_TEXT}</span>`
+            : escapeHTML(record.persons || "-").replace(/\n/g, "<br>");
+        const ageCell = viewer ? "-" : (record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-");
+        const actions = viewer
+            ? `<button class="btn btn-info btn-small mdrrmo-view-btn" onclick="viewRecord('${record.id}')" title="View record">View</button>`
+            : `<button class="btn btn-info btn-small mdrrmo-view-btn" onclick="viewRecord('${record.id}')" title="View record">View</button>
+               <button class="btn btn-primary btn-small" onclick="editRecord('${record.id}')">Edit</button>
+               <button class="btn btn-danger btn-small" onclick="deleteRecord('${record.id}')">Delete</button>`;
+
+        return `<tr>
             <td class="record-select-cell"><input class="record-checkbox" type="checkbox" value="${escapeHTML(String(record.id))}" aria-label="Select record" onchange="handleRecordCheckboxChange(this)"></td>
             <td>${formatDate(record.date)}</td>
             <td>${record.time || "-"}</td>
             <td>${getRecordTypeBadge(record.type)}</td>
             <td>${escapeHTML(record.barangay || "")}</td>
             <td>${escapeHTML(record.category || "")}</td>
-            <td>
-                ${escapeHTML(record.location || "")}
-                ${record.type === "conduction" && record.ambulance
-                    ? `<br><small>🚑 ${escapeHTML(record.ambulance)}</small>` : ""}
-            </td>
-            <td>${escapeHTML(protectedPersons(record.persons)).replace(/\n/g, "<br>")}</td>
-            <td>${record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-"}</td>
+            <td>${escapeHTML(record.location || "")}${record.type === "conduction" && record.ambulance ? `<br><small>🚑 ${escapeHTML(record.ambulance)}</small>` : ""}</td>
+            <td class="privacy-person-cell">${personCell}</td>
+            <td class="privacy-age-cell">${ageCell}</td>
             <td>${escapeHTML(record.status || "")}</td>
-            <td>
-                <button class="btn btn-info btn-small mdrrmo-view-btn" onclick="viewRecord('${record.id}')" title="View record">View</button>
-                <button class="btn btn-primary btn-small" onclick="editRecord('${record.id}')">Edit</button>
-                <button class="btn btn-danger btn-small" onclick="deleteRecord('${record.id}')">Delete</button>
-            </td>
-        </tr>`).join("");
+            <td class="record-actions-cell">${actions}</td>
+        </tr>`;
+    }).join("");
 
     renderPagination(filtered.length);
     updateBulkSelectionUI();
 }
-
 
 /* ================================
    CLEAR FILTERS
