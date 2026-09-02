@@ -2027,8 +2027,6 @@ body.viewer-role .record-select-cell,
 body.viewer-role .record-checkbox,
 body.viewer-role #recordsTable tr > td:first-child,
 body.viewer-role .records-panel table thead th:first-child { display:none !important; }
-body.viewer-role .privacy-age-cell { display:none !important; }
-body.viewer-role .records-panel table thead th:nth-child(9) { display:none !important; }
 .privacy-protected-label{display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:6px 10px;border-radius:8px;background:#eef4f8;color:#35506b;border:1px solid #d6e2ec;font-size:10px;font-weight:700;letter-spacing:.35px;text-align:center;line-height:1.25;white-space:normal;max-width:180px;}
 .records-panel .table-wrapper{overflow-x:auto;}
 .records-panel table{table-layout:auto;min-width:1180px;}
@@ -2036,7 +2034,7 @@ body.viewer-role .records-panel table thead th:nth-child(9) { display:none !impo
 .records-panel .privacy-person-cell{min-width:190px;white-space:normal;}
 .records-panel .record-actions-cell{min-width:150px;}
 body.viewer-role .record-actions-cell{min-width:78px;}
-body.viewer-role .records-panel table{min-width:1020px;}
+body.viewer-role .records-panel table{min-width:1080px;}
 body.viewer-role .records-panel th,.viewer-role .records-panel td{padding-top:9px;padding-bottom:9px;}
 </style>
 </head>
@@ -3815,7 +3813,7 @@ function renderTable() {
         const personCell = viewer
             ? `<span class="privacy-protected-label">${MDRRMO_PROTECTED_TEXT}</span>`
             : escapeHTML(record.persons || "-").replace(/\n/g, "<br>");
-        const ageCell = viewer ? "-" : (record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-");
+        const ageCell = (record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-");
         const actions = viewer
             ? `<button class="btn btn-info btn-small mdrrmo-view-btn" onclick="viewRecord('${record.id}')" title="View record">View</button>`
             : `<button class="btn btn-info btn-small mdrrmo-view-btn" onclick="viewRecord('${record.id}')" title="View record">View</button>
