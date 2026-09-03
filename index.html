@@ -3873,7 +3873,7 @@ function renderTable() {
         const personCell = viewer
             ? `<span class="privacy-protected-label">${MDRRMO_PROTECTED_TEXT}</span>`
             : escapeHTML(record.persons || "-").replace(/\n/g, "<br>");
-        const ageCell = (record.type === "accident" && record.age !== undefined && record.age !== "" ? escapeHTML(record.age) : "-");
+        const ageCell = (record.age !== undefined && record.age !== null && record.age !== "" ? escapeHTML(record.age) : "-");
         const actions = viewer
             ? `<button class="btn btn-info btn-small mdrrmo-view-btn" onclick="viewRecord('${record.id}')" title="View record">View</button>`
             : `<button class="btn btn-info btn-small mdrrmo-view-btn" onclick="viewRecord('${record.id}')" title="View record">View</button>
@@ -5830,7 +5830,7 @@ body.mdrrmo-dark .mdrrmo-view-footer{background:#162235;border-color:#334155}
     html += field('Incident / Category',record.category);
     html += field('Location',record.location);
     html += field('Person(s) Involved / Assisted',protectedPersons(record.persons),true);
-    html += field('Age',record.type==='accident' && record.age!==undefined && record.age!==''?record.age:'—');
+    html += field('Age',record.age!==undefined && record.age!==null && record.age!==''?record.age:'—');
     html += field('Status',record.status);
     html += field('Responders',record.responders,true);
     if(record.type==='conduction'){
