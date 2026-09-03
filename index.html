@@ -4511,8 +4511,9 @@ function mdrrmoExcelBuildRecord(row,type){
     // Keep the actual custom incident/category value; it will reopen under Other (Please Specify).
     const category=mdrrmoImportedCustomValue(row,['Category','category','Incident / Purpose','Purpose'],['Other Category','Other Incident','Other Incident / Purpose','Category (Please Specify)','Incident (Please Specify)']);
     const location=mdrrmoExcelPick(row,['Location','location','Location / Destination','Destination']);
-    const ageRaw=mdrrmoExcelPick(row,['Age','age']);
-    const age=type==='conduction' && ageRaw!=='' ? Number(ageRaw) : 0;
+    const ageRaw=mdrrmoExcelPick(row,['Age','age','AGE']);
+    const ageNumber=(typeof ageRaw==='number') ? ageRaw : Number(String(ageRaw).replace(/[^0-9.-]/g,''));
+    const age=type==='conduction' && String(ageRaw).trim()!=='' ? ageNumber : 0;
     const id=mdrrmoExcelPick(row,['ID','Id','id'])||generateID();
     return {
         id,type,date,time,barangay,category,location,
@@ -4581,8 +4582,20 @@ async function importExcelRecords(event){
   const mode=document.getElementById('excelImportMode').value;
   // Always use the user's selected import type. This prevents an exported
   // Excel label such as "Conduction" from being misread as Accident.
-  const selectedType=String(document.getElementById('excelRecordType').value || 'accident').trim().toLowerCase();
-  const type=['accident','conduction','training','cutting_trees','fire_incident','clearing_operation'].includes(selectedType) ? selectedType : 'accident';
+  const typeSelect=document.getElementById('excelRecordType');
+  const selectedValue=String(typeSelect?.value || '').trim().toLowerCase();
+  const selectedLabel=String(typeSelect?.options?.[typeSelect.selectedIndex]?.text || '').trim().toLowerCase();
+  // Respect the user's selected type. Some browsers/older cached versions can
+  // expose the option text differently, so also recognize the visible label.
+  let type=selectedValue;
+  if (selectedLabel.includes('conduction')) type='conduction';
+  else if (selectedLabel.includes('accident')) type='accident';
+  const allowedImportTypes=['accident','conduction','training','cutting_trees','fire_incident','clearing_operation'];
+  if(!allowedImportTypes.includes(type)){
+      // As a final compatibility fallback, use the Excel Record Type column.
+      const excelType=String(mdrrmoExcelPick(rows[0],['Record Type','record type','recordType','Type','type'])||'').trim().toLowerCase();
+      type=excelType.includes('conduction')?'conduction':(excelType.includes('training')?'training':(excelType.includes('cutting')?'cutting_trees':(excelType.includes('fire')?'fire_incident':(excelType.includes('clearing')?'clearing_operation':'accident'))));
+  }
   const month=Number(document.getElementById('excelImportMonth').value), year=Number(document.getElementById('excelImportYear').value);
   let from=document.getElementById('excelImportFrom').value, to=document.getElementById('excelImportTo').value;
   if(mode==='range' && (!from||!to)) throw new Error('Please select both From and To dates.');
