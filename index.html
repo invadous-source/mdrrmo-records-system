@@ -2195,6 +2195,7 @@ body.viewer-role .records-panel th,.viewer-role .records-panel td{padding-top:9p
     <h3 style="margin-bottom:16px;">📥 Import Excel Records</h3>
     <label style="display:block;margin-bottom:6px;font-weight:700;">Record Type</label>
     <select id="excelRecordType" style="width:100%;padding:10px;margin-bottom:14px;">
+      <option value="all">All Record Types (Use Excel Record Type)</option>
       <option value="accident">Accident</option><option value="conduction">Ambulance Conduction</option><option value="training">Training</option><option value="cutting_trees">Cutting Trees</option><option value="fire_incident">Fire Incident Responded</option><option value="clearing_operation">Clearing Operation</option>
     </select>
     <label style="display:block;margin-bottom:6px;font-weight:700;">Import Filter</label>
@@ -4498,10 +4499,21 @@ function mdrrmoImportedCustomValue(row, primaryNames, otherNames){
     return value;
 }
 
+function mdrrmoNormalizeImportType(value){
+    const raw=String(value||'').trim().toLowerCase().replace(/[\s\-]+/g,'_');
+    if(!raw) return '';
+    if(raw==='accident'||raw.includes('accident')) return 'accident';
+    if(raw==='conduction'||raw.includes('conduction')||raw.includes('ambulance')) return 'conduction';
+    if(raw==='training'||raw.includes('training')) return 'training';
+    if(raw==='cutting_trees'||(raw.includes('cutting')&&raw.includes('tree'))) return 'cutting_trees';
+    if(raw==='fire_incident'||raw.includes('fire')) return 'fire_incident';
+    if(raw==='clearing_operation'||raw.includes('clearing')) return 'clearing_operation';
+    return '';
+}
 function mdrrmoExcelBuildRecord(row,type){
-    // The record type selected in the Import Excel dialog is authoritative.
-    // Excel's display label (e.g. "Conduction") must never override it.
-    type = String(type || 'accident').trim().toLowerCase();
+    // For "All Record Types", preserve the Record Type stored in each Excel row.
+    // For a specific type, the user's selected type remains authoritative.
+    type=mdrrmoNormalizeImportType(type)||'accident';
     const allowedTypes=['accident','conduction','training','cutting_trees','fire_incident','clearing_operation'];
     if(!allowedTypes.includes(type)) type='accident';
     const date=excelDateToISO(mdrrmoExcelPick(row,['Date','date','Incident Date','Record Date']));
@@ -4581,21 +4593,17 @@ async function importExcelRecords(event){
   const ws=workbook.Sheets[workbook.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
   if(!rows.length) throw new Error('The Excel file does not contain any records.');
   const mode=document.getElementById('excelImportMode').value;
-  // Always use the user's selected import type. This prevents an exported
-  // Excel label such as "Conduction" from being misread as Accident.
+  // Specific Record Type forces every imported row to that type.
+  // "All Record Types" reads the Record Type/Type column from each Excel row.
   const typeSelect=document.getElementById('excelRecordType');
-  const selectedValue=String(typeSelect?.value || '').trim().toLowerCase();
-  const selectedLabel=String(typeSelect?.options?.[typeSelect.selectedIndex]?.text || '').trim().toLowerCase();
-  // Respect the user's selected type. Some browsers/older cached versions can
-  // expose the option text differently, so also recognize the visible label.
-  let type=selectedValue;
-  if (selectedLabel.includes('conduction')) type='conduction';
-  else if (selectedLabel.includes('accident')) type='accident';
+  const selectedType=mdrrmoNormalizeImportType(typeSelect?.value);
+  const importAllTypes=String(typeSelect?.value||'all').trim().toLowerCase()==='all';
   const allowedImportTypes=['accident','conduction','training','cutting_trees','fire_incident','clearing_operation'];
-  if(!allowedImportTypes.includes(type)){
-      // As a final compatibility fallback, use the Excel Record Type column.
-      const excelType=String(mdrrmoExcelPick(rows[0],['Record Type','record type','recordType','Type','type'])||'').trim().toLowerCase();
-      type=excelType.includes('conduction')?'conduction':(excelType.includes('training')?'training':(excelType.includes('cutting')?'cutting_trees':(excelType.includes('fire')?'fire_incident':(excelType.includes('clearing')?'clearing_operation':'accident'))));
+  function getRowImportType(row){
+      if(!importAllTypes) return selectedType||'accident';
+      const excelType=mdrrmoExcelPick(row,['Record Type','record type','RecordType','recordType','Type','type','Incident Type','IncidentType']);
+      const normalized=mdrrmoNormalizeImportType(excelType);
+      return normalized||'accident';
   }
   const month=Number(document.getElementById('excelImportMonth').value), year=Number(document.getElementById('excelImportYear').value);
   let from=document.getElementById('excelImportFrom').value, to=document.getElementById('excelImportTo').value;
@@ -4608,7 +4616,7 @@ async function importExcelRecords(event){
   const existingKeys=new Set((Array.isArray(records)?records:[]).map(mdrrmoExcelKey));
   const seenIds=new Set(existingIds), seenKeys=new Set(existingKeys);
   const prepared=selected.map((row,i)=>{
-      const record=mdrrmoExcelBuildRecord(row,type);
+      const record=mdrrmoExcelBuildRecord(row,getRowImportType(row));
       const errors=mdrrmoExcelValidate(record,i+2);
       const duplicate=seenIds.has(String(record.id)) || seenKeys.has(mdrrmoExcelKey(record));
       if(!errors.length && !duplicate){seenIds.add(String(record.id));seenKeys.add(mdrrmoExcelKey(record));}
