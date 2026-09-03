@@ -4498,6 +4498,11 @@ function mdrrmoImportedCustomValue(row, primaryNames, otherNames){
 }
 
 function mdrrmoExcelBuildRecord(row,type){
+    // The record type selected in the Import Excel dialog is authoritative.
+    // Excel's display label (e.g. "Conduction") must never override it.
+    type = String(type || 'accident').trim().toLowerCase();
+    const allowedTypes=['accident','conduction','training','cutting_trees','fire_incident','clearing_operation'];
+    if(!allowedTypes.includes(type)) type='accident';
     const date=excelDateToISO(mdrrmoExcelPick(row,['Date','date','Incident Date','Record Date']));
     const time=mdrrmoExcelPick(row,['Time','time','Incident Time','Record Time']);
     const persons=mdrrmoExcelPick(row,['Persons','persons','Person(s) Involved / Assisted','Name','name']);
@@ -4541,7 +4546,7 @@ function mdrrmoExcelPreviewModal(data, resolve){
     const valid=data.length-invalid-duplicate;
     const rows=data.slice(0,20).map(x=>`<tr class="${x.errors.length||x.duplicate?'invalid':''}">
         <td>${x.rowNumber}</td><td>${escapeHTML(x.record.date||'-')}</td><td>${escapeHTML(x.record.time||'-')}</td>
-        <td>${escapeHTML(x.record.persons||'-')}</td><td>${escapeHTML(x.record.barangay||'-')}</td>
+        <td>${escapeHTML(x.record.persons||'-')}</td><td>${escapeHTML(x.record.age ?? '-')}</td><td>${escapeHTML(x.record.barangay||'-')}</td>
         <td>${escapeHTML(x.record.category||'-')}</td><td>${escapeHTML(x.errors.length?x.errors.join(', '):(x.duplicate?'Duplicate':'Ready'))}</td>
     </tr>`).join('');
     mdrrmoImportModalShow(`<div class="mdrrmo-import-head"><h3>📋 Review Excel Import</h3><p>Preview and validate before anything is saved</p></div>
@@ -4553,7 +4558,7 @@ function mdrrmoExcelPreviewModal(data, resolve){
         </div>
         ${invalid?`<div class="mdrrmo-excel-error">⚠️ <b>${invalid} row${invalid===1?'':'s'} need attention.</b> Invalid rows will not be imported.</div>`:''}
         ${duplicate?`<div class="mdrrmo-excel-warning" style="margin-top:9px">↻ <b>${duplicate} duplicate${duplicate===1?'':'s'} detected.</b> Existing records and duplicates within this file will be skipped.</div>`:''}
-        <div class="mdrrmo-excel-preview-table-wrap"><table class="mdrrmo-excel-preview-table"><thead><tr><th>Row</th><th>Date</th><th>Time</th><th>Person</th><th>Barangay</th><th>Incident</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
+        <div class="mdrrmo-excel-preview-table-wrap"><table class="mdrrmo-excel-preview-table"><thead><tr><th>Row</th><th>Date</th><th>Time</th><th>Person</th><th>Age</th><th>Barangay</th><th>Incident</th><th>Result</th></tr></thead><tbody>${rows}</tbody></table></div>
         ${data.length>20?`<p style="font-size:.8rem;color:#71879a;margin:9px 0 0">Showing first 20 of ${data.length} rows. Validation applies to all rows.</p>`:''}
       </div>
       <div class="mdrrmo-import-actions"><button class="mdrrmo-cancel" id="mdrrmoExcelPreviewCancel">Cancel</button><button class="mdrrmo-primary" id="mdrrmoExcelPreviewConfirm" ${valid?'':'disabled'}>Import ${valid} Record${valid===1?'':'s'}</button></div>`);
@@ -4573,7 +4578,11 @@ async function importExcelRecords(event){
   const workbook=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:false});
   const ws=workbook.Sheets[workbook.SheetNames[0]]; const rows=XLSX.utils.sheet_to_json(ws,{defval:'',raw:true});
   if(!rows.length) throw new Error('The Excel file does not contain any records.');
-  const mode=document.getElementById('excelImportMode').value, type=document.getElementById('excelRecordType').value;
+  const mode=document.getElementById('excelImportMode').value;
+  // Always use the user's selected import type. This prevents an exported
+  // Excel label such as "Conduction" from being misread as Accident.
+  const selectedType=String(document.getElementById('excelRecordType').value || 'accident').trim().toLowerCase();
+  const type=['accident','conduction','training','cutting_trees','fire_incident','clearing_operation'].includes(selectedType) ? selectedType : 'accident';
   const month=Number(document.getElementById('excelImportMonth').value), year=Number(document.getElementById('excelImportYear').value);
   let from=document.getElementById('excelImportFrom').value, to=document.getElementById('excelImportTo').value;
   if(mode==='range' && (!from||!to)) throw new Error('Please select both From and To dates.');
