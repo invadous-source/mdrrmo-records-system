@@ -3063,7 +3063,8 @@ function setupModalType(type) {
             locationLabel: "Accident Location *",
             categoryPlaceholder: "Example: Vehicular Accident",
             locationPlaceholder: "Enter accident location",
-            showRescued: true
+            showRescued: true,
+            showAge: true
         },
         conduction: {
             title: "Add Ambulance Conduction",
@@ -3168,7 +3169,7 @@ async function saveRecord(event) {
         return;
     }
     const ageEl = document.getElementById("age");
-    if (type === "conduction" && ageEl && ageEl.value !== "") {
+    if ((type === "accident" || type === "conduction") && ageEl && ageEl.value !== "") {
         const age = Number(ageEl.value);
         if (!Number.isInteger(age) || age < 0 || age > 130) {
             await mdrrmoActionConfirm({title:"Invalid age",message:"Please enter a valid age from 0 to 130.",icon:"👤",confirmText:"OK",singleButton:true});
@@ -3196,7 +3197,7 @@ async function saveRecord(event) {
         status: document.getElementById("status").value,
         responders: document.getElementById("responders").value.trim(),
         persons: document.getElementById("persons").value.trim(),
-        age: type === "conduction" && ageEl && ageEl.value !== "" ? Number(ageEl.value) : 0,
+        age: (type === "accident" || type === "conduction") && ageEl && ageEl.value !== "" ? Number(ageEl.value) : 0,
         remarks: document.getElementById("remarks").value.trim(),
         updatedAt: new Date().toISOString()
     };
@@ -3336,7 +3337,7 @@ function editRecord(id) {
         record.persons || "";
 
     const ageEl = document.getElementById("age");
-    if (ageEl) ageEl.value = record.type === "conduction" ? (record.age ?? "") : "";
+    if (ageEl) ageEl.value = (record.type === "accident" || record.type === "conduction") ? (record.age ?? "") : "";
 
 
     document
@@ -4513,7 +4514,7 @@ function mdrrmoExcelBuildRecord(row,type){
     const location=mdrrmoExcelPick(row,['Location','location','Location / Destination','Destination']);
     const ageRaw=mdrrmoExcelPick(row,['Age','age','AGE']);
     const ageNumber=(typeof ageRaw==='number') ? ageRaw : Number(String(ageRaw).replace(/[^0-9.-]/g,''));
-    const age=type==='conduction' && String(ageRaw).trim()!=='' ? ageNumber : 0;
+    const age=(type==='accident' || type==='conduction') && String(ageRaw).trim()!=='' ? ageNumber : 0;
     const id=mdrrmoExcelPick(row,['ID','Id','id'])||generateID();
     return {
         id,type,date,time,barangay,category,location,
@@ -4535,7 +4536,7 @@ function mdrrmoExcelValidate(record,rowNumber){
     if(!record.barangay) errors.push('Missing barangay');
     if(!record.category) errors.push('Missing incident/category');
     if(!record.location) errors.push('Missing location');
-    if(record.type==='conduction' && (Number.isNaN(record.age) || record.age<0 || record.age>130)) errors.push('Invalid age');
+    if((record.type==='accident' || record.type==='conduction') && (Number.isNaN(record.age) || record.age<0 || record.age>130)) errors.push('Invalid age');
     return errors;
 }
 
@@ -4766,7 +4767,7 @@ async function exportExcel() {
             get(r, ['time', 'incidentTime', 'recordTime']),
             get(r, ['type', 'recordType', 'incidentType']),
             get(r, ['personsInvolved', 'persons', 'personName', 'name', 'assistedPersons']),
-            r.type === 'conduction' ? get(r, ['age']) : '',
+            (r.type === 'accident' || r.type === 'conduction') ? get(r, ['age']) : '',
             get(r, ['barangay']),
             get(r, ['category', 'purpose', 'categoryPurpose', 'otherSpecify']),
             get(r, ['location', 'destination']),
