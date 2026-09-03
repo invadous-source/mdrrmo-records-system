@@ -2533,7 +2533,7 @@ body.viewer-role .records-panel th,.viewer-role .records-panel td{padding-top:9p
 </div>
 <div class="form-group" id="ageGroup">
 <label>Age</label>
-<input id="age" min="0" max="120" placeholder="Enter age" type="number"/>
+<input id="age" min="0" max="130" step="1" placeholder="Enter age" type="number"/>
 </div>
 <!-- STATUS -->
 <div class="form-group">
@@ -3168,6 +3168,16 @@ async function saveRecord(event) {
         return;
     }
     const ageEl = document.getElementById("age");
+    if (type === "conduction" && ageEl && ageEl.value !== "") {
+        const age = Number(ageEl.value);
+        if (!Number.isInteger(age) || age < 0 || age > 130) {
+            await mdrrmoActionConfirm({title:"Invalid age",message:"Please enter a valid age from 0 to 130.",icon:"👤",confirmText:"OK",singleButton:true});
+            isSavingRecord = false;
+            if (saveButton) { saveButton.disabled = false; saveButton.removeAttribute("aria-busy"); saveButton.innerHTML = originalSaveText; saveButton.style.opacity = ""; saveButton.style.cursor = ""; }
+            ageEl.focus();
+            return;
+        }
+    }
 
     const record = {
         id: editId || generateID(),
@@ -3186,7 +3196,7 @@ async function saveRecord(event) {
         status: document.getElementById("status").value,
         responders: document.getElementById("responders").value.trim(),
         persons: document.getElementById("persons").value.trim(),
-        age: type === "accident" && ageEl && ageEl.value !== "" ? Number(ageEl.value) : 0,
+        age: type === "conduction" && ageEl && ageEl.value !== "" ? Number(ageEl.value) : 0,
         remarks: document.getElementById("remarks").value.trim(),
         updatedAt: new Date().toISOString()
     };
@@ -3326,7 +3336,7 @@ function editRecord(id) {
         record.persons || "";
 
     const ageEl = document.getElementById("age");
-    if (ageEl) ageEl.value = record.type === "accident" ? (record.age ?? "") : "";
+    if (ageEl) ageEl.value = record.type === "conduction" ? (record.age ?? "") : "";
 
 
     document
@@ -4182,7 +4192,7 @@ function exportDatabaseBackup() {
 
     const backup = {
         format: "MDRRMO Database Backup",
-        version: 1,
+        version: 2,
         exportedAt: new Date().toISOString(),
         recordCount: records.length,
         records: records
@@ -4497,7 +4507,7 @@ function mdrrmoExcelBuildRecord(row,type){
     const category=mdrrmoImportedCustomValue(row,['Category','category','Incident / Purpose','Purpose'],['Other Category','Other Incident','Other Incident / Purpose','Category (Please Specify)','Incident (Please Specify)']);
     const location=mdrrmoExcelPick(row,['Location','location','Location / Destination','Destination']);
     const ageRaw=mdrrmoExcelPick(row,['Age','age']);
-    const age=ageRaw===''?0:Number(ageRaw);
+    const age=type==='conduction' && ageRaw!=='' ? Number(ageRaw) : 0;
     const id=mdrrmoExcelPick(row,['ID','Id','id'])||generateID();
     return {
         id,type,date,time,barangay,category,location,
@@ -4519,7 +4529,7 @@ function mdrrmoExcelValidate(record,rowNumber){
     if(!record.barangay) errors.push('Missing barangay');
     if(!record.category) errors.push('Missing incident/category');
     if(!record.location) errors.push('Missing location');
-    if(Number.isNaN(record.age) || record.age<0 || record.age>130) errors.push('Invalid age');
+    if(record.type==='conduction' && (Number.isNaN(record.age) || record.age<0 || record.age>130)) errors.push('Invalid age');
     return errors;
 }
 
@@ -4734,7 +4744,7 @@ async function exportExcel() {
             get(r, ['time', 'incidentTime', 'recordTime']),
             get(r, ['type', 'recordType', 'incidentType']),
             get(r, ['personsInvolved', 'persons', 'personName', 'name', 'assistedPersons']),
-            get(r, ['age']),
+            r.type === 'conduction' ? get(r, ['age']) : '',
             get(r, ['barangay']),
             get(r, ['category', 'purpose', 'categoryPurpose', 'otherSpecify']),
             get(r, ['location', 'destination']),
